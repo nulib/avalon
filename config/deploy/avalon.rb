@@ -39,6 +39,7 @@ set(:shared_children) {
     config/role_map_#{fetch(:rails_env)}.yml 
     config/secrets.yml
     config/solr.yml
+    config/initializers/group_ldap.rb
     Gemfile.local 
     log 
     tmp/pids

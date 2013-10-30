@@ -62,6 +62,7 @@ Avalon::Application.routes.draw do
       post 'attach_structure'
     end
   end
+  resources :courses, only: [:index, :destroy]
 
   match '/media_objects/:media_object_id/section/:id/embed' => 'master_files#embed', via: [:get]
   resources :derivatives, only: [:create]

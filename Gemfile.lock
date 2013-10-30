@@ -210,6 +210,9 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
     addressable (2.3.7)
+    airbrake (4.1.0)
+      builder
+      multi_json
     arel (4.0.2)
     autoparse (0.3.3)
       addressable (>= 2.3.1)
@@ -218,6 +221,8 @@ GEM
     autoprefixer-rails (5.1.7)
       execjs
       json
+    bcp47 (0.3.3)
+      i18n
     bcrypt (3.1.10)
     bcrypt-ruby (3.1.5)
       bcrypt (>= 3.1.3)
@@ -250,11 +255,9 @@ GEM
       ruby-box
       sass-rails
       skydrive
-    builder (3.1.4)
-    byebug (3.5.1)
-      columnize (~> 0.8)
-      debugger-linecache (~> 1.2)
-      slop (~> 3.6)
+    builder (3.1.3)
+    byebug (4.0.5)
+      columnize (= 0.9.0)
     callsite (0.0.11)
     cancancan (1.10.1)
     capistrano (2.12.0)
@@ -277,7 +280,7 @@ GEM
     coffee-rails (4.1.0)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
-    coffee-script (2.3.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
     coffee-script-source (1.9.1)
@@ -298,8 +301,8 @@ GEM
       debugger-ruby_core_source (~> 1.3.5)
     debugger-linecache (1.2.0)
     debugger-ruby_core_source (1.3.8)
-    delayed_job (4.0.4)
-      activesupport (>= 3.0, < 4.2)
+    delayed_job (4.0.6)
+      activesupport (>= 3.0, < 5.0)
     delayed_job_active_record (4.0.3)
       activerecord (>= 3.0, < 5.0)
       delayed_job (>= 3.0, < 4.1)
@@ -319,15 +322,14 @@ GEM
     dropbox-sdk (1.6.4)
       json
     ebnf (0.3.7)
-      haml (~> 4.0)
       rdf (~> 1.1)
       sxp (~> 0.1, >= 0.1.3)
-    edtf (2.1.0)
+    edtf (2.2.0)
       activesupport (>= 3.0, < 5.0)
     email_spec (1.6.0)
       launchy (~> 2.1)
       mail (~> 2.2)
-    equivalent-xml (0.5.1)
+    equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     erubis (2.7.0)
     execjs (2.3.0)
@@ -354,6 +356,7 @@ GEM
       autoparse (~> 0.3)
       extlib (~> 0.9)
       faraday (~> 0.9)
+      googleauth (~> 0.3)
       launchy (~> 2.4)
       multi_json (~> 1.10)
       retriable (~> 1.4)
@@ -363,8 +366,16 @@ GEM
       nokogiri (>= 1.4.4, != 1.5.2, != 1.5.1)
       oauth (>= 0.3.6)
       oauth2 (>= 0.5.0)
+    googleauth (0.4.1)
+      faraday (~> 0.9)
+      jwt (~> 1.4)
+      logging (~> 2.0)
+      memoist (~> 0.12)
+      multi_json (= 1.11)
+      signet (~> 0.6)
     haml (4.0.6)
       tilt
+    handle-system (0.0.7)
     handlebars_assets (0.14.1)
       execjs (>= 1.2.9)
       sprockets (>= 2.0.3)
@@ -409,6 +420,7 @@ GEM
       childprocess
       i18n
       logger
+      rubyzip
     jquery-rails (3.1.1)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
@@ -442,13 +454,20 @@ GEM
       rdf-rdfa (~> 1.1, >= 1.1.5)
       rdf-rdfxml (~> 1.1, >= 1.1.3)
       rdf-reasoner (~> 0.2, >= 0.2.1)
+      rdf-tabular (~> 0.1, >= 0.1.2)
       rdf-trig (~> 1.1, >= 1.1.3)
       rdf-trix (~> 1.1)
       rdf-turtle (~> 1.1, >= 1.1.5)
+      rdf-vocab (~> 0.8)
+      rdf-xsd (~> 1.1, >= 1.1.3)
       sparql (~> 1.1, >= 1.1.4)
       sparql-client (~> 1.1, >= 1.1.3)
+    little-plugger (1.1.3)
     logger (1.2.8)
-    loofah (2.0.1)
+    logging (2.0.0)
+      little-plugger (~> 1.1)
+      multi_json (~> 1.10)
+    loofah (2.0.2)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
@@ -459,6 +478,7 @@ GEM
       rails (>= 3.2.3)
     mediainfo (0.7.2)
     mediashelf-loggable (0.4.10)
+    memoist (0.12.0)
     meta_request (0.3.4)
       callsite (~> 0.0, >= 0.0.11)
       rack-contrib (~> 1.1)
@@ -474,6 +494,7 @@ GEM
     multi_json (1.11.2)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
+    mysql2 (0.3.18)
     net-http-digest_auth (1.4)
     net-http-persistent (2.9.4)
     net-ldap (0.11)
@@ -485,6 +506,7 @@ GEM
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
     netrc (0.10.3)
+    noid (0.7.1)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     nom-xml (0.5.2)
@@ -509,6 +531,11 @@ GEM
     omniauth-identity (1.1.1)
       bcrypt-ruby (~> 3.0)
       omniauth (~> 1.0)
+    omniauth-ldap (1.0.4)
+      net-ldap (~> 0.3.1)
+      omniauth (~> 1.0)
+      pyu-ruby-sasl (~> 0.0.3.1)
+      rubyntlm (~> 0.1.1)
     orm_adapter (0.5.0)
     pry (0.10.1)
       coderay (~> 1.1.0)
@@ -524,6 +551,7 @@ GEM
       pry (>= 0.9.10)
     puma (2.11.1)
       rack (>= 1.1, < 2.0)
+    pyu-ruby-sasl (0.0.3.3)
     rack (1.5.5)
     rack-contrib (1.2.0)
       rack (>= 0.9.1)
@@ -557,7 +585,7 @@ GEM
       nokogiri (~> 1.6)
       rdf (~> 1.1)
       rdf-xsd (~> 1.1)
-    rdf-n3 (1.1.2)
+    rdf-n3 (1.1.3)
       rdf (~> 1.1, >= 1.1.5)
     rdf-rdfa (1.1.5)
       haml (~> 4.0)
@@ -565,7 +593,7 @@ GEM
       rdf (~> 1.1, >= 1.1.6)
       rdf-aggregate-repo
       rdf-xsd (~> 1.1)
-    rdf-rdfxml (1.1.3)
+    rdf-rdfxml (1.1.4)
       htmlentities (~> 4.3)
       rdf (~> 1.1, >= 1.1.6)
       rdf-rdfa (~> 1.1, >= 1.1.4.1)
@@ -574,15 +602,23 @@ GEM
       rdf (~> 1.1, >= 1.1.4.2)
       rdf-turtle (~> 1.1)
       rdf-xsd (~> 1.1)
-    rdf-trig (1.1.3.1)
-      ebnf (~> 0.3, >= 0.3.5)
-      rdf (~> 1.1, >= 1.1.2.1)
-      rdf-turtle (~> 1.1, >= 1.1.3)
+    rdf-tabular (0.1.3.1)
+      addressable (~> 2.3)
+      bcp47 (~> 0.3, >= 0.3.3)
+      json-ld (~> 1.1)
+      rdf (~> 1.1, >= 1.1.7)
+      rdf-xsd (~> 1.1)
+    rdf-trig (1.1.4)
+      ebnf (~> 0.3, >= 0.3.7)
+      rdf (~> 1.1, >= 1.1.11)
+      rdf-turtle (~> 1.1, >= 1.1.6)
     rdf-trix (1.1.0)
       rdf (>= 1.1)
     rdf-turtle (1.1.5)
       ebnf (~> 0.3, >= 0.3.6)
-      rdf (~> 1.1, >= 1.1.4)
+      rdf (~> 1.1, >= 1.1.10)
+    rdf-vocab (0.8.1)
+      rdf (~> 1.1, >= 1.1.10)
     rdf-xsd (1.1.3)
       rdf (~> 1.1, >= 1.1.9)
     ref (1.0.5)
@@ -593,10 +629,6 @@ GEM
     retriable (1.4.1)
     rsolr (1.0.12)
       builder (>= 2.1.2)
-    rspec (2.99.0)
-      rspec-core (~> 2.99.0)
-      rspec-expectations (~> 2.99.0)
-      rspec-mocks (~> 2.99.0)
     rspec-collection_matchers (1.1.2)
       rspec-expectations (>= 2.99.0.beta1)
     rspec-core (2.99.2)
@@ -615,10 +647,9 @@ GEM
       rspec-core (~> 2.99.0)
       rspec-expectations (~> 2.99.0)
       rspec-mocks (~> 2.99.0)
-    rspec_junit_formatter (0.2.0)
+    rspec_junit_formatter (0.2.2)
       builder (< 4)
-      rspec (>= 2, < 4)
-      rspec-core (!= 2.12.0)
+      rspec-core (>= 2, < 4, != 2.12.0)
     ruby-box (1.15.0)
       addressable
       json
@@ -639,6 +670,7 @@ GEM
       mime-types
       nokogiri
       rest-client
+    rubyntlm (0.1.1)
     rubyzip (0.9.9)
     rugged (0.23.2)
     rvm-capistrano (1.4.1)
@@ -675,7 +707,7 @@ GEM
       nokogiri
       stomp
       xml-simple
-    sparql (1.1.4)
+    sparql (1.1.5)
       builder (~> 3.0)
       ebnf (~> 0.3, >= 0.3.5)
       rdf (~> 1.1, >= 1.1.4)
@@ -700,7 +732,7 @@ GEM
     sqlite3 (1.3.10)
     stomp (1.3.4)
     sxp (0.1.5)
-    therubyracer (0.12.1)
+    therubyracer (0.12.2)
       libv8 (~> 3.16.14.0)
       ref
     thor (0.19.1)
@@ -740,6 +772,7 @@ DEPENDENCIES
   active-encode!
   activerecord-jdbcsqlite3-adapter
   activerecord-session_store
+  airbrake
   avalon-about!
   avalon-workflow!
   bcrypt-ruby (~> 3.1.0)
@@ -770,6 +803,7 @@ DEPENDENCIES
   felixwrapper!
   font-awesome-rails (~> 4.3)
   haml
+  handle-system
   handlebars_assets
   hashdiff
   headless
@@ -799,9 +833,11 @@ DEPENDENCIES
   mime-types (>= 1.1)
   modal_logic
   multipart-post
+  mysql2
   net-ldap
   omniauth-identity
   omniauth-lti!
+  omniauth-nuldap!
   pry
   pry-byebug
   pry-debugger

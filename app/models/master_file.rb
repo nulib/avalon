@@ -419,6 +419,22 @@ class MasterFile < ActiveFedora::Base
       self.absolute_location = Avalon::FileResolver.new.path_to(value) rescue nil
     end
   end
+  
+  def workflow_stats
+    instance_data = Rubyhorn.client.instance_json(self.workflow_id)
+    instance_data['workflow']['operations']['operation'].collect do |op|
+      started   = Time.at(op['started'] / 1000) rescue nil
+      completed = Time.at(op['completed'] / 1000) rescue nil
+      duration  = completed-started rescue nil
+      {
+        :operation => op['description'],
+        :state     => op['state'],
+        :started   => started,
+        :completed => completed,
+        :duration  => duration
+      }
+    end
+  end
 
   def encoder_class
     find_encoder_class(encoder_classname) || find_encoder_class(workflow_name.to_s.classify) || ActiveEncode::Base

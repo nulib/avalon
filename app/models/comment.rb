@@ -19,7 +19,7 @@ class Comment
   
   # For now this list is a hardcoded constant. Eventually it might be more flexible
   # as more thought is put into the process of providing a comment
-  SUBJECTS = ["General feedback", "Request for access", "Technical support", "Other"]
+  SUBJECTS = ["General feedback", "Technical support", "Other"]
   
   attr_accessor :name, :subject, :email, :nickname
 

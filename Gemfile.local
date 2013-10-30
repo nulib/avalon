@@ -1,0 +1,5 @@
+gem 'omniauth-nuldap', :git => "https://github.com/nulib/omniauth-nuldap.git"
+gem 'mysql2'
+gem 'handle-system'
+gem 'noid'
+gem 'airbrake'

@@ -15,6 +15,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 %>
 <% @page_title = t('contact.title', :application_name => application_name) %>
 
+<<<<<<< HEAD
 <div class="container-fluid">
 
   <h2>Contact us</h2>
@@ -31,6 +32,38 @@ Unless required by applicable law or agreed to in writing, software distributed
       <%= comment.text_area :comment, rows: 10 %>
       <%= comment.primary "Submit comments" %>
     </fieldset>
+=======
+<% if flash[:notice] %>
+    <div class="alert"><%= flash[:notice] %></div>
+<% end %>
+
+<% if flash[:error] %>
+  <div class="alert alert-error"><%= flash[:error] %></div> 
+<% end %>
+
+<h2>Contact us</h2>
+<p><strong>All fields are required</strong></p>
+
+<%= twitter_bootstrap_form_for @comment, class: 'form-vertical' do |comment| %>
+  <%= comment.fieldset do %>    
+    <%= comment.label :name, "Name" do |controls| %>
+      <%= controls.text_field :name, class: 'span4' %>
+    <% end %>
+
+    <%= comment.label :email, "Email address" do |controls| %> 
+      <%= controls.email_field :email, class: 'span4' %>
+    <% end %>
+    <%= comment.label :email_confirmation, "Confirm email address" do |controls| %>
+      <%= controls.email_field :email_confirmation, class: 'span4' %> 
+    <% end %>
+    
+    <%= comment.select :subject, "Subject", @subjects, prompt: 'Select one', 
+        class: 'span4' %>
+    
+    <%= comment.text_area :comment, "Comment", rows: 10, class: 'span4' %>
+    
+    <%= comment.submit "Submit comments" %>
+>>>>>>> NU Production customizations:
   <% end %>
 </div>
 </div>

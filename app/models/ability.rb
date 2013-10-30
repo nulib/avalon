@@ -35,6 +35,7 @@ class Ability
         can :inspect, MediaObject
         can :manage, Admin::Group
         can :manage, Admin::Collection
+        can :manage, Course
       end
     
       if @user_groups.include? "group_manager"
