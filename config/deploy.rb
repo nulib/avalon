@@ -39,6 +39,7 @@ set(:shared_children) {
     config/minter_state.yml
     config/role_map_#{fetch(:rails_env)}.yml
     config/solr.yml
+    config/initializers/group_ldap.rb
     log
     tmp/pids
   }.split

@@ -80,16 +80,15 @@ class Ability
         end
     
         can :update_access_control, MediaObject do |mediaobject|
-          @user.in?(mediaobject.collection.managers) || 
-            (is_editor_of?(mediaobject.collection) && !mediaobject.published?)
+          is_editor_of?(mediaobject.collection)
         end
 
         can :unpublish, MediaObject do |mediaobject|
-          @user.in?(mediaobject.collection.managers) 
+          is_editor_of?(mediaobject.collection)
         end
 
         can :update, Admin::Collection do |collection|
-          is_editor_of?(collection) 
+          @user.in?(collection.managers)
         end
 
         can :update_unit, Admin::Collection do |collection|
@@ -121,14 +120,12 @@ class Ability
       end
 
       cannot :update, MediaObject do |mediaobject|
-        (not full_login?) || (!is_member_of?(mediaobject.collection)) || 
-          ( mediaobject.published? && !@user.in?(mediaobject.collection.managers) )
+        (not full_login?) || (!is_editor_of?(mediaobject.collection))
       end
 
       cannot :destroy, MediaObject do |mediaobject|
-        # non-managers can only destroy mediaobject if it's unpublished 
-        (not full_login?) || (!is_member_of?(mediaobject.collection)) || 
-          ( mediaobject.published? && !@user.in?(mediaobject.collection.managers) )
+        # only managers can delete MediaObjects
+        (not full_login?) || !@user.in?(mediaobject.collection.managers)
       end
 
       cannot :destroy, Admin::Collection do |collection, other_user_collections=[]|
