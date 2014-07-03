@@ -13,11 +13,19 @@ class HandleMaker
     @semaphore = Mutex.new
   end
 
+  def admin_field
+    result = Handle::Field::HSAdmin.new(@admin[:handle])
+    if @admin.has_key?(:index)
+      result.admin_index = @admin[:index]
+    end
+    result
+  end
+  
   def create_handle(handle_id, url)
     begin
       handle = @conn.create_record(handle_id)
       handle.add(:URL, url)
-      handle << Handle::Field::HSAdmin.new(@admin)
+      handle << admin_field
       result = handle.save
       logger.info "Created handle #{handle_id}"
       result
@@ -25,8 +33,38 @@ class HandleMaker
       logger.error "Error creating handle #{handle_id}: #{err.message}"
     end
   end
-  handle_asynchronously :create_handle
-
+ 
+  def verify_handle(obj)
+    Rails.logger.info("Verifying handle for #{obj.inspect}")
+    link = obj.permalink
+    if link.present?
+      url = begin
+        Permalink.url_for(obj)
+      rescue ArgumentError
+        nil
+      end
+      unless url.nil?
+        handle = link.split(/\//,4).last
+        begin
+          record = @conn.resolve_handle(handle)
+          dirty = false
+          url_field = record.find { |f| f.is_a?(Handle::Field::URL) }
+          if url_field.nil?
+            record.add(:URL, url)
+            dirty = true
+          elsif url_field.value != url
+            url_field.value = url
+            dirty = true
+          end
+          record.save if dirty
+        rescue Handle::NotFound
+          self.create_handle(handle, link)
+        end
+      end
+      return true
+    end
+  end
+  
   def unregister(obj)
     link = obj.permalink
     if link.present?
@@ -73,4 +111,12 @@ end
 
 Avalon::Permalink.on_generate do |obj,url|
   HandleMaker.new.permalink_for(obj,url)
+end
+
+MediaObject.after_save do |obj|
+  HandleMaker.new.verify_handle(obj)
+end
+
+MasterFile.after_save do |obj|
+  HandleMaker.new.verify_handle(obj)
 end
