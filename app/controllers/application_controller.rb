@@ -67,6 +67,8 @@ class ApplicationController < ActionController::Base
     if current_user
       if exception.subject.class == MediaObject && exception.action == :update
         redirect_to exception.subject, flash: { notice: 'You are not authorized to edit this document.  You have been redirected to a read-only view.' }
+      elsif exception.subject.class == MediaObject && exception.action == :read
+        redirect_to root_path, flash: { notice: 'You do not have permissions for this item. Please contact digitalcollections@northwestern.edu for help.' }
       else
         redirect_to root_path, flash: { notice: 'You are not authorized to perform this action.' }
       end
