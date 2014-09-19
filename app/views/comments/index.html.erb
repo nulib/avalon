@@ -15,7 +15,6 @@ Unless required by applicable law or agreed to in writing, software distributed
 %>
 <% @page_title = t('contact.title', :application_name => application_name) %>
 
-<<<<<<< HEAD
 <div class="container-fluid">
 
   <h2>Contact us</h2>
@@ -29,41 +28,28 @@ Unless required by applicable law or agreed to in writing, software distributed
       <%= comment.email_field :email, label: 'Email address' %>
       <%= comment.email_field :email_confirmation, label: 'Confirm email address' %> 
       <%= comment.select :subject, @subjects, prompt: 'Select one' %>    
+      <div id="support_details">
+        <%= comment.label :resource, "What is the title of the resource you were viewing?" do |controls| %>
+          <%= controls.text_field :resource, class: 'span4' %>
+        <% end %>
+
+        <%= comment.label :location, "Where were you accessing this resource? (check all that apply)" do |controls| %>
+          <% @locations.each do |location| %>
+            <%= check_box_tag "comment[location][]", location, @comment.location.include?(location) %> <%= location %><br/>
+          <% end %>
+        <% end %>
+
+        <%= comment.label :device, "What kind of device are you using?" do |controls| %>
+          <%= controls.text_field :device, class: 'span4' %>
+        <% end %> 
+
+        <%= comment.label :browser, "What browser are you using? (please include version if known)" do |controls| %>
+          <%= controls.text_field :browser, class: 'span4' %>
+        <% end %> 
+      </div>
       <%= comment.text_area :comment, rows: 10 %>
       <%= comment.primary "Submit comments" %>
     </fieldset>
-=======
-<% if flash[:notice] %>
-    <div class="alert"><%= flash[:notice] %></div>
-<% end %>
-
-<% if flash[:error] %>
-  <div class="alert alert-error"><%= flash[:error] %></div> 
-<% end %>
-
-<h2>Contact us</h2>
-<p><strong>All fields are required</strong></p>
-
-<%= twitter_bootstrap_form_for @comment, class: 'form-vertical' do |comment| %>
-  <%= comment.fieldset do %>    
-    <%= comment.label :name, "Name" do |controls| %>
-      <%= controls.text_field :name, class: 'span4' %>
-    <% end %>
-
-    <%= comment.label :email, "Email address" do |controls| %> 
-      <%= controls.email_field :email, class: 'span4' %>
-    <% end %>
-    <%= comment.label :email_confirmation, "Confirm email address" do |controls| %>
-      <%= controls.email_field :email_confirmation, class: 'span4' %> 
-    <% end %>
-    
-    <%= comment.select :subject, "Subject", @subjects, prompt: 'Select one', 
-        class: 'span4' %>
-    
-    <%= comment.text_area :comment, "Comment", rows: 10, class: 'span4' %>
-    
-    <%= comment.submit "Submit comments" %>
->>>>>>> NU Production customizations:
   <% end %>
 </div>
 </div>

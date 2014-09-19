@@ -16,9 +16,10 @@ class CommentsController < ApplicationController
   before_filter :set_subjects
 
   # Index replaces new in this context
-  def index 
-    @comment = Comment.new
-  end
+	def index
+	  @comment = Comment.new
+    @comment.subject = @subjects[1]
+	end
 
   def create
     @comment = Comment.new
