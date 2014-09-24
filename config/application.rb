@@ -13,7 +13,7 @@ end
 module Avalon
   VERSION = '4.0.1'
   class MissingUserId < Exception; end
-  
+
   class Application < Rails::Application
     require 'rubyhorn/rest_client/ingest'
     # Settings in config/environments/* take precedence over those specified here.

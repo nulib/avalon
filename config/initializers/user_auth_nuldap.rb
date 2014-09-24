@@ -3,6 +3,10 @@ require 'net/ldap'
 
 User.instance_eval do
   def self.find_for_lti(auth_hash, signed_in_resource=nil)
+    if auth_hash.uid.blank?
+      raise Avalon::MissingUserId 
+    end
+
     class_id = auth_hash.extra.context_id
     if Course.find_by_context_id(class_id).nil?
       class_name = auth_hash.extra.context_name
