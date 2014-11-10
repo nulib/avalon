@@ -3,7 +3,8 @@ require 'net/ldap'
 
 User.instance_eval do
   def self.find_for_lti(auth_hash, signed_in_resource=nil)
-    if auth_hash.uid.blank?
+    auth_hash_uid = auth_hash.uid || auth_hash.extra.raw_info['custom_canvas_user_login_id']
+    if auth_hash_uid.blank?
       raise Avalon::MissingUserId 
     end
 
@@ -12,7 +13,7 @@ User.instance_eval do
       class_name = auth_hash.extra.context_name
       Course.create :context_id => class_id, :label => auth_hash.extra.consumer.context_label, :title => class_name unless class_name.nil?
     end
-    uid = auth_hash.uid.sub(/^nu(\S{3}\d{3})$/,'\\1')
+    uid = auth_hash_uid.sub(/^nu(\S{3}\d{3})$/,'\\1')
     result =
       User.find_by_username(uid) ||
       User.find_by_email(auth_hash.info.email) ||
