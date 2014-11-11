@@ -31,6 +31,7 @@ class HandleMaker
       result
     rescue Handle::HandleError => err
       logger.error "Error creating handle #{handle_id}: #{err.message}"
+      Airbrake.notify err
     end
   end
  
@@ -59,6 +60,9 @@ class HandleMaker
           record.save if dirty
         rescue Handle::NotFound
           self.create_handle(handle, link)
+        rescue Handle::HandleError => err
+          logger.error "Error creating handle #{handle_id}: #{err.message}"
+          Airbrake.notify err
         end
       end
       return true
