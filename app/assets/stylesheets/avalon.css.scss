@@ -130,10 +130,19 @@ tr.active-false td {
 }
 
 .navbar-nav {
+  padding-left: 1em;
   li {
     a {
       padding: 7px 10px;
+      margin: .25em 0 .25em;
     }
+  } 
+}	
+.navbar-right {
+  width: 18em;
+  padding: .5em 1em;
+  .search-query {
+    padding: 1em;
   }
 }
 .navbar-right {
@@ -284,6 +293,7 @@ header div{
 
 .logo {
   padding-top: 2em;
+  padding-left: 2em;
 }
 
 .log-in-out {
@@ -298,6 +308,8 @@ header div{
       color: white;
       text-decoration: none;
     }
+    &:active { color: $loginLinkColor; }
+    &:visited { color: $loginLinkColor; }
   }
 }
 
@@ -354,7 +366,7 @@ header div{
 
 #sidebar, #facets {
   @media (min-width: $screen-sm-min) {
-    max-width: 220px;
+    max-width: 270px;
   }
   padding-bottom: 10px;
   .panel {
@@ -395,18 +407,18 @@ div[id*='facet-panel-'] {
 /* Footer */
 
 footer {
-  #div.container { margin-left: 0; }
+  .container { margin: 0 3em 0 3em; }
   padding: 0 1em;
   background-color: #333;
   color: white;
   padding: 1em;
   font-size: .8em;
   line-height: 1em;
-  a {
-    color: #999;
-    &:hover {
-      color: white;
-    }
+  a:not(.btn) {
+    color: $loginLinkColor;
+    &:hover { color: $loginLinkColor; }
+    &:active { color: $loginLinkColor; }
+    &:visited { color: $loginLinkColor; }
   }
   @media (max-width: 767px) {
     padding: 0;
@@ -472,11 +484,15 @@ footer .release {
   margin-top: 0;
 }
 #featured_content {
+  margin-bottom: 3em;
   h5 {
     font-weight: bold;
   }
   img {
     @extend .img-thumbnail;
+  }
+  div {
+    margin-right: 3em;
   }
 }
 
@@ -569,7 +585,7 @@ html, body {
 }
 
 #push  { height: 160px; }
-footer { height: 130px; }
+footer { height: 160px; }
 
 #push, footer {
   @media (max-width: 979px) {
@@ -770,6 +786,7 @@ a[data-trigger='submit'] {
 
 #content {
   max-width: 870px;
+  margin-left: 1em;
 }
 
 #resource_description_content {

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <%#
 Copyright 2011-2015, The Trustees of Indiana University and Northwestern
   University.  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,40 +14,21 @@ Unless required by applicable law or agreed to in writing, software distributed
 ---  END LICENSE_HEADER BLOCK  ---
 %>
   <div class="custom-header">
-    <div class="row">
-      <div class="row-fluid whitespace-half">
-      <header>
-        <div class="col-sm-2 logo">
-=======
-  <div class="custom-header">
     <%# By default shift log in / log out to the header %>
     <div class="log-in-out clearfix">
       <div class="pull-right">
-      <%= render 'modules/user_management' %>
+        <%= render 'modules/user_management' %> |
+        <%= link_to '<i class="glyphicon glyphicon-question-sign"></i> Help'.html_safe, comments_path %>
       </div>
     </div>
-    <div class="container-fluid">
-      <div class="row-fluid whitespace-half">
-      <header class="span12">
-        <div class="logo span4">
->>>>>>> NU Production customizations:
+    <div class="row">
+      <div class="row whitespace-half">
+      <header>
+        <div class="col-sm-4 logo">
         <%= link_to root_path do %>
           <%= image_tag "repository-audiovideo-white.png", alt: "Northwestern University Repository | audio + video" %>
         <% end %>
         </div>
-<<<<<<< HEAD
-        
-        <!-- <div class="col-md-6">
-          <h1>Avalon Media System</h1>
-          <p class="lead"><%=release_text%></p>
-        </div>    -->
-
-        <%# By default shift log in / log out to the header %>
-        <div class="pull-right log-in-out">
-          <%= render 'modules/user_management' %>
-        </div>
-=======
->>>>>>> NU Production customizations:
       </header>
       </div>
     </div>

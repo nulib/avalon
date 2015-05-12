@@ -16,10 +16,10 @@ class CommentsController < ApplicationController
   before_filter :set_subjects
 
   # Index replaces new in this context
-	def index
-	  @comment = Comment.new
+  def index
+    @comment = Comment.new
     @comment.subject = @subjects[1]
-	end
+  end
 
   def create
     @comment = Comment.new
@@ -28,25 +28,30 @@ class CommentsController < ApplicationController
     @comment.email = params[:comment][:email]
     @comment.email_confirmation = params[:comment][:email_confirmation]
     @comment.subject = params[:comment][:subject]
+    @comment.resource = params[:comment][:resource]
+    @comment.location = params[:comment][:location]
+    @comment.device = params[:comment][:device]
+    @comment.browser = params[:comment][:browser]
     @comment.comment = params[:comment][:comment]
 
     if (@comment.valid?)
       begin
-	CommentsMailer.contact_email(@comment).deliver
+        CommentsMailer.contact_email(@comment).deliver
       rescue Errno::ECONNRESET => e
-	logger.warn "The mail server does not appear to be responding \n #{e}"
-	
-	flash[:notice] = "The message could not be sent in a timely fashion. Contact us at #{Avalon::Configuration.lookup('email.support')} to report the problem."
-	render action: "index"
+        logger.warn "The mail server does not appear to be responding \n #{e}"
+
+        flash[:notice] = "The message could not be sent in a timely fashion. Contact us at #{Avalon::Configuration.lookup('email.support')} to report the problem."
+        render action: "index"
       end
     else
-     flash[:error] = "There were problems submitting your comment. Please correct the errors and try again."
-     render action: "index"
+      flash[:error] = "There were problems submitting your comment. Please correct the errors and try again."
+      render action: "index"
     end 
   end
-  
+
   protected
   def set_subjects
     @subjects = Comment::SUBJECTS
+    @locations = Comment::LOCATIONS
   end
 end

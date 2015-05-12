@@ -1,43 +1,35 @@
-<<<<<<< HEAD
-<%#
-Copyright 2011-2015, The Trustees of Indiana University and Northwestern
-  University.  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-=======
->>>>>>> NU Production customizations:
+<footer>
+  <div class="container">
+    <div class="footer-logo pull-left">
+      <%= image_tag "nu_logo.png", alt: "Northwestern University" %>
+    </div>
+    <div class="footer-contact pull-left">
+      <p><i class="glyphicon glyphicon-envelope"></i>  <%= link_to "Contact Us", comments_path %></p>
 
-	<footer>
-		<div class="container">
-			<div class="footer-logo pull-left">
-				<%= image_tag "nu_logo.png", alt: "Northwestern University" %>
-	    	</div>
-			<div class="footer-contact pull-left">
-				<p><i class="icon-envelope"></i>  <%= link_to "Contact Us", comments_path %></p>
+      <p>
+      For more information contact <a href="http://www.library.northwestern.edu/about/library-administration/departments-offices/digital-collections">Digital Collections</a>
+      </p>
 
-				<p>
-					For more information contact <a href="http://www.library.northwestern.edu/about/library-administration/departments-offices/digital-collections">Digital Collections</a>
-				</p>
+      <p>
+      <a href="http://www.library.northwestern.edu/">Northwestern University Library</a>; 1970 Campus Drive; Evanston, IL 60208-2300
+      </p>
 
-		        <p> 
-		        	<a href="http://www.library.northwestern.edu/">Northwestern University Library</a>; 1970 Campus Drive; Evanston, IL 60208-2300
-		        </p>
+      <p>
+      Phone: 847-467-1080;
+      E-mail: <a href="mailto:digitalcollections@northwestern.edu">digitalcollections@northwestern.edu</a>
+      </p>
 
-		        <p>
-		        	Phone: 847-467-1080;
-		        	E-mail: <a href="mailto:digitalcollections@northwestern.edu">digitalcollections@northwestern.edu</a>
-		        </p>
+      <p>
+      <a href="http://www.northwestern.edu/disclaimer.html">Disclaimer</a> and
+      <a href="http://policies.northwestern.edu/">University Policy Statements</a>
+      &copy; 2012 Northwestern University
+      </p>
 
-		        <p>
-		        	<a href="http://www.northwestern.edu/disclaimer.html">Disclaimer</a> and
-		        	<a href="http://policies.northwestern.edu/">University Policy Statements</a>
-		          &copy; 2012 Northwestern University
-		        </p>
+    </div>
+  </div>
+</footer>
 
-			</div>
-		</div>
-	</footer>
-
-<!-- 	   <div class="release">
-	   	Release 1.0
-	   	<%= git_commit_info(" (%s %s)") if Rails.env == 'development' %>
-	   </div> -->
+<!--     <div class="release">
+  Release 1.0
+  <%= git_commit_info(" (%s %s)") if Rails.env == 'development' %>
+  </div> -->

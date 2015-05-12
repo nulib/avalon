@@ -6,7 +6,7 @@ require 'whenever/capistrano'
 set :application, "avalon"
 set :repository,  "git://github.com/avalonmediasystem/avalon.git"
 
-set :stages, %W(nu-test nu-prod)
+set :stages, %W(nu-test nu-prod nu-avalon)
 set :default_stage, "nu-test"
 require 'capistrano/ext/multistage'
 
@@ -14,9 +14,6 @@ set(:whenever_command) { "bundle exec whenever" }
 set(:bundle_flags) { "--quiet --path=#{deploy_to}/shared/gems" }
 #set :rvm_ruby_string, "2.1.4"
 set :rvm_type, :system
-<<<<<<< HEAD
-#set :rvm_path, "/usr/local/rvm"
-=======
 set :rvm_path, '/usr/local/rvm'
 
 after :bundle_install, "deploy:migrate"
@@ -38,13 +35,13 @@ set(:shared_children) {
     config/matterhorn.yml
     config/minter_state.yml
     config/role_map_#{fetch(:rails_env)}.yml
+    config/secrets.yml
     config/solr.yml
     config/initializers/group_ldap.rb
     log
     tmp/pids
   }.split
 }
->>>>>>> NU Production customizations:
 
 set :scm, :git
 set :use_sudo, false
