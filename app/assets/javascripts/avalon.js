@@ -1,5 +1,5 @@
 /* 
- * Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+ * Copyright 2011-2015, The Trustees of Indiana University and Northwestern
  *   University.  Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
  * 
@@ -17,22 +17,61 @@
 // Empty file for future js
 /* Override the search_context so it stops POSTing links which confuses
  * Rails and causes it to redirect to the wrong place. */
-Blacklight.do_search_context_behavior = function() {}
+$(document).ready(function() {
+  Blacklight.do_search_context_behavior = function() {}
+  // adjust width of facet columns to fit their contents
+  function longer (a,b){ return b.textContent.length - a.textContent.length; }
+  $('ul.facet-values, ul.pivot-facet').map(function(){
+      var longest = $(this).find('.facet-count span').sort(longer).first();
+      var clone = longest.clone().css('visibility','hidden');
+      $('body').append(clone);
+      $(this).find('.facet-count').first().width(clone.width());
+      clone.remove();
+  });
 
-$('.btn-stateful-loading').live('click', function() { $(this).button('loading'); });    
+  $( document ).on('click', '.btn-stateful-loading', function() { $(this).button('loading'); });    
 
-$('.popover-target').popover({
-  placement: 'top',
-  html: true,
-  trigger: 'hover',
-  delay: { show: 250, hide: 500 },
-  content: function() { 
-    return $(this).next('.po-body').html() 
+  $('.popover-target').popover({
+    placement: 'top',
+    html: true,
+    trigger: 'hover',
+    delay: { show: 250, hide: 500 },
+    content: function() { 
+      return $(this).next('.po-body').html() 
+    }
+  });
+
+  $('#show_object_tree').on('click', function() {
+    var ot = $('#object_tree')
+    ot.load(ot.data('src'));
+    return false;
+  })
+
+  var iOS = !!/(iPad|iPhone|iPod)/g.test( navigator.userAgent );
+  if (iOS) {
+    $('input[readonly], textarea[readonly]').on('cut paste keydown', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    })
+    $('input[readonly], textarea[readonly]').attr("readonly", false);
   }
-});
 
-$('#show_object_tree').on('click', function() {
-  var ot = $('#object_tree')
-  ot.load(ot.data('src'));
-  return false;
-})
+  $('a').has('img, ul').addClass('block');
+
+  window.addEventListener("hashchange", function(event) {
+    var element = document.getElementById(location.hash.substring(1));
+    if (element) {
+      if (!/^(?:a|select|input|button|textarea)$/i.test(element.tagName)) {
+        element.tabIndex = -1;
+      }
+      element.focus();
+    }
+  }, false);
+
+  $( "#content" ).focus( function() {
+    $( ".mejs-controls" ).css( "visibility", "visible" );
+    $( ".mejs-controls button:first" ).focus();
+  })
+
+});

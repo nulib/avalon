@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -17,6 +17,6 @@ describe Hydra::Datastream::InheritableRightsMetadata do
   it "should not index anything" do
     obj = ActiveFedora::Base.new
     datastream = Hydra::Datastream::NonIndexedRightsMetadata.new(obj.inner_object, nil)
-    datastream.to_solr.should == {}
+    expect(datastream.to_solr).to eq({})
   end
 end

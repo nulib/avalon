@@ -1,5 +1,5 @@
 /* 
- * Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+ * Copyright 2011-2015, The Trustees of Indiana University and Northwestern
  *   University.  Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
  * 
@@ -40,16 +40,7 @@
 //= require jquery-ui
 //= require jquery.ui.nestedSortable
 
-//= require bootstrap-alert
-//= require bootstrap-dropdown
-//= require bootstrap-transition
-//= require bootstrap-collapse
-//= require bootstrap-modal
-//= require bootstrap-typeahead
-//= require bootstrap-button
-//= require bootstrap-tooltip
-//= require bootstrap-popover
-//= require bootstrap-tab
+//= require bootstrap-sprockets
 
 
 /* requirements for handling modals with modal logic gem */
@@ -57,13 +48,17 @@
 //= require handlebars.runtime
 //= require templates/modal/crud
 
+//= require browse_everything
 
+/* bootstrap 3 eliminated typeahead. use twitter-typeahead-rails instead */
+//= require twitter/typeahead
 
 /*
  * Place any local overrides in avalon.js (for Blacklight, Hydra, jQuery,
  * etc) 
  */
 //= require avalon
+//= require keyboard_access
 //= require pop_help
-//= require access_autocomplete
+//= require input_form_attribute_support
 //= require_self

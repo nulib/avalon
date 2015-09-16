@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -35,6 +35,7 @@ module ControllerMacros
     sign_in user
     @controller.user_session[:virtual_groups] = [lti_class]
     @controller.user_session[:full_login] = false
+    @controller.user_session[:lti_group] = lti_class
     user
   end
 end

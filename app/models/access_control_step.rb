@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -35,9 +35,9 @@ class AccessControlStep < Avalon::Workflow::BasicStep
       if context["submit_add_#{title}"].present?
         if context["add_#{title}"].present?
           if ["group", "class"].include? title
-            mediaobject.read_groups += [context["add_#{title}"]]
+            mediaobject.read_groups += [context["add_#{title}"].strip]
           else
-            mediaobject.read_users += [context["add_#{title}"]]
+            mediaobject.read_users += [context["add_#{title}"].strip]
           end
         else
           context[:error] = "#{title.titleize} can't be blank."
@@ -58,6 +58,15 @@ class AccessControlStep < Avalon::Workflow::BasicStep
     mediaobject.hidden = context[:hidden] == "1"
 
     mediaobject.save
+
+    #Setup these values in the context because the edit partial is being rendered without running the controller's #edit (VOV-2978)
+    mediaobject.reload
+    context[:users] = mediaobject.read_users
+    context[:groups] = mediaobject.read_groups
+    context[:virtual_groups] = mediaobject.virtual_read_groups
+    context[:addable_groups] = Admin::Group.non_system_groups.reject { |g| context[:groups].include? g.name }
+    context[:addable_courses] = Course.all.reject { |c| context[:virtual_groups].include? c.context_id }
+
     context
   end
 end

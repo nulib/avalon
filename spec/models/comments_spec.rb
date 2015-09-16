@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -20,7 +20,8 @@ describe Comment do
       email: "john.smith@example.com",
       email_confirmation: "john.smith@example.com",
       subject: Comment::SUBJECTS[2],
-      comment: "This is an RSpec test") 
+      comment: "This is an RSpec test",
+      nickname: "") 
   end
   
   it "should validate if all fields are entered correctly" do

@@ -5,6 +5,7 @@ development:
   domain:
     host: localhost
     port: 3000
+    protocol: http
   dropbox:
     path: '/srv/avalon/dropbox/'
     upload_uri: 'sftp://localhost/srv/avalon/dropbox'
@@ -27,12 +28,16 @@ development:
     stream_token_ttl: 20 #minutes
     rtmp_base: 'rtmp://localhost/avalon'
     http_base: 'http://localhost:3000/streams'
+    default_quality: 'low'
   groups:
     system_groups: [administrator, group_manager, manager]
   master_file_management:
     strategy: 'none' #'delete', or 'move' (for move uncomment and configure next line)
     #path: '/path/to/move/to'
-
+  bib_retriever:
+    protocol: sru
+    url: http://zgate.example.edu:9000/exampledb
+    query: rec.id='%s'
 test:
   fedora:
     namespace: avalon
@@ -56,6 +61,7 @@ test:
         enable_starttls_auto: false
   streaming:
     stream_token_ttl: 20 #minute
+    content_path: '/path/to/avalon/content'
     rtmp_base: 'rtmp://localhost/avalon'
     http_base: 'http://localhost:3000/streams'
   groups:
@@ -63,3 +69,7 @@ test:
   master_file_management:
     strategy: 'none' #'delete', or 'move' (for move uncomment and configure next line)
     #path: '/path/to/move/to'
+  bib_retriever:
+    protocol: sru
+    url: http://zgate.example.edu:9000/exampledb
+    query: rec.id='%s'

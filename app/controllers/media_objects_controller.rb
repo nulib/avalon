@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -17,11 +17,26 @@ require 'avalon/controller/controller_behavior'
 class MediaObjectsController < ApplicationController 
   include Avalon::Workflow::WorkflowControllerBehavior
   include Avalon::Controller::ControllerBehavior
-  include Hydra::AccessControlsEnforcement
+  include ConditionalPartials
 
 #  before_filter :enforce_access_controls
   before_filter :inject_workflow_steps, only: [:edit, :update]
-  before_filter :load_player_context, only: [:show, :show_progress, :remove]
+  before_filter :load_player_context, only: [:show, :show_progress]
+
+  def self.is_editor ctx
+    ctx.current_ability.is_editor_of?(ctx.instance_variable_get('@mediaobject').collection)
+  end
+  def self.is_lti_session ctx
+    ctx.user_session.present? && ctx.user_session[:lti_group].present?
+  end
+
+  is_editor_or_not_lti = proc { |ctx| self.is_editor(ctx) || !self.is_lti_session(ctx) }
+  is_editor_or_lti = proc { |ctx| (Avalon::Authentication::Providers.any? {|p| p[:provider] == :lti } &&self.is_editor(ctx)) || self.is_lti_session(ctx) }
+
+  add_conditional_partial :share, :share, partial: 'share_resource', if: is_editor_or_not_lti
+  add_conditional_partial :share, :embed, partial: 'embed_resource', if: is_editor_or_not_lti
+  add_conditional_partial :share, :lti_url, partial: 'lti_url',  if: is_editor_or_lti
+
 
   # Catch exceptions when you try to reference an object that doesn't exist.
   # Attempt to resolve it to a close match if one exists and offer a link to
@@ -29,7 +44,11 @@ class MediaObjectsController < ApplicationController
   rescue_from ActiveFedora::ObjectNotFoundError do |exception|
     render '/errors/unknown_pid', status: 404
   end
- 
+
+  def can_embed?
+    params[:action] == 'show'
+  end
+
   def new
     collection = Admin::Collection.find(params[:collection_id])
     authorize! :read, collection
@@ -50,7 +69,7 @@ class MediaObjectsController < ApplicationController
 
     if 'preview' == @active_step 
       @currentStream = params[:content] ? set_active_file(params[:content]) : @masterFiles.first
-      @token = @currentStream.nil? ? "" : StreamToken.find_or_create_session_token(session, @currentStream.mediapackage_id)
+      @token = @currentStream.nil? ? "" : StreamToken.find_or_create_session_token(session, @currentStream.pid)
       @currentStreamInfo = @currentStream.nil? ? {} : @currentStream.stream_details(@token, default_url_options[:host])
 
       if (not @masterFiles.empty? and @currentStream.blank?)
@@ -114,7 +133,7 @@ class MediaObjectsController < ApplicationController
         [mf.pid, mf_status]
       }
     ]
-    overall.each { |k,v| overall[k] = [0,[100,v.to_f/@masterFiles.length.to_f].min].max.round }
+    overall.each { |k,v| overall[k] = [0,[100,v.to_f/@masterFiles.length.to_f].min].max.floor }
 
     if overall[:success]+overall[:error] > 100
       overall[:error] = 100-overall[:success]
@@ -126,44 +145,53 @@ class MediaObjectsController < ApplicationController
     end
   end
 
-  # This sets up the delete view which is an item preview with the ability
-  # to take the item out of the system for good (by POSTing to the destroy
-  # action)
-  def remove 
-    #@previous_view = media_object_path(@mediaobject)
-  end
-
   def destroy
-    media_object = MediaObject.find(params[:id])
-    authorize! :destroy, media_object
-    message = "#{media_object.title} (#{params[:id]}) has been successfuly deleted"
-
-    # attempt to stop the matterhorn processing job
-    media_object.parts.each(&:destroy)
-    media_object.parts.clear
-    
-    media_object.destroy
-    
-    redirect_to root_path, flash: { notice: message }
+    errors = []
+    success_count = 0
+    Array(params[:id]).each do |id|
+      media_object = MediaObject.find(id)
+      if can? :destroy, media_object
+        media_object.destroy
+        success_count += 1
+      else
+        errors += [ "#{media_object.title} (#{params[:id]}) permission denied" ]
+      end      
+    end
+    message = "#{success_count} #{'media object'.pluralize(success_count)} successfully deleted."
+    message += "These objects were not deleted:</br> #{ errors.join('<br/> ') }" if errors.count > 0
+    redirect_to params[:previous_view]=='/bookmarks'? '/bookmarks' : root_path, flash: { notice: message }
   end
 
   # Sets the published status for the object. If no argument is given then
   # it will just toggle the state.
   def update_status
-    media_object = MediaObject.find(params[:id])
-    authorize! :update, media_object
-    
-    case params[:status]
-      when 'publish'
-        media_object.publish!(user_key)
-      when 'unpublish'
-        media_object.publish!(nil) if can?(:unpublish, media_object)   
+    status = params[:status]
+    errors = []
+    success_count = 0
+    Array(params[:id]).each do |id|
+      media_object = MediaObject.find(id)
+      if cannot? :update, media_object
+        errors += ["#{media_object.title} (#{id}) (permission denied)."]
+      else
+        case status
+          when 'publish'
+            media_object.publish!(user_key)
+            # additional save to set permalink
+            media_object.save( validate: false )
+            success_count += 1
+          when 'unpublish'
+            if can? :unpublish, media_object
+              media_object.publish!(nil)
+              success_count += 1
+            else
+              errors += ["#{media_object.title} (#{id}) (permission denied)."]
+            end
+        end
+      end
     end
-
-    # additional save to set permalink
-    media_object.save( validate: false )
-    
-    redirect_to :back
+    message = "#{success_count} #{'media object'.pluralize(success_count)} successfully #{status}ed."
+    message += "These objects were not #{status}ed:</br> #{ errors.join('<br/> ') }" if errors.count > 0
+    redirect_to :back, flash: {notice: message.html_safe}
   end
 
   # Sets the published status for the object. If no argument is given then
@@ -196,8 +224,13 @@ class MediaObjectsController < ApplicationController
     params.merge!({mediaobject: model_object, user: user_key, ability: current_ability})
   end
 
-  protected
+  def set_session_quality
+    session[:quality] = params[:quality] if params[:quality].present?
+    render nothing: true
+  end
 
+  protected
+  
   def load_master_files
     @mediaobject.parts_with_order
   end
@@ -212,13 +245,15 @@ class MediaObjectsController < ApplicationController
       end
       params[:content] = @mediaobject.section_pid[index]
     end
+      
     @masterFiles = load_master_files
     @currentStream = params[:content] ? set_active_file(params[:content]) : @masterFiles.first
-    @token = @currentStream.nil? ? "" : StreamToken.find_or_create_session_token(session, @currentStream.mediapackage_id)
+    @token = @currentStream.nil? ? "" : StreamToken.find_or_create_session_token(session, @currentStream.pid)
     # This rescue statement seems a bit dodgy because it catches *all*
     # exceptions. It might be worth refactoring when there are some extra
     # cycles available.
     @currentStreamInfo = @currentStream.nil? ? {} : @currentStream.stream_details(@token, default_url_options[:host])
+    @currentStreamInfo['t'] = params[:t] # add MediaFragment from params
  end
 
   # The goal of this method is to determine which stream to provide to the interface

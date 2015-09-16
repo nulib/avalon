@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -52,8 +52,12 @@ class DublinCoreDocument < ActiveFedora::OmDatastream
       return builder.doc
     end
 
+    def prefix
+      ""
+    end
+
     def to_solr(solr_doc = {})
-      super(solr_doc)
+      solr_doc = super(solr_doc)
       solr_doc["dc_identifier_tesim"] = self.identifier
       return solr_doc
     end

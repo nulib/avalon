@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -25,7 +25,7 @@ $('input[type=text]',section_form).each () ->
     double.val($(this).val())
 $('input[type=submit]',section_form).hide()
 
-$('.btn-confirmation+.popover .btn').live 'click', () ->
+$(document).on "click", ".btn-confirmation+.popover .btn", ->
   $('.btn-confirmation').popover('hide')
   return true
 
@@ -35,8 +35,8 @@ $('.btn-confirmation')
     html: true,
     content: () ->
       "<p>Are you sure?</p>
-      <a href='#{$(this).attr('href')}' class='btn btn-mini btn-danger btn-confirm' data-method='delete' rel='nofollow'>Yes, Delete</a>
-      <a href='#' class='btn btn-mini btn-primary btn-cancel'>No, Cancel</a>"
+      <a href='#{$(this).attr('href')}' class='btn btn-xs btn-danger btn-confirm' data-method='delete' rel='nofollow'>Yes, Delete</a>
+      <a href='#' class='btn btn-xs btn-primary'  id='special_button_color'>No, Cancel</a>"
     placement: 'left'
   .click () -> 
     t = this

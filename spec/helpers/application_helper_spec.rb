@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -96,7 +96,7 @@ describe ApplicationHelper do
   describe "#git_commit_info" do
     it "should return commit info in specified pattern" do
       #expect(helper.git_commit_info()).to eq("x")
-      pending "Grit gem is abandoned and thowing errors. Replace with libgit2/rugged"
+      skip "Grit gem is abandoned and thowing errors. Replace with libgit2/rugged"
 
     end
   end

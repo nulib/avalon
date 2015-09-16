@@ -1,5 +1,5 @@
 <%#
-Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+Copyright 2011-2015, The Trustees of Indiana University and Northwestern
   University.  Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
 
@@ -13,33 +13,23 @@ Unless required by applicable law or agreed to in writing, software distributed
   specific language governing permissions and limitations under the License.
 ---  END LICENSE_HEADER BLOCK  ---
 %>
-<% content_for :title do %>
-  <%= @collection.name %>
-<% end %>
+<% @page_title = t('collections.show.title', :collection_name => @collection.name, :application_name => application_name) %>
 
-<div class="row-fluid">
-  <div class="span12">
+<div class="container-fluid">
     <div class="well">
     <h3><%= @collection.name %></h3>
     <p> <strong>Description:</strong> <%= @collection.description %> </p>
     <p> <strong>Unit:</strong> <%= @collection.unit %> </p>
     <%= link_to('Create An Item', new_media_object_path(collection_id: @collection.pid), class: 'btn btn-primary') if can? :create, MediaObject %>
-    <%= link_to('List All Items', catalog_index_path('f[collection_ssim][]' => @collection.name), class: 'btn') %>
-    <%= link_to('Edit Collection Info', edit_admin_collection_path(@collection), class: 'btn', remote: true, modal: true) if can? :update, @collection %>
+    <%= link_to('List All Items', catalog_index_path('f[collection_ssim][]' => @collection.name), class: 'btn btn-default') %>
+    <%= link_to('Edit Collection Info', edit_admin_collection_path(@collection), class: 'btn btn-default', remote: true, modal: true) if can? :update, @collection %>
     <br/><br>
     Or <a href='https://wiki.dlib.indiana.edu/display/VarVideo/Avalon+Collections+Guide#AvalonCollectionsGuide-UploadingviaBatch'><b>learn how to</b></a> create items using batch upload.
     </div>
 
-    <%= twitter_bootstrap_form_for @collection, html: { class: "form-horizontal", id: 'access_control_form'}  do |co| %>
+      <fieldset>
+        <legend>Assign Staff Roles</legend>
 
-      <%= co.fieldset 'Assign Staff Roles' do %>
-
-        <% if flash[:notice] %>
-          <div class="alert alert-error span9">
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            <%= flash[:notice] %>
-          </div>
-        <% end %>
         <div class='staff-roles-section'>
           <%= render "modules/access_object",
             access_object: "manager",
@@ -60,19 +50,19 @@ Unless required by applicable law or agreed to in writing, software distributed
             object: @collection,
             input_disabled: cannot?( :update_depositors, @collection ) %>
         </div>
-      <% end %>
+      </fieldset>
 
       <div class="whitespace"></div>
 
-      <%= co.fieldset 'Set Default Access Control for New Items' do %>
-          <%= render "modules/access_control", { form: co, object: @collection, visibility: @collection.default_visibility, hidden: @collection.default_hidden? } %>	
-					<% if can? :update_access_control, @collection %>
-						<%= submit_tag "Save Access Settings", name: "save_access", class: "btn" %>
-					<% end %>
-      <% end %>
+      <fieldset>
+         <legend>Set Default Access Control for New Items</legend>
+          <%= render "modules/access_control", { object: @collection, visibility: @collection.default_visibility, hidden: @collection.default_hidden? } %>	
+	  
+	  <% if can? :update_access_control, @collection %>
+	    <%= submit_tag "Save Access Settings", name: "save_access", class: "btn btn-primary", form: 'access_control_form' %>
+	  <% end %>
+      </fieldset>
       
-    <% end %>
-  </div>
 </div>
 
 <style>
@@ -84,6 +74,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 </style>
 
 <% content_for :page_scripts do %>
+  <%= javascript_include_tag 'autocomplete' %>
   <script>
     new ModalLogic()
   </script>

@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -14,17 +14,15 @@
 
 FactoryGirl.define do
   factory :master_file do
-    status_code {Faker::Lorem.word}
     file_location {'/path/to/video.mp4'}
+    file_format {'Moving image'}
     percent_complete {"#{rand(100)}"}
     workflow_name 'avalon'
-    after(:create) do |mf|
-      mf.mediaobject = FactoryGirl.create(:media_object)
-      mf.save
-    end
+    mediaobject {FactoryGirl.create(:media_object)}
 
     factory :master_file_with_derivative do
       workflow_name 'avalon'
+      status_code 'COMPLETED'
       after(:create) do |mf|
         mf.derivatives += [FactoryGirl.create(:derivative)]
         mf.save

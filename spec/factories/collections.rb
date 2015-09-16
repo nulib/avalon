@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -20,8 +20,9 @@ FactoryGirl.define do
     managers {[FactoryGirl.create(:manager).username]}
     editors {[FactoryGirl.create(:user).username]}
     depositors {[FactoryGirl.create(:user).username]}
+    media_objects {[]}
 
-    ignore { items 0 }
+    transient { items 0 }
     after(:create) do |c, env|
       1.upto(env.items) { FactoryGirl.create(:media_object, collection: c) }
     end

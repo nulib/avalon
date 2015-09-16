@@ -1,5 +1,5 @@
 <%#
-Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+Copyright 2011-2015, The Trustees of Indiana University and Northwestern
   University.  Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
 
@@ -14,36 +14,29 @@ Unless required by applicable law or agreed to in writing, software distributed
 ---  END LICENSE_HEADER BLOCK  ---
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>
-      <%= yield :title %>
-      <% if content_for? :title %>
-         - <%= application_name %>
-      <% else %>
-        Avalon Media System
-      <% end %>
-    </title>
-
+    <title><%= render_page_title %></title>
+ 
    <%= csrf_meta_tags %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%= stylesheet_link_tag "application", media: "all" %>
     <%= yield :page_styles %>
     <%= yield :additional_head_content %>
+    <%= javascript_include_tag :modernizr %>
   </head>
 
   <body data-mountpoint="<%=root_path%>">
+    <a id="skip-to-content" class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+    <%= render partial: 'shared/ajax_modal' %>
     <%= render 'modules/header' %>
-
     <div class="container-fluid">
-      <div class="row-fluid">
-        <%= render "modules/global_navigation" %>
-      </div>
+      <%= render :partial => 'modules/global_navigation' %>
+      <%= render 'modules/flash_messages' %>
+      <%= yield %>
     </div>
-    
-    <div class="container-fluid"><%= yield %></div>
     <%= render 'modules/footer' %>
 
     <!-- With this many Javascript files performance will be much better

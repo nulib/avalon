@@ -1,5 +1,5 @@
 <%#
-Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+Copyright 2011-2015, The Trustees of Indiana University and Northwestern
   University.  Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
 
@@ -13,11 +13,10 @@ Unless required by applicable law or agreed to in writing, software distributed
   specific language governing permissions and limitations under the License.
 ---  END LICENSE_HEADER BLOCK  ---
 %>
-<% content_for :title do %>
-  Collections
-<% end %>
+<% @page_title = t('collections.title', :application_name => application_name) %>
 
-<div class='container'>
+<div class='container-fluid'>
+  <div class="row col-md-9 col-lg-8">
   <% unless @collections.empty? %>
     <h2>My Collections</h2>
 
@@ -36,7 +35,7 @@ Unless required by applicable law or agreed to in writing, software distributed
           <td> <%= collection.description %> </td>
           <td>
             <% if can?(:destroy, collection) %>
-              <%= link_to('Delete', remove_admin_collection_path(collection), class: 'btn btn-mini btn-danger') %>
+              <%= link_to('Delete', remove_admin_collection_path(collection), class: 'btn btn-xs btn-danger') %>
             <% else %>
               &nbsp;
             <% end %>
@@ -62,9 +61,8 @@ Unless required by applicable law or agreed to in writing, software distributed
 
     </div>
   <% end %>
-
+  </div>
 </div>
-
 
 <% content_for :page_scripts do %>
   <script>

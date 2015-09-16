@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -13,6 +13,7 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 namespace :delayed_job do 
+  require 'daemons'
   require 'delayed/command'
 
   desc "Starts Avalon's delayed_job worker"
@@ -31,7 +32,7 @@ namespace :delayed_job do
   end
 
   desc "Reloads Avalon's delayed_job worker"
-  task :restart => :environment do
+  task :reload => :environment do
     Delayed::Command.new(["reload"]).daemonize
   end
 

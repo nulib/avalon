@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -22,6 +22,7 @@ class MediaObject < ActiveFedora::Base
   include Avalon::Workflow::WorkflowModelMixin
   include VersionableModel
   include Permalink
+  require 'avalon/controlled_vocabulary'
   
   # has_relationship "parts", :has_part
   has_many :parts, :class_name=>'MasterFile', :property=>:is_part_of
@@ -40,7 +41,7 @@ class MediaObject < ActiveFedora::Base
   before_save 'descMetadata.remove_empty_nodes!'
   before_save 'update_permalink_and_dependents'
 
-  has_model_version 'R3'
+  has_model_version 'R4'
 
   # Call custom validation methods to ensure that required fields are present and
   # that preferred controlled vocabulary standards are used
@@ -52,14 +53,38 @@ class MediaObject < ActiveFedora::Base
 
   validates :title, :presence => true
   validate  :validate_creator
+  validate  :validate_language
   validates :date_issued, :presence => true
   validate  :report_missing_attributes
   validates :collection, presence: true
   validates :governing_policy, presence: true
+  validate  :validate_related_items
+  validate  :validate_dates
+  validate  :validate_note_type
+
+  def validate_note_type
+    Array(note).each{|i|errors.add(:note, "Note type (#{i[0]}) not in controlled vocabulary") unless ModsDocument::NOTE_TYPES.keys.include? i[0] }
+  end
+
+  def validate_language
+    Array(language).each{|i|errors.add(:language, "Language not recognized (#{i[:code]})") unless LanguageTerm::map[i[:code]] }
+  end
+
+  def validate_related_items
+    Array(related_item_url).each{|i|errors.add(:related_item_url, "Bad URL") unless i[:url] =~ URI::regexp(%w(http https))}
+  end
 
   def validate_creator
     if Array(creator).select { |c| c.present? }.empty?
       errors.add(:creator, I18n.t("errors.messages.blank"))
+    end
+  end
+
+  def validate_dates
+    [:date_created, :date_issued, :copyright_date].each do |d|
+      if self.send(d).present? && Date.edtf(self.send(d)).nil?
+        errors.add(d, I18n.t("errors.messages.dateformat", date: self.send(d)))
+      end
     end
   end
 
@@ -85,10 +110,17 @@ class MediaObject < ActiveFedora::Base
     :publisher => :publisher,
     :genre => :genre,
     :subject => :topical_subject,
-    :related_item => :related_item_id,
+    :related_item_url => :related_item_url,
     :geographic_subject => :geographic_subject,
     :temporal_subject => :temporal_subject,
     :topical_subject => :topical_subject,
+    :bibliographic_id => :bibliographic_id,
+    :language => :language,
+    :terms_of_use => :terms_of_use,
+    :table_of_contents => :table_of_contents,
+    :physical_description => :physical_description,
+    :other_identifier => :other_identifier,
+    :record_identifier => :record_identifier,
     }
   end
 
@@ -108,16 +140,25 @@ class MediaObject < ActiveFedora::Base
   has_attributes :abstract, datastream: :descMetadata, at: [:abstract], multiple: false
   has_attributes :note, datastream: :descMetadata, at: [:note], multiple: true
   has_attributes :format, datastream: :descMetadata, at: [:media_type], multiple: false
+  has_attributes :resource_type, datastream: :descMetadata, at: [:resource_type], multiple: true
   # Additional descriptive metadata
   has_attributes :contributor, datastream: :descMetadata, at: [:contributor], multiple: true
   has_attributes :publisher, datastream: :descMetadata, at: [:publisher], multiple: true
   has_attributes :genre, datastream: :descMetadata, at: [:genre], multiple: true
   has_attributes :subject, datastream: :descMetadata, at: [:topical_subject], multiple: true
-  has_attributes :related_item, datastream: :descMetadata, at: [:related_item_id], multiple: true
+  has_attributes :related_item_url, datastream: :descMetadata, at: [:related_item_url], multiple: true
 
   has_attributes :geographic_subject, datastream: :descMetadata, at: [:geographic_subject], multiple: true
   has_attributes :temporal_subject, datastream: :descMetadata, at: [:temporal_subject], multiple: true
   has_attributes :topical_subject, datastream: :descMetadata, at: [:topical_subject], multiple: true
+  has_attributes :bibliographic_id, datastream: :descMetadata, at: [:bibliographic_id], multiple: false
+
+  has_attributes :language, datastream: :descMetadata, at: [:language], multiple: true
+  has_attributes :terms_of_use, datastream: :descMetadata, at: [:terms_of_use], multiple: false
+  has_attributes :table_of_contents, datastream: :descMetadata, at: [:table_of_contents], multiple: true
+  has_attributes :physical_description, datastream: :descMetadata, at: [:physical_description], multiple: false
+  has_attributes :other_identifier, datastream: :descMetadata, at: [:other_identifier], multiple: true
+  has_attributes :record_identifier, datastream: :descMetadata, at: [:record_identifier], multiple: true
   
   has_metadata name:'displayMetadata', :type =>  ActiveFedora::SimpleDatastream do |sds|
     sds.field :duration, :string
@@ -134,6 +175,14 @@ class MediaObject < ActiveFedora::Base
 
   def published?
     not self.avalon_publisher.blank?
+  end
+
+  def destroy
+    # attempt to stop the matterhorn processing job
+    self.parts.each(&:destroy)
+    self.parts.clear
+    Bookmark.where(document_id: self.pid).destroy_all
+    super
   end
 
   # Removes one or many MasterFiles from parts_with_order
@@ -201,6 +250,19 @@ class MediaObject < ActiveFedora::Base
 
   def update_datastream(datastream = :descMetadata, values = {})
     missing_attributes.clear
+    # Special case the identifiers and their types
+    if values[:bibliographic_id]
+      values[:bibliographic_id] = {value: values[:bibliographic_id], attributes: values.delete(:bibliographic_id_label)}
+    end
+    if values[:related_item_url] and values[:related_item_label]
+        values[:related_item_url] = values[:related_item_url].zip(values.delete(:related_item_label))
+    end
+    if values[:note]
+      values[:note]=values[:note].zip(values.delete(:note_type)).map{|v| {value: v[0], attributes: v[1]}}
+    end
+    if values[:other_identifier]
+      values[:other_identifier]=values[:other_identifier].zip(values.delete(:other_identifier_type)).map{|v| {value: v[0], attributes: v[1]}}
+    end
     values.each do |k, v|
       # First remove all blank attributes in arrays
       v.keep_if { |item| not item.blank? } if v.instance_of?(Array)
@@ -211,20 +273,43 @@ class MediaObject < ActiveFedora::Base
       #
       # This does not feel right but is just a first pass. Maybe the use of NOM rather
       # than OM will mitigate the need for such tricks
-      if v.first.is_a?(Hash)
-        vals = []
-        attrs = []
+      begin
+        if v.is_a?(Hash)
+          update_attribute_in_metadata(k, v[:value], v[:attributes])
+        elsif v.is_a?(Array) and v.first.is_a?(Hash)
+          vals = []
+          attrs = []
         
-        v.each do |entry|
-          vals << entry[:value]
-          attrs << entry[:attributes]
+          v.each do |entry|
+            vals << entry[:value]
+            attrs << entry[:attributes]
+          end
+          update_attribute_in_metadata(k, vals, attrs)
+        else
+          update_attribute_in_metadata(k, v)
         end
-        update_attribute_in_metadata(k, vals, attrs)
-      else
-        update_attribute_in_metadata(k, Array(v))
+      rescue Exception => msg
+        missing_attributes[k.to_sym] = msg.to_s
       end
     end
   end
+
+  def bibliographic_id
+    descMetadata.bibliographic_id.present? ? [descMetadata.bibliographic_id.source.first,descMetadata.bibliographic_id.first] : nil
+  end
+  def related_item_url
+    descMetadata.related_item_url.zip(descMetadata.related_item_label).map{|a|{url: a[0],label: a[1]}}
+  end
+  def language
+    descMetadata.language.code.zip(descMetadata.language.text).map{|a|{code: a[0],text: a[1]}}
+  end
+  def note
+    descMetadata.note.present? ? descMetadata.note.type.zip(descMetadata.note) : nil
+  end
+  def other_identifier
+    descMetadata.other_identifier.present? ? descMetadata.other_identifier.type.zip(descMetadata.other_identifier) : nil
+  end
+
 
   # This method is one way in that it accepts class attributes and
   # maps them to metadata attributes.
@@ -233,21 +318,26 @@ class MediaObject < ActiveFedora::Base
     # class attributes are displayed in the view and posted to the server
     metadata_attribute = find_metadata_attribute(attribute)
     metadata_attribute_value = value
-
     if metadata_attribute.nil?
       missing_attributes[attribute] = "Metadata attribute '#{attribute}' not found"
       return false
     else
-      values = Array(value).select { |v| not v.blank? }
+      values = if self.class.multiple?(attribute)
+        Array(value).select { |v| not v.blank? }
+      elsif Array(value).length==1
+        Array(value).first
+      else
+        value
+      end
       descMetadata.find_by_terms( metadata_attribute ).each &:remove
       if descMetadata.template_registry.has_node_type?( metadata_attribute )
-        values.each_with_index do |val, i|
-          descMetadata.add_child_node(descMetadata.ng_xml.root, metadata_attribute, val, (attributes[i]||{}))
+        Array(values).each_with_index do |val, i|
+          descMetadata.add_child_node(descMetadata.ng_xml.root, metadata_attribute, val, (Array(attributes)[i]||{}))
         end
         #end
       elsif descMetadata.respond_to?("add_#{metadata_attribute}")
-        values.each_with_index do |val, i|
-          descMetadata.send("add_#{metadata_attribute}", val, (attributes[i] || {}))
+        Array(values).each_with_index do |val, i|
+          descMetadata.send("add_#{metadata_attribute}", val, (Array(attributes)[i] || {}))
         end;
       else
         # Put in a placeholder so that the inserted nodes go into the right part of the
@@ -263,31 +353,28 @@ class MediaObject < ActiveFedora::Base
   end
 
   def set_media_types!
-    begin
-      mime_types = parts.collect { |mf| 
-        mf.file_location.nil? ? nil : Rack::Mime.mime_type(File.extname(mf.file_location)) 
-      }.compact.uniq
-      
-      resource_type_to_formatted_text_map = {'Moving image' => 'moving image', 'Sound' => 'sound recording'}
-      resource_types = self.parts.collect{|master_file| resource_type_to_formatted_text_map[master_file.file_format] }.uniq
+    mime_types = parts.reject {|mf| mf.file_location.blank? }.collect { |mf| 
+      Rack::Mime.mime_type(File.extname(mf.file_location)) 
+    }.uniq
+    update_attribute_in_metadata(:format, mime_types.empty? ? nil : mime_types)
+  end
 
-      mime_types = nil if mime_types.empty?
-      resource_types = nil if resource_types.empty?
-
-      descMetadata.ensure_root_term_exists!(:physical_description)
-      descMetadata.ensure_root_term_exists!(:resource_type)
-
-      descMetadata.find_by_terms(:physical_description, :internet_media_type).remove
-      descMetadata.find_by_terms(:resource_type).remove
-
-      descMetadata.update_values([:physical_description, :internet_media_type] => mime_types, [:resource_type] => resource_types)
-    rescue Exception => e
-      logger.warn "Error in set_media_types!: #{e}"
-    end
+  def set_resource_types!  
+    resource_types = parts.reject {|mf| mf.file_format.blank? }.collect{ |mf|
+      case mf.file_format
+      when 'Moving image'
+        'moving image'
+      when 'Sound'
+        'sound recording'
+      else
+        mf.file_format.downcase
+      end
+    }.uniq
+    update_attribute_in_metadata(:resource_type, resource_types.empty? ? nil : resource_types)
   end
   
   def to_solr(solr_doc = Hash.new, opts = {})
-    super(solr_doc, opts)
+    solr_doc = super(solr_doc, opts)
     solr_doc[Solrizer.default_field_mapper.solr_name("created_by", :facetable, type: :string)] = self.DC.creator
     solr_doc[Solrizer.default_field_mapper.solr_name("duration", :displayable, type: :string)] = self.duration
     solr_doc[Solrizer.default_field_mapper.solr_name("workflow_published", :facetable, type: :string)] = published? ? 'Published' : 'Unpublished'
@@ -297,6 +384,8 @@ class MediaObject < ActiveFedora::Base
     solr_doc[Solrizer.default_field_mapper.solr_name("read_access_virtual_group", indexer)] = virtual_read_groups
     solr_doc["dc_creator_tesim"] = self.creator
     solr_doc["dc_publisher_tesim"] = self.publisher
+    solr_doc["title_ssort"] = self.title
+    solr_doc["creator_ssort"] = Array(self.creator).join(', ')
     #Add all searchable fields to the all_text_timv field
     all_text_values = []
     all_text_values << solr_doc["title_tesi"]
@@ -304,8 +393,20 @@ class MediaObject < ActiveFedora::Base
     all_text_values << solr_doc["contributor_sim"]
     all_text_values << solr_doc["unit_ssim"]
     all_text_values << solr_doc["collection_ssim"]
-    all_text_values << solr_doc["summary_ssim"]
+    all_text_values << solr_doc["summary_ssi"]
+    all_text_values << solr_doc["publisher_sim"]
+    all_text_values << solr_doc["subject_topic_sim"]
+    all_text_values << solr_doc["subject_geographic_sim"]
+    all_text_values << solr_doc["subject_temporal_sim"]
+    all_text_values << solr_doc["genre_sim"]
+    all_text_values << solr_doc["language_sim"]
+    all_text_values << solr_doc["physical_description_si"]
+    all_text_values << solr_doc["date_sim"]
+    all_text_values << solr_doc["notes_sim"]
+    all_text_values << solr_doc["table_of_contents_sim"]
+    all_text_values << solr_doc["other_identifier_sim"]
     solr_doc["all_text_timv"] = all_text_values.flatten
+    solr_doc.each_pair { |k,v| solr_doc[k] = v.is_a?(Array) ? v.select { |e| e =~ /\S/ } : v }
     return solr_doc
   end
 
@@ -313,6 +414,106 @@ class MediaObject < ActiveFedora::Base
   # validate against a known controlled vocabulary. This one will take some thought
   # and research as opposed to being able to just throw something together in an ad hoc
   # manner
+
+  class << self
+    def access_control_bulk documents, params
+      errors = []
+      successes = []
+      documents.each do |id|
+        media_object = self.find(id)
+        media_object.hidden = params[:hidden] if !params[:hidden].nil?
+        media_object.visibility = params[:visibility] unless params[:visibility].blank?
+        # Limited access stuff
+        ["group", "class", "user"].each do |title|
+          if params["submit_add_#{title}"].present?
+            if params["#{title}"].present?
+              if ["group", "class"].include? title
+                media_object.read_groups += [params["#{title}"].strip]
+              else
+                media_object.read_users += [params["#{title}"].strip]
+              end
+            end
+          end
+          if params["submit_remove_#{title}"].present?
+            if params["#{title}"].present?
+              if ["group", "class"].include? title
+                media_object.read_groups -= [params["#{title}"]]
+              else
+                media_object.read_users -= [params["#{title}"]]
+              end
+            end
+          end
+        end
+        if media_object.save
+          successes += [media_object]
+        else
+          errors += [media_object]
+        end
+      end
+      return successes, errors
+    end
+    handle_asynchronously :access_control_bulk
+    
+    def update_status_bulk documents, user_key, params
+      errors = []
+      successes = []
+      status = params['action']
+      documents.each do |id|
+        media_object = self.find(id)
+        case status
+        when 'publish'
+          media_object.publish!(user_key)
+          # additional save to set permalink
+          if media_object.save
+            successes += [media_object]
+          else
+            errors += [media_object]
+          end
+        when 'unpublish'
+          if media_object.publish!(nil)
+            successes += [media_object]
+          else
+            errors += [media_object]
+          end
+        end
+      end
+      return successes, errors
+    end
+    handle_asynchronously :update_status_bulk
+    
+    def delete_bulk documents, params
+      errors = []
+      successes = []
+      documents.each do |id|
+        media_object = self.find(id)
+        if media_object.destroy
+          successes += [media_object]
+        else
+          errors += [media_object]
+        end
+      end
+      return successes, errors
+    end
+    handle_asynchronously :delete_bulk
+    
+    def move_bulk documents, params
+      collection = Admin::Collection.find( params[:target_collection_id] )
+      errors = []
+      successes = []
+      documents.each do |id|
+        media_object = self.find(id)
+        media_object.collection = collection
+        if media_object.save
+          successes += [media_object]
+        else
+          errors += [media_object]
+        end
+      end    
+      return successes, errors
+    end
+    handle_asynchronously :move_bulk
+
+  end
 
   private
     def after_create
@@ -344,5 +545,5 @@ class MediaObject < ActiveFedora::Base
 
       true
     end
-
+  
 end

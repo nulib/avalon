@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -17,7 +17,7 @@ require 'avalon/controlled_vocabulary'
 
 describe Avalon::ControlledVocabulary do
   before do
-    File.stub(:read).and_return { '' }
+    File.stub(:read).and_return ''
     File.stub(:file?).and_return true
   end
 

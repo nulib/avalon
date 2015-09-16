@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -53,17 +53,11 @@ class Admin::Collection < ActiveFedora::Base
   after_validation :create_dropbox_directory!, :on => :create
 
   def self.units
-    Avalon::ControlledVocabulary.find_by_name(:units)
+    Avalon::ControlledVocabulary.find_by_name(:units) || []
   end
 
   def created_at
     @created_at ||= DateTime.parse(create_date)
-  end
-
-  def to_solr(solr_doc = Hash.new, opts = {})
-    map = Solrizer::default_field_mapper
-    solr_doc[ map.solr_name(:name, :stored_searchable, type: :string).to_sym ] = self.name
-    super(solr_doc)
   end
 
   def managers
@@ -166,16 +160,19 @@ class Admin::Collection < ActiveFedora::Base
 
   def reindex_members
     yield
-    reindex_media_objects
+    self.class.reindex_media_objects pid
   end
 
-  def reindex_media_objects
-    media_objects.each{|mo| mo.update_index}
+  class << self
+    def reindex_media_objects pid
+      collection = self.find pid
+      collection.media_objects.each{|mo| mo.update_index}
+    end
+    handle_asynchronously :reindex_media_objects
   end
-  handle_asynchronously :reindex_media_objects
 
   def to_solr(solr_doc=Hash.new, *args)
-    super
+    solr_doc = super(solr_doc)
     solr_doc[Solrizer.default_field_mapper.solr_name("name", :facetable, type: :string)] = self.name
     solr_doc[Solrizer.default_field_mapper.solr_name("dropbox_directory_name", :facetable, type: :string)] = self.dropbox_directory_name
     solr_doc

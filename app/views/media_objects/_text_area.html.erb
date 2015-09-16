@@ -1,5 +1,5 @@
 <%#
-Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+Copyright 2011-2015, The Trustees of Indiana University and Northwestern
   University.  Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
 
@@ -13,16 +13,34 @@ Unless required by applicable law or agreed to in writing, software distributed
   specific language governing permissions and limitations under the License.
 ---  END LICENSE_HEADER BLOCK  ---
 %>
-<% default_label = field.to_s %>
-<% text_label ||= default_label.humanize %>
-<% display_label = text_label || default_label.humanize %>
-<% options ||= {} %>
 
-<!-- <%= default_label.humanize %> field -->
-  <div class="control-group">
-    <%= render partial: "modules/tooltip", locals: { media: media, field: field, default_label: default_label, text_label: text_label, display_label: display_label, options: options } %>
-
-    <div class="controls">
-      <%= media.text_area field, rows: 10, class: 'span8' %>
-    </div>
+  <div class="form-group <% if options[:multivalued] %>multivalued<% end %> <% if @mediaobject.errors[field].any? %>has-error<% end %>">
+    <%= render partial: "modules/tooltip", locals: { form: form, field: field, tooltip: t("metadata_tip.#{field.to_s}"), options: options } %>
+    <% if @mediaobject.errors[field].any? %>
+      <%= content_tag :span, @mediaobject.errors[field].join(", "), class: 'help-block' %>
+    <% end %>
+    <% values = @mediaobject.send(field) || "" %>
+    <% fieldarray = "" %>
+    <% if options[:multivalued] %>
+      <% fieldarray = "[]" %>
+    <% else %>
+      <% values = [values] %>
+    <% end %>
+    <% fieldname = "media_object[#{field.to_s}]#{fieldarray}" %>
+    <% count = [1, values.length].max %>
+    <% count.times do |i| %>
+      <% value = values[i] %>
+      <% if options[:dropdown_field] %>
+        <div class="input-group typed-textarea <%=options[:extra_classes]%>" data-textarea='<%= "typed_textarea_#{field}_#{i}" %>'>
+          <%= render partial: "dropdown_field", locals: {selected_value: Array(value)[0], options: options} %>
+          <input type="text" class="form-control hidden"><%# to maintain spacing %>
+          <% value = Array(value)[1] %>
+        </div>
+        <%= text_area_tag fieldname, value || '', rows: 10, class: 'form-control typed-textarea', id: "typed_textarea_#{field}_#{i}" %>
+      <% else %>
+        <div class="input-group <%=options[:extra_classes]%>">
+          <%= text_area_tag fieldname, value || '', rows: 10, class: 'form-control', id: "#{field}_#{i}" %>
+        </div>
+      <% end %>
+    <% end %>
   </div>

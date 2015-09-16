@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -29,8 +29,8 @@ class DerivativesController < ApplicationController
       resp = { :authorized => StreamToken.validate_token(params[:token]) }
       
       respond_to do |format|
-        format.urlencoded { render :text => resp.to_query, :content_type => :urlencoded, :status => :accepted }
-        format.text       { render :text => resp[:authorized], :status => :accepted }
+        format.urlencoded { resp[:authorized] = resp[:authorized].join(';'); render :text => resp.to_query, :content_type => :urlencoded, :status => :accepted }
+        format.text       { render :text => resp[:authorized].join("\n"), :status => :accepted }
         format.xml        { render :xml  => resp, :root => :response, :status => :accepted }
         format.json       { render :json => resp, :status => :accepted }
       end

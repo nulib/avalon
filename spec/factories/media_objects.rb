@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -15,12 +15,36 @@
 FactoryGirl.define do
   factory :media_object do
     title {Faker::Lorem.sentence}
-    creator {FactoryGirl.create(:user).username}
-    date_issued {"#{Time.now}"}
+    creator {[FactoryGirl.create(:user).username]}
+    date_issued {"#{Date.today.edtf}"}
     collection {FactoryGirl.create(:collection)}
 
     factory :published_media_object do
       avalon_publisher {'publisher'}
+
+      factory :fully_searchable_media_object do
+        visibility {'public'}
+        abstract {Faker::Lorem.paragraph}
+        contributor {[Faker::Name.name]}
+        date_created {"#{Date.today.edtf}"}
+        publisher {[Faker::Lorem.word]}
+        genre {[Faker::Lorem.word]}
+        topical_subject {[Faker::Lorem.word]}
+        temporal_subject {[Faker::Lorem.word]}
+        geographic_subject {[Faker::Address.country]}
+        physical_description {Faker::Lorem.word}
+        table_of_contents {[Faker::Lorem.paragraph]}
+        after(:create) do |mo|
+          mo.update_datastream(:descMetadata, {
+            note: [Faker::Lorem.paragraph], 
+            note_type: ['general'], 
+            other_identifier: [Faker::Lorem.word],
+            other_identifier_type: ['local'],
+            language: ['eng']
+          })
+          mo.save
+        end
+      end
     end
     factory :media_object_with_master_file do
       after(:create) do |mo|
@@ -31,20 +55,19 @@ FactoryGirl.define do
         mo.save
       end
     end
-
   end
 
   factory :minimal_record, class: MediaObject do
     title 'Minimal test record'
-    creator 'RSpec'
-    date_issued '#{Time.now}'
+    creator ['RSpec']
+    date_issued '#{Date.today.edtf}'
     abstract 'A bare bones test record with only required fields completed'
   end
   
   factory :single_entry, class: MediaObject do
     title 'Single contributor'
-    creator 'RSpec'
-    date_issued '#{Time.now}'
+    creator ['RSpec']
+    date_issued '#{Date.today.edtf}'
     abstract 'A record with only a single contributor and publisher'
     
     contributor 'RSpec helper'
@@ -54,8 +77,8 @@ FactoryGirl.define do
   
   factory :multiple_entries, class: MediaObject do
     title 'Multiple contributors'
-    creator 'RSpec'
-    date_issued '#{Time.now}'
+    creator ['RSpec']
+    date_issued '#{Date.today.edtf}'
     abstract 'A record with multiple contributors, publishers, and search terms'
     
     contributor ['Chris Colvard', 'Nathan Rogers', 'Phuong Dinh']

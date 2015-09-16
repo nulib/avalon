@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -31,8 +31,7 @@ describe AvalonJobs do
 
     describe "delete_masterfile" do
       it "should delete masterfile" do
-        AvalonJobs.delete_masterfile @mf.pid
-        Delayed::Worker.new.work_off 
+        AvalonJobs.delete_masterfile_without_delay @mf.pid
         expect(File.exists? @oldpath).to be false
         expect(MasterFile.find(@mf.pid).file_location).to be_blank
       end
@@ -41,8 +40,7 @@ describe AvalonJobs do
     describe "move_masterfile" do
       it "should move masterfile" do
         newpath = "/path/to/new/file.mp4"
-        AvalonJobs.move_masterfile @mf.pid, newpath
-        Delayed::Worker.new.work_off 
+        AvalonJobs.move_masterfile_without_delay @mf.pid, newpath
         expect(File.exists? @oldpath).to be false
         expect(File.exists? newpath).to be true
         expect(newpath).to eq MasterFile.find(@mf.pid).file_location

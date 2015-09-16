@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -109,6 +109,42 @@ describe CatalogController do
         response.should render_template('catalog/index')
         assigns(:document_list).count.should eql(1)
         assigns(:document_list).map(&:id).should == [mo.id]
+      end
+    end
+
+    describe "search fields" do
+      let(:media_object) { FactoryGirl.create(:fully_searchable_media_object) }
+      ["title_tesi", "creator_ssim", "contributor_sim", "unit_ssim", "collection_ssim", "summary_ssi", "publisher_sim", "subject_topic_sim", "subject_geographic_sim", "subject_temporal_sim", "genre_sim", "physical_description_si", "language_sim", "date_sim", "notes_sim", "table_of_contents_sim", "other_identifier_sim" ].each do |field|
+        it "should find results based upon #{field}" do
+          query = Array(media_object.to_solr[field]).first
+          #split on ' ' and only search on the first word of a multiword field value
+          query = query.split(' ').first
+          #The following line is to check that the test is using a valid solr field name
+          #since an incorrect one will lead to an empty query resulting in a false positive below
+          expect(query).not_to be_empty
+          get 'index', :q => query
+          expect(assigns(:document_list).count).to eq 1
+          expect(assigns(:document_list).map(&:id)). to eq [media_object.id]
+        end
+      end
+    end
+
+    describe "sort fields" do
+      let!(:m1) { FactoryGirl.create(:published_media_object, title: 'Yabba', date_issued: '1960', creator: ['Fred'], visibility: 'public') }
+      let!(:m2) { FactoryGirl.create(:published_media_object, title: 'Dabba', date_issued: '1970', creator: ['Betty'], visibility: 'public') }
+      let!(:m3) { FactoryGirl.create(:published_media_object, title: 'Doo', date_issued: '1980', creator: ['Wilma'], visibility: 'public') }
+
+      it "should sort correctly by title" do
+        get :index, :sort => 'title_ssort asc, date_ssi desc'
+        expect(assigns(:document_list).map(&:id)).to eq [m2.id, m3.id, m1.id]
+      end
+      it "should sort correctly by date" do
+        get :index, :sort => 'date_ssi desc, title_ssort asc'
+        expect(assigns(:document_list).map(&:id)).to eq [m3.id, m2.id, m1.id]
+      end
+      it "should sort correctly by creator" do
+        get :index, :sort => 'creator_ssort asc, title_ssort asc'
+        expect(assigns(:document_list).map(&:id)).to eq [m2.id, m1.id, m3.id]
       end
     end
   end

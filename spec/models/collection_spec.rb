@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -376,7 +376,8 @@ describe Admin::Collection do
       incomplete_object = MediaObject.new
       incomplete_object.save(validate: false)
       @media_objects << incomplete_object
-      @source_collection = FactoryGirl.create(:collection, media_objects: @media_objects)
+      @source_collection = FactoryGirl.build(:collection, media_objects: @media_objects)
+      @source_collection.save(:validate => false)
       @target_collection = FactoryGirl.create(:collection)
       Admin::Collection.reassign_media_objects(@media_objects, @source_collection, @target_collection)
     end
@@ -386,11 +387,11 @@ describe Admin::Collection do
     end
 
     it 'removes the media object from the source collection' do
-      @source_collection.media_objects.should_not eql @media_objects
+      @source_collection.media_objects.should eq []
     end
 
     it 'adds the media object to the target collection' do
-      @target_collection.media_objects.should eql @media_objects
+      @target_collection.media_objects.should eq @media_objects
     end
   end
 
@@ -467,11 +468,12 @@ describe Admin::Collection do
     before do
       @media_objects = (1..3).map{ FactoryGirl.create(:media_object)}
       @collection = FactoryGirl.create(:collection, media_objects: @media_objects)
+      allow(Admin::Collection).to receive(:find).with(@collection.pid).and_return(@collection)
     end
     it 'should reindex in the background' do
       expect(@collection.reindex_members {}).to be_a_kind_of(Delayed::Job)
     end
-    it 'should call save on all member objects' do
+    it 'should call update_index on all member objects' do
       Delayed::Worker.delay_jobs = false
       @media_objects.each {|mo| mo.should_receive("update_index").and_return(true)}
       @collection.reindex_members {}

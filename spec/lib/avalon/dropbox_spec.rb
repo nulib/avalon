@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -31,7 +31,7 @@ describe Avalon::Dropbox do
     end
 
     it 'returns false if the file is not found' do
-      subject.delete('some_file.mov').should be_false
+      subject.delete('some_file.mov').should be false
     end
 
   end

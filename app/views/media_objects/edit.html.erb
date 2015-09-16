@@ -1,5 +1,5 @@
 <%#
-Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+Copyright 2011-2015, The Trustees of Indiana University and Northwestern
   University.  Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
 
@@ -13,34 +13,19 @@ Unless required by applicable law or agreed to in writing, software distributed
   specific language governing permissions and limitations under the License.
 ---  END LICENSE_HEADER BLOCK  ---
 %>
-<% content_for :title do %>
-  <%= @mediaobject.title || @mediaobject.pid %> - <%= HYDRANT_STEPS.get_step(@active_step).title %>
-<% end %>
+<% @page_title = t('media_objects.edit.title', :media_object_title => (@mediaobject.title || @mediaobject.pid), :step_title => HYDRANT_STEPS.get_step(@active_step).title, :application_name => application_name) %>
 
-<div class="row-fluid">
-  <div class="span2" id="left_column">
-    <%= render "ingest_steps" %>
-    <%= render "remove_item" %>
-  </div>
-  
-  <div id="main_body" class="span10">
-
-  <% if flash[:notice] %>
-    <div class="alert alert-info">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-      <%= flash[:notice] %>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 col-sm-4" id="sidebar">
+      <%= render "ingest_steps" %>
+      <%= render "remove_item" %>
     </div>
-  <% end %>
-
-  <% if flash[:upload] and not flash[:error] %>
-    <div id="upload_format" class="alert active">
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-      <p class="notice"><%= flash[:upload] %></p>
+    
+    <div id="main_body" class="col-md-9 col-sm-8">
+      <h5><span class="muted"><%= @mediaobject.collection.name.present? ? @mediaobject.collection.name : 'Untitled collection' %> > <%= @mediaobject.title.present? ? @mediaobject.title : 'Untitled item' %></span></h5>
+      <h3><%= HYDRANT_STEPS.get_step(@active_step).title %></h3>  
+      <%= render current_step_for @active_step %>
     </div>
-  <% end %>
-
-  <h5><span class="muted"><%= @mediaobject.collection.name.present? ? @mediaobject.collection.name : 'Untitled collection' %> > <%= @mediaobject.title.present? ? @mediaobject.title : 'Untitled item' %></span></h5>
-  <h3><%= HYDRANT_STEPS.get_step(@active_step).title %></h3>  
-  <%= render current_step_for @active_step %>
   </div>
 </div>

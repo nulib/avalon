@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -26,7 +26,7 @@ module Avalon
     end
 
     def self.find_by_name( name )
-      vocabulary[name.to_sym] || []
+      vocabulary[name.to_sym]
     end
   end
 end

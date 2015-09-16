@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -14,8 +14,8 @@
 
 class ObjectController < ApplicationController
   def show
-    obj = ActiveFedora::Base.find('dc_identifier_tesim' => params[:id])
-    obj ||= ActiveFedora::Base.find(params[:id], cast: true) rescue ActiveFedora::ObjectNotFoundError
+    obj = ActiveFedora::Base.where("dc_identifier_tesim:\"#{params[:id]}\"").first
+    obj ||= ActiveFedora::Base.find(params[:id], cast: true) rescue nil
     if obj.blank?
       redirect_to root_path
     else
@@ -32,8 +32,9 @@ class ObjectController < ApplicationController
   end
 
   def autocomplete
+    expires_now
     model = Module.const_get(params[:t].to_s.classify)
-    query = params[:q]
-    render json: model.send(:autocomplete, query)
+    render json: model.send(:autocomplete, params[:q].strip)
   end
+
 end

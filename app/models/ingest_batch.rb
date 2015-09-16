@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -25,7 +25,7 @@
 
 class IngestBatch < ActiveRecord::Base
 
-  attr_accessible :media_object_ids, :name, :email, :email_sent
+#  attr_accessible :media_object_ids, :name, :email, :email_sent
   serialize :media_object_ids
 
   attr_reader :media_objects

@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -24,21 +24,92 @@ class MasterFilesController < ApplicationController
   before_filter :authenticate_user!, :only => [:create]
   before_filter :ensure_readable_filedata, :only => [:create]
 
+  def can_embed?
+    params[:action] == 'embed'
+  end
+
   def show
     masterfile = MasterFile.find(params[:id])
-    redirect_to pid_section_media_object_path(masterfile.mediaobject.pid, masterfile.pid)
+    redirect_to pid_section_media_object_path(masterfile.mediaobject_id, masterfile.pid, params.except(:id, :action, :controller))
   end
 
   def embed
     @masterfile = MasterFile.find(params[:id])
     if can? :read, @masterfile.mediaobject
-      @token = @masterfile.nil? ? "" : StreamToken.find_or_create_session_token(session, @masterfile.mediapackage_id)
+      @token = @masterfile.nil? ? "" : StreamToken.find_or_create_session_token(session, @masterfile.pid)
       @stream_info = @masterfile.stream_details(@token, default_url_options[:host])
     end
     respond_to do |format|
       format.html do
+        response.headers.delete "X-Frame-Options" 
         render :layout => 'embed' 
       end
+    end
+  end
+
+  def oembed
+    if params[:url].present?
+      pid = params[:url].split('?')[0].split('/').last
+      mf = MasterFile.where("dc_identifier_tesim:\"#{pid}\"").first
+      mf ||= MasterFile.find(pid) rescue nil
+      if mf.present?
+        width = params[:maxwidth] || MasterFile::EMBED_SIZE[:medium]
+        height = mf.is_video? ? (width.to_f/mf.display_aspect_ratio.to_f).floor : MasterFile::AUDIO_HEIGHT
+        maxheight = params['maxheight'].to_f
+        if 0<maxheight && maxheight<height
+          width = (maxheight*mf.display_aspect_ratio.to_f).floor
+          height = maxheight.to_i
+        end
+        width = width.to_i
+        hash = {
+          "version" => "1.0",
+          "type" => mf.is_video? ? "video" : "rich",
+          "provider_name" => Avalon::Configuration.lookup('name') || 'Avalon Media System',
+          "provider_url" => request.base_url,
+          "width" => width,
+          "height" => height,
+          "html" => mf.embed_code(width, {urlappend: '/embed'})
+        }
+        respond_to do |format|
+          format.xml  { render xml: hash.to_xml({root: 'oembed'}) }
+          format.json { render json: hash }
+        end
+      end
+    end
+  end
+
+  def attach_structure
+    if params[:id].blank? || (not MasterFile.exists?(params[:id]))
+      flash[:notice] = "MasterFile #{params[:id]} does not exist"
+    end
+    @masterfile = MasterFile.find(params[:id])
+    unless flash.empty? and  MediaObject.exists?(@masterfile.mediaobject_id)
+      flash[:notice] = "MediaObject #{@masterfile.mediaobject_id} does not exist"
+    end
+    if flash.empty?
+      media_object = MediaObject.find(@masterfile.mediaobject_id)
+      authorize! :edit, media_object, message: "You do not have sufficient privileges to add files"
+      structure = request.format.json? ? params[:xml_content] : nil
+      if params[:master_file].present? && params[:master_file][:structure].present?
+        structure = params[:master_file][:structure].open.read
+      end
+      if structure.present?
+        validation_errors = StructuralMetadata.content_valid? structure
+        if validation_errors.empty?
+          @masterfile.structuralMetadata.content = structure
+        else
+          flash[:error] = validation_errors.map{|e| "Line #{e.line}: #{e.to_s}" }
+        end
+      else
+        @masterfile.structuralMetadata.delete
+      end
+      if flash.empty?
+        flash[:error] = "There was a problem storing the file" unless @masterfile.save
+      end
+    end
+    respond_to do |format|
+      format.html { redirect_to edit_media_object_path(@masterfile.mediaobject_id, step: 'structure') }
+      format.json { render json: {structure: structure, flash: flash} }
     end
   end
 
@@ -84,7 +155,7 @@ class MasterFilesController < ApplicationController
           master_file.destroy
           next
         else
-          flash[:upload] = create_upload_notice(master_file.file_format)
+          flash[:notice] = create_upload_notice(master_file.file_format)
         end
 	
         unless master_file.save
@@ -96,10 +167,10 @@ class MasterFilesController < ApplicationController
         end
         
       end
-    elsif params.has_key?(:dropbox)
+    elsif params.has_key?(:selected_files)
       @master_files = []
-      params[:dropbox].each do |file|
-        file_path = media_object.collection.dropbox.find(file[:id])
+      params[:selected_files].each_value do |entry|
+        file_path = URI.parse(entry[:url]).path.gsub(/\+/,' ')
         master_file = MasterFile.new
         master_file.save( validate: false )
         master_file.mediaobject = media_object
@@ -124,46 +195,6 @@ class MasterFilesController < ApplicationController
     end
   end
 
-  def update
-    master_file = MasterFile.find(params[:id])
-
-    if params[:workflow_id].present?
-      master_file.workflow_id ||= params[:workflow_id]
-      workflow = begin
-        Rubyhorn.client.instance_xml(params[:workflow_id])
-      rescue Rubyhorn::RestClient::Exceptions::HTTPNotFound
-        nil
-      end
-      if workflow
-        master_file.update_progress!(params, workflow)
-      else
-        master_file.status_code = 'STOPPED'
-        master_file.save
-      end
-
-      # If Matterhorn reports that the processing is complete then we need
-      # to prepare Fedora by pulling several important values closer to the
-      # interface. This will speed up searching, allow for on-the-fly quality
-      # switching, and avoids hitting Matterhorn repeatedly when loading up
-      # a list of search results
-      if master_file.status_code.eql? 'SUCCEEDED'
-        master_file.update_progress_on_success!(workflow)
-      end
-
-      # We handle the case where the item was batch ingested. If so the
-      # update method needs to kick off an email letting the uploader know it is
-      # ready to be previewed
-      ingest_batch = IngestBatch.find_ingest_batch_by_media_object_id( master_file.mediaobject.id )
-      if ingest_batch && ! ingest_batch.email_sent? && ingest_batch.finished?
-        IngestBatchMailer.status_email(ingest_batch.id).deliver
-        ingest_batch.email_sent = true
-        ingest_batch.save!
-      end
-    end
-
-    render nothing: true
-  end
-
   # When destroying a file asset be sure to stop it first
   def destroy
     master_file = MasterFile.find(params[:id])
@@ -178,7 +209,7 @@ class MasterFilesController < ApplicationController
     media_object.set_duration!
     media_object.save( validate: false )
     
-    flash[:upload] = "#{filename} has been deleted from the system"
+    flash[:notice] = "#{filename} has been deleted from the system"
 
     redirect_to edit_media_object_path(media_object.pid, step: "file-upload")
   end

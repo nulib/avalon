@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -15,7 +15,15 @@
 require 'spec_helper'
 
 describe Admin::Group do
-  it {should validate_presence_of(:name)}
+
+  describe "name" do
+    it { should validate_presence_of( :name )}
+    it { should_not allow_value( 'group.01' ).for( :name )}
+    it { should_not allow_value( 'group;01' ).for( :name )}
+    it { should_not allow_value( 'group%01' ).for( :name )}
+    it { should_not allow_value( 'group/01' ).for( :name )}
+  end
+
   describe "non system groups" do
     it "should not have system groups" do
       groups = Admin::Group.non_system_groups

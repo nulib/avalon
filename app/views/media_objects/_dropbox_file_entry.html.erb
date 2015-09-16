@@ -1,5 +1,5 @@
 <%#
-Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+Copyright 2011-2015, The Trustees of Indiana University and Northwestern
   University.  Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
 
@@ -21,11 +21,11 @@ Unless required by applicable law or agreed to in writing, software distributed
   		        <td>
   		          <% case file[:media_type]
   		             when /^audio/ %>
-	    		       <i class="icon-volume-up"></i>
+	    		       <i class="fa fa-volume-up"></i>
   		          <% when /^video/ %>
-	    		       <i class="icon-film"></i>
+	    		       <i class="fa fa-film"></i>
 	    		  <% else %>
-			       <i class="icon-question-sign"></i>
+			       <i class="fa fa-question-sign"></i>
   		          <% end %>
   		        </td>
                         <td><%= file[:media_type] %></td>

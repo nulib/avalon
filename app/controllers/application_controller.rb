@@ -1,4 +1,4 @@
-# Copyright 2011-2014, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 # 
@@ -32,14 +32,13 @@ class ApplicationController < ActionController::Base
   def set_access_control_headers
     headers['Access-Control-Allow-Origin'] = '*'
     headers['Access-Control-Request-Method'] = '*'
+    if can_embed?
+      headers['X-Frame-Options'] = 'ALLOWALL'
+    end
   end
   
-  def get_user_collections
-    if can? :manage, Admin::Collection
-      Admin::Collection.all
-    else
-      Admin::Collection.where("#{ActiveFedora::SolrService.solr_name("inheritable_edit_access_person", Hydra::Datastream::RightsMetadata.indexer)}" => user_key).all
-    end
+  def can_embed?
+    false # override in controllers for action-targeted embeds
   end
 
   def current_ability
@@ -76,4 +75,14 @@ class ApplicationController < ActionController::Base
       redirect_to new_user_session_path, flash: { notice: 'You are not authorized to perform this action. Try logging in.' }
     end
   end
+
+  def get_user_collections
+    if can? :manage, Admin::Collection
+      Admin::Collection.all
+    else
+      Admin::Collection.where("#{ActiveFedora::SolrService.solr_name("inheritable_edit_access_person", Hydra::Datastream::RightsMetadata.indexer)}" => user_key).to_a
+    end
+  end
+  helper_method :get_user_collections
+
 end
