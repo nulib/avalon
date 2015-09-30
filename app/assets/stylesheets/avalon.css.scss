@@ -674,23 +674,26 @@ a[data-trigger='submit'] {
   }
   @media (min-width: 600px) and (max-width: $screen-sm-min){
     max-width: 550px;
-  padding-right: 20px;
+    padding-right: 20px;
 
-  .remove {
-    position: absolute;
-    top: 0;
-    right: 0.5em;
-    text-indent: 0;
+    .remove {
+      position: absolute;
+      top: 0;
+      right: 0.5em;
+      text-indent: 0;
+    }
   }
 }
+
 //left panel on large screens should be extra small, not so for extended facet list
 .panel-body .facet-values .facet-label {
   @media (min-width: $screen-sm-min){
     max-width: 159px;
 
-.facet-count {
-  text-align: right;
-  width: 5em;
+    .facet-count {
+      text-align: right;
+      width: 5em;
+    }
   }
 }
 
@@ -741,7 +744,6 @@ a[data-trigger='submit'] {
   overflow: hidden;
 }
 
-#link-object, #link-section, #embed-part {
 #link-object, #ltilink-object, #ltilink-section, #share-link-section, #embed-part {
   cursor: pointer;
 }
@@ -1036,7 +1038,7 @@ div.structure_edit {
       resize: both;
     }
     .attribute_container > a, .attribute_container > label {
-      vertical-align: top
+      vertical-align: top;
     }
   }
   .xml_textarea {
