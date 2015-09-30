@@ -54,19 +54,6 @@ Unless required by applicable law or agreed to in writing, software distributed
       <%= render 'modules/flash_messages' %>
       <%= yield %>
     </div>
-=======
-    <div id="wrap">
-      <%= render partial: 'shared/ajax_modal' %>
-      <%= render 'modules/header' %>
-      <div class="container-fluid">
-        <div class="row-fluid">
-          <%= render "modules/global_navigation" %>
-          <%= render 'modules/flash_messages' %>
-        </div>
-      </div>
-      <div class="container-fluid"><%= yield %></div>
-      <div id="push"></div>
-    </div> <!-- end #wrap -->
 
     <%= render 'modules/footer' %>
 
