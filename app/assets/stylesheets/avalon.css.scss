@@ -406,7 +406,6 @@ div[id*='facet-panel-'] {
 footer {
   .container { margin: 0 3em 0 3em; }
   margin-top: 3em;
-  padding: 0 1em;
   background-color: #333;
   color: white;
   padding: 1em;
@@ -686,11 +685,12 @@ a[data-trigger='submit'] {
 //left panel on large screens should be extra small, not so for extended facet list
 .panel-body .facet-values .facet-label {
   @media (min-width: $screen-sm-min){
-    max-width: 159px;
+    max-width: 200px;
 
     .facet-count {
       text-align: right;
       width: 5em;
+      word-wrap: normal;
     }
   }
 }
