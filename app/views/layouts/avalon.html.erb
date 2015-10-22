@@ -50,9 +50,9 @@ Unless required by applicable law or agreed to in writing, software distributed
     <div id="wrap">
       <%= render partial: 'shared/ajax_modal' %>
       <%= render 'modules/header' %>
+      <%= render :partial => 'modules/global_navigation' %>
+      <%= render 'modules/flash_messages' %>
       <div class="container-fluid">
-        <%= render :partial => 'modules/global_navigation' %>
-        <%= render 'modules/flash_messages' %>
         <%= yield %>
       </div>
       <div id="push"></div>
