@@ -61,7 +61,7 @@ class HandleMaker
         rescue Handle::NotFound
           self.create_handle(handle, link)
         rescue Handle::HandleError => err
-          logger.error "Error creating handle #{handle_id}: #{err.message}"
+          logger.error "Error verifying handle: #{err.message}"
           Airbrake.notify err
         end
       end
