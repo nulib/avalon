@@ -133,6 +133,12 @@ GIT
       rest-client
 
 GIT
+  remote: https://github.com/bricestacey/ruby-zoom.git
+  revision: 5348fd415520fa08af33ca7b84113a93d2da9f10
+  specs:
+    zoom (0.5.0)
+
+GIT
   remote: https://github.com/nulib/omniauth-nuldap.git
   revision: 204c7780a6a022a7ba9f22204090b05daea5c318
   specs:
@@ -879,3 +885,4 @@ DEPENDENCIES
   whenever
   with_locking
   xray-rails
+  zoom!
