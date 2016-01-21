@@ -38,7 +38,7 @@ module ApplicationHelper
   def image_for(document)
     master_file_id = document["section_pid_tesim"].try :first
     
-    video_count = document["mods_tesim"].count{|m| m.start_with?('moving image') }
+    video_count = document["mods_tesim"].count{|m| m.start_with?('moving image') or m.start_with?('video') }
     audio_count = document["mods_tesim"].count{|m| m.start_with?('sound recording') }
 
     if master_file_id

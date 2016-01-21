@@ -79,7 +79,7 @@ Unless required by applicable law or agreed to in writing, software distributed
           <% end %>
         </td>
         <td class="section-filename">
-          <%= truncate_center(File.basename(part.file_location), 50, 20) %>
+          <%= truncate_center(File.basename(part.file_location.to_s), 50, 20) %>
         </td>
         <td>
           <%= number_to_human_size(part.file_size) %>
