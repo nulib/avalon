@@ -54,6 +54,11 @@ class Derivative < ActiveFedora::Base
   end
 
   def self.from_output(dists)
+    prefix = Avalon::Configuration.lookup('streaming.path_prefix')
+    dists.each do |dist|
+      dist[:url] = dist[:url].split(/\//).insert(4, prefix).join('/')
+    end
+
     #output is an array of 1 or more distributions of the same derivative (e.g. file and HLS segmented file)
     hls_output = dists.delete(dists.find {|o| o[:url].ends_with? "m3u8" })
     output = dists.first || hls_output
