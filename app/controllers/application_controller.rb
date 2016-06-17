@@ -1,30 +1,30 @@
 # Copyright 2011-2015, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
-# 
+#
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software distributed 
+#
+# Unless required by applicable law or agreed to in writing, software distributed
 #   under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-#   CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+#   CONDITIONS OF ANY KIND, either express or implied. See the License for the
 #   specific language governing permissions and limitations under the License.
 # ---  END LICENSE_HEADER BLOCK  ---
 
 class ApplicationController < ActionController::Base
   before_filter :store_location
 
-  # Adds a few additional behaviors into the application controller 
-  include Blacklight::Controller  
-  # Adds Hydra behaviors into the application controller 
+  # Adds a few additional behaviors into the application controller
+  include Blacklight::Controller
+  # Adds Hydra behaviors into the application controller
   include Hydra::Controller::ControllerBehavior
   include AccessControlsHelper
 
   layout 'avalon'
-  
-  # Please be sure to implement current_user and user_session. Blacklight depends on 
-  # these methods in order to perform user specific actions. 
+
+  # Please be sure to implement current_user and user_session. Blacklight depends on
+  # these methods in order to perform user specific actions.
   protect_from_forgery
 
   after_filter :set_access_control_headers
@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
       headers['X-Frame-Options'] = 'ALLOWALL'
     end
   end
-  
+
   def can_embed?
     false # override in controllers for action-targeted embeds
   end
@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
       if exception.subject.class == MediaObject && exception.action == :update
         redirect_to exception.subject, flash: { notice: 'You are not authorized to edit this document.  You have been redirected to a read-only view.' }
       elsif exception.subject.class == MediaObject && exception.action == :read
-        redirect_to root_path, flash: { notice: 'You do not have permissions for this item. Please contact digitalcollections@northwestern.edu for help.' }
+        redirect_to root_path, flash: { notice: 'You do not have permissions for this item. Please contact repository@northwestern.edu for help.' }
       else
         redirect_to root_path, flash: { notice: 'You are not authorized to perform this action.' }
       end
