@@ -1,0 +1,49 @@
+.mejs-container.mejs-avalon {
+  .mejs-controls {
+    .mejs-qualities-button {
+      .mejs-qualities-selector {
+        width: 75pt;
+      }
+    }
+  }
+}
+
+.mejs-controls {
+  ul {
+    li {
+      background: none;
+    }
+  }
+  // Quality selector control button
+  .mejs-qualities-button {
+    .mejs-qualities-selctor {
+      bottom: 47px;
+    }
+  }
+  // All control buttons
+  .mejs-button {
+    button {
+      background-color: inherit;
+      &:active:focus,
+      &:hover {
+        background-color: inherit;
+      }
+    }
+    &.mejs-add-to-playlist {
+      button {
+        &:active,
+        &:hover,
+        &:focus {
+          background: transparent image_url('add_to_playlist_icon.svg') no-repeat;
+        }
+      }
+    }
+  }
+  // Add marker to playlist
+  .mejs-add-marker-to-playlist-item {
+    button,
+    button:hover {
+      background: transparent image_url('add_bookmark.svg') no-repeat;
+    }
+  }
+}

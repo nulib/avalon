@@ -1,0 +1,59 @@
+<header>
+  <div id="top-bar">
+    <div class="contain-1120">
+      <div id="left">
+        <%= link_to image_tag("northwestern.svg", :alt => "Northwestern University"), 'http://www.northwestern.edu/' %>
+      </div>
+      <div id="mobile-links">
+        <!-- Mobile Search -->
+        <a class="mobile-link mobile-search-link" href="#mobile-search"><span class="hide-label">Search</span></a>
+        <div id="mobile-search" style="display: none;">
+          <div class="search-form group">
+            <form accept-charset="UTF-8" action="/catalog" class="avalon-search-query-form avalon-form-search" method="get" role="search">
+              <input name="utf8" type="hidden" value="✓">
+              <input id="search_field" name="search_field" type="hidden" value="all_fields">
+              <label class="hide-label" for="q-mobile">Search audio or video</label>
+              <input id="searchField" name="q" placeholder="Search audio or video" type="text" value="">
+              <button type="submit"><span class="hide-label">Search audio or video</span></button>
+            </form>
+          </div>
+        </div>
+        <!-- Mobile Nav -->
+        <a class="mobile-link mobile-nav-link" href="#mobile-nav"><span class="hide-label">Open menu</span></a>
+        <nav id="mobile-nav" aria-expanded="false" aria-hidden="true" style="display: none;">
+          <ul aria-label="main menu">
+            <%= render :partial=>'nu_modules/nu_primary_nav_links' %>
+          </ul>
+          <div id="mobile-nav-bottom">
+            <ul id="mobile-nav-bottom-left">
+              <li><%= render 'nu_modules/user_management' %></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div id="right">
+        <ul>
+          <li><%= render 'nu_modules/user_management' %></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-bar contain-1120">
+    <div id="department">
+      <h1><%= link_to "LIBRARIES | REPOSITORY AUDIO + VIDEO", root_path %></h1>
+    </div>
+    <!-- Desktop Search -->
+    <div class="hide-mobile" id="search">
+  		<div class="search-form">
+  			<form accept-charset="UTF-8" action="/catalog" class="avalon-search-query-form avalon-form-search" method="get" role="search">
+          <input name="utf8" type="hidden" value="✓">
+          <input id="search_field" name="search_field" type="hidden" value="all_fields">
+  				<label class="hide-label" for="q-desktop">Search audio or video</label>
+          <input id="searchField" name="q" placeholder="Search audio or video" type="text" value="">
+  				<button type="submit"><span class="hide-label">Search audio or video</span></button>
+  			</form>
+  		</div>
+	   </div>
+   </div>
+</header>

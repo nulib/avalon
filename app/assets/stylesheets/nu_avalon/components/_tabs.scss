@@ -1,0 +1,26 @@
+#share-list {
+  .tab-content {
+    padding-top: 0;
+  }
+}
+ul.nav-tabs {
+  li {
+    a {
+      background: $nu-purple-10;
+      border: 0;
+      color: $nu-purple-60 !important;
+      margin: 0 0.5rem 0 0;
+      &:hover {
+        background: $nu-purple;
+        color: $white !important;
+      }
+    }
+    &.active {
+      a, a:hover, a:active, a:focus, a:active:focus {
+        background: $nu-purple;
+        border: 0;
+        color: $white !important;
+      }
+    }
+  }
+}

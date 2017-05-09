@@ -23,7 +23,7 @@ Unless required by applicable law or agreed to in writing, software distributed
       <% first_playable_item = @playlist.items.find {|i| i.clip.master_file.present? } if first_playable_item.nil? %>
       <% if first_playable_item.nil? %>
         <div class="col-sm-4" id="left_column">
-          <%= render 'item_list' %>
+          <%= render file: 'nu_playlists/item_list.html.erb' %>
           This playlist currently has no playable items.
         </div>
       <% else %>

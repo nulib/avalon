@@ -1,0 +1,45 @@
+// 1. Configuration and helpers
+@import
+  'abstracts/mixins';
+
+// 2. Vendors
+
+// 3. Base stuff
+@import
+  'base/base',
+  'base/typography';
+
+// 4. Layout-related sections
+@import
+  'layout/forms',
+  'layout/modals',
+  'layout/sidebar';
+
+// 5. Components
+@import
+  'components/accordion',
+  'components/alerts',
+  'components/avalon-player',
+  'components/block-wrapper',
+  'components/buttons',
+  'components/dropdown-toggle',
+  'components/facets',
+  'components/loader',
+  'components/mediaelement',
+  'components/pagination',
+  'components/playlists',
+  'components/tabs',
+  'components/tree-table',
+  'components/toggle',
+  'components/web-upload';
+
+// 6. Page-specific styles
+@import
+  'pages/home',
+  'pages/manage-content',
+  'pages/manage-files',
+  'pages/media-objects',
+  'pages/my-collections',
+  'pages/search-results';
+
+// 7. Themes

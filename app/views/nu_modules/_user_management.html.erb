@@ -1,0 +1,5 @@
+<% if user_signed_in? %>
+  <%= link_to "#{user_key} - #{t('auth.sign_out')}", destroy_user_session_path %>
+<% else %>
+  <%= link_to t('auth.sign_in'), new_user_session_path %>
+<% end %>

@@ -1,0 +1,103 @@
+/**
+ * Define new bootstrap variables before we @import bootstrap.
+ * Variable name reference here => http://getbootstrap.com/customize/#less-variables
+ */
+
+/**********
+ * Colors *
+ **********/
+$brand-danger: $red;
+
+/***************
+ * Scaffolding *
+ ***************/
+$link-color: $nu-purple;
+$link-hover-color: $nu-purple;
+$text-color: $rich-black-80;
+
+/**************
+ * Typography *
+ **************/
+$font-family-sans-serif: $AkkuratProRegular;
+$font-size-base: 16px;
+$font-size-h1: 46px;
+$font-size-h2: 34px;
+$font-size-h3: 26px;
+$font-size-h4: 21px;
+$headings-color: $nu-purple;
+//$headings-font-family: $CamptonBook;
+
+/**************
+ * Components *
+ **************/
+$border-radius-base: 0;
+
+/**
+ * Navs
+ */
+$nav-link-hover-bg: $nu-purple-60;
+
+/***********
+ * Buttons *
+ ***********/
+$btn-border-radius-base: 0;
+$btn-border-radius-large: 0;
+$btn-border-radius-small: 0;
+$btn-default-bg: $nu-purple;
+$btn-primary-bg: $nu-purple;
+
+/*********
+ * Forms *
+ *********/
+$input-border-radius: 0;
+$input-border-focus: $nu-purple;
+$legend-color: $rich-black-50;
+
+/**************************
+ * Form states and alerts *
+ **************************/
+$state-success-bg: $dark-green;
+$state-success-text: $white;
+$state-warning-bg: $light-grey;
+$state-warning-text: $nu-purple;
+$state-info-bg: $light-grey;
+$state-info-text: $nu-purple;
+$state-danger-bg: $red;
+$state-danger-text: $white;
+
+/**********
+ * Panels *
+ **********/
+$panel-body-padding: 10px 15px;
+$panel-border-radius: 0;
+$panel-inner-border: $light-grey;
+$panel-default-border: $light-grey;
+$panel-default-heading-bg: $light-grey;
+$panel-default-text: $rich-black-50;
+//$panel-default-text: $rich-black-80;
+$panel-success-border: $light-grey;
+$panel-success-text: $white;
+
+/*********
+ * Close *
+ *********/
+$close-text-shadow: 0;
+
+/*********
+ * Wells *
+ *********/
+$well-bg: $light-grey;
+$well-border: none;
+
+/**
+ * Close
+ */
+$close-color: $white;
+
+/**
+ * Type
+ */
+$text-muted: $nu-purple;
+
+$dropdown-bg: $white;
+$dropdown-caret-color: $white;

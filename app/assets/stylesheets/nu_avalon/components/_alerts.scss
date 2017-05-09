@@ -1,0 +1,79 @@
+.content {
+  .alert {
+    opacity: 1;
+    -webkit-transition: opacity 1000ms linear;
+    transition: opacity 1000ms linear;
+    ul {
+      padding-left: 0;
+      li {
+        background-image: none;
+      }
+    }
+    // Close x button for alert info (currently grey) style
+    &.alert-info {
+      .close {
+        color: $nu-purple;
+      }
+    }
+  }
+}
+
+
+// Browse alert box showing selected facets selected
+#appliedParams {
+  margin-top: 40px;
+  .btn {
+    margin: 0;
+    text-transform: none;
+    &#startOverLink {
+      @include nu-button();
+      margin: 0;
+    }
+    &.remove {
+      margin-right: 0;
+      &:active:focus,
+      &:active,
+      &:focus {
+        background-color: $white;
+      }
+    }
+  }
+  .constraints-label {
+    color: $nu-purple;
+    margin-right: .25rem;
+  }
+  .constraint-value {
+    padding-right: 0;
+  }
+  .appliedFilter {
+    .btn,
+    .facets-toggle {
+      background-color: $nu-purple;
+      border: 0;
+      color: $white;
+      font-size: 16px;
+    }
+    .constraint-value {
+      &:hover {
+        background: $nu-purple;
+        color: $white;
+      }
+    }
+    // Arrow in filter
+    .filterName:after {
+      color: $white;
+    }
+    .remove {
+      &:active,
+      &:hover,
+      &:focus,
+      &:active:focus {
+        background: $nu-purple;
+        color: $white;
+      }
+      > span {
+        color: $white;
+      }
+    }
+  }
+}

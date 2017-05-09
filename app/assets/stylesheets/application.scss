@@ -43,6 +43,11 @@
  *= require_self
 */
 
+// NU branding styles
+@import "nuwebcomm/styles";
+@import "nuwebcomm/nuwebcomm_overrides";
+@import "nu_avalon/abstracts/bootstrap_variables";
+
 @import "bootstrap-sprockets";
 @import "bootstrap";
 @import "bootstrap-toggle";
@@ -51,9 +56,17 @@
 
 @import "blacklight_themes/avalon";
 
+
 @import "about_page";
 @import "admin";
 @import "blacklight";
+@import "nu_avalon/abstracts/blacklight_overrides";
+@import "nu_avalon/abstracts/bootstrap_overrides";
 @import "branding";
 @import "nestable";
 @import "avalon";
+@import "nu_avalon/abstracts/avalon-overrides/main";
+
+// "NU Avalon" theme styles
+@import "nu_avalon/main";
+@import "nu_avalon/vendor/bootstrap-rails-toggle";

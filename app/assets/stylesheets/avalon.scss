@@ -287,12 +287,6 @@ input[type="text"]#admin_group {
   }
 }
 
-
-header div{
-  padding: 1em;
-  @extend .mobile-hidden;
-}
-
 .log-in-out a {
   color: #2A5459;
   background-color: #FBB040;
@@ -677,10 +671,10 @@ a[data-trigger='submit'] {
 }
 
 .fileinput-submit {
-  background-color: $blue !important;
-  border-color: $blue !important;
+  background-color: $blue;
+  border-color: $blue ;
   &:hover {
-    background-color: darken($blue, 15%) !important;
+    background-color: darken($blue, 15%);
   }
 
   color: $white !important;

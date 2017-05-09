@@ -16,11 +16,10 @@ Unless required by applicable law or agreed to in writing, software distributed
 <% @page_title = t('collections.title', :application_name => application_name) %>
 
 <div class='container-fluid'>
-  <div class="row col-md-9 col-lg-8">
   <% unless @collections.empty? %>
     <h2>My Collections</h2>
 
-    <table class='table table-striped'>
+    <table id="my-collections-table" class='table table-striped'>
       <tbody>
       <% @collections.to_a.each do |collection| %>
         <tr>
@@ -61,7 +60,6 @@ Unless required by applicable law or agreed to in writing, software distributed
 
     </div>
   <% end %>
-  </div>
 </div>
 
 <% @collection = Admin::Collection.new %>

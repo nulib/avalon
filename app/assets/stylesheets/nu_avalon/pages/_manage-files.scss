@@ -1,0 +1,50 @@
+#associated_files {
+  margin-bottom: 2rem;
+
+  // These styles are for the Associated files, replacing previous table display
+  .associated-files-block {
+    background: $light-grey;
+    margin-bottom: 20px;
+    padding: 10px 15px 10px 15px;
+  }
+  .associated-files-top-row {
+    font-size: 1.25rem;
+    display: flex;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+
+    > span {
+      padding: 0 5px;
+    }
+    .delete {
+      margin-left: auto;
+      padding: 0;
+    }
+  }
+  .associated-files-wrapper {
+    input {
+      @extend .form-control;
+      @extend .input-sm;
+      padding: 3px 6px;
+      height: auto;
+    }
+  }
+  label {
+    font-size: .9rem;
+    margin-bottom: 1px;
+  }
+}
+
+// Fixes the input displaying over the dropdown datepicker calendar
+.fileinput {
+  position: relative;
+  z-index: 1;
+}
+
+
+// Importing files from amazon s3 or dropbox
+#browse-everything {
+  .modal-dialog {
+    width: 100%;
+  }
+}

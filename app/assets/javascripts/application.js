@@ -35,3 +35,5 @@
 //= stub media_player_wrapper/mejs4_add_marker_to_playlist
 
 //= require_tree .
+
+//= require 'nuwebcomm/scripts'

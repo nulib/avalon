@@ -15,7 +15,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 %>
 <% @page_title = t('groups.title', :application_name => application_name) %>
 
-<div class="row col-md-9 col-lg-8">
+<div class="row col-md-12">
   <div class="container-fluid">
     <h3>System Groups</h3>
       <table class="table table-striped ">
@@ -39,10 +39,10 @@ Unless required by applicable law or agreed to in writing, software distributed
     <h3> Additional Groups</h3>
 
     <%= form_tag(admin_groups_path) do -%>
-      <div class="col-xs-9 col-sm-10">
+      <div class="col-xs-7 col-sm-10">
         <%= text_field_tag 'admin_group', nil, :placeholder => 'Enter group name here...', class: 'form-control' %>
       </div>
-      <%= button_tag 'Create Group', type: 'submit', class: 'btn btn-default col-xs-3 col-sm-2' %>
+      <%= button_tag 'Create Group', type: 'submit', class: 'btn btn-default col-xs-5 col-sm-2' %>
     <% end -%>
 
   </div>

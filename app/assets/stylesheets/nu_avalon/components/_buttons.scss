@@ -1,0 +1,94 @@
+// Define a class to extend
+// TODO: Organize this/these
+.nu-avalon-button {
+  background: $nu-purple;
+  @include nu-button();
+  &:active {
+    &:focus,
+    &:hover {
+      background-color: $nu-purple-60;
+      border-color: $nu-purple-60;
+      color: $white;
+      outline-color: $nu-purple-10;
+    }
+  }
+  &:focus {
+    outline-color: $nu-purple-10;
+  }
+  &.btn-xs {
+    @extend .btn-xs;
+    min-width: auto;
+    margin: 0;
+  }
+  &.btn-sm {
+    @extend .btn-sm;
+  }
+}
+
+// General Base Buttons
+.content button,
+.btn-default,
+.btn-primary,
+input[type="submit"] {
+  @extend .nu-avalon-button;
+}
+.content {
+  a {
+    &.btn {
+      border: none;
+      color: $white;
+      text-transform: uppercase;
+      &:hover {
+        text-decoration: none;
+      }
+      @media (max-width: 767px) {
+        margin-bottom: .5rem;
+      }
+    }
+  }
+}
+
+// Regular submit buttons
+.btn-group {
+  input[type="submit"] {
+    &:not(:last-child) {
+      margin-right: .5rem;
+      @media (max-width: 767px) {
+        margin-bottom: .5rem;
+      }
+    }
+  }
+}
+
+// Buttons with dropdowns
+.input-group-btn {
+  .btn {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+ul.dropdown-menu {
+  padding-left: 0;
+  li {
+    background-image: none;
+    padding-left: 0;
+  }
+}
+
+// File input buttons
+.fileinput {
+  width: 100%;
+  .btn {
+    width: 100%;
+  }
+}
+
+
+// Individual instances
+#sortAndPerPage {
+  .btn {
+    @media (max-width: 767px) {
+      margin-bottom: .5rem;
+    }
+  }
+}

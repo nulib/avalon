@@ -1,0 +1,48 @@
+<footer>
+  <div class="contain-970">
+    <div class="footer-content">
+      <%= link_to image_tag("northwestern-university.svg", :alt => "Northwestern University logo"), 'http://www.northwestern.edu/' %>
+      <ul>
+        <li>&copy; <%= Date.today.year %> Northwestern University</li>
+        <li><%= link_to "Contact Northwestern University", "http://www.northwestern.edu/contact.html" %></li>
+        <li><%= link_to "Careers", "http://www.northwestern.edu/hr/careers/" %></li>
+        <li><%= link_to "Disclaimer", "http://www.northwestern.edu/disclaimer.html" %></li>
+        <li><%= link_to "Campus Emergency Information", "http://www.northwestern.edu/emergency/index.html" %></li>
+        <li><%= link_to "University Policies", "http://policies.northwestern.edu/" %></li>
+      </ul>
+    </div>
+    <div class="footer-content contact">
+      <ul>
+        <li class="footer-pin-icon"><span class="hide-label">Address</span></li>
+        <li>1970 Campus Drive</li>
+        <li>Evanston, IL 60208</li>
+      </ul>
+      <ul>
+        <li class="footer-phone-icon"><span class="hide-label">Phone number</span></li>
+        <li>(847) 491-7658</li>
+      </ul>
+      <ul>
+        <li class="footer-email-icon"><span class="hide-label">Email Address</span></li>
+        <li><%= link_to "library@northwestern.edu", "mailto:library@northwestern.edu" %></li>
+      </ul>
+    </div>
+    <div class="footer-content">
+      <p><strong>Social Media</strong></p>
+      <%= link_to "Facebook", "https://www.facebook.com/NorthwesternLibrary", class: "social facebook" %>
+      <%= link_to "Twitter", "https://twitter.com/nu_library", class: "social twitter" %>
+      <%= link_to "Instagram", "https://www.instagram.com/nu_library/", class: "social instagram" %>
+      <br>
+      <%= link_to "YouTube", "https://www.youtube.com/user/NorthwesternLib", class: "social youtube" %>
+      <%= link_to "WordPress", "http://sites.northwestern.edu/northwesternlibrary/", class: "social wordpress" %>
+    </div>
+    <div class="footer-content">
+      <ul>
+        <li><%= link_to "FAQs", "http://northwestern.libanswers.com/" %></li>
+        <li><%= link_to "Support Us", "http://www.library.northwestern.edu/about/support/" %></li>
+        <li><%= link_to "Library Jobs", "http://www.library.northwestern.edu/about/library-jobs/" %></li>
+        <li><%= link_to "Library Policies", "http://www.library.northwestern.edu/about/administration/policies/" %></li>
+        <li><%= link_to "Provide Feedback", "http://www.library.northwestern.edu/about/contact/general-feedback.html" %></li>
+      </ul>
+    </div>
+  </div>
+</footer>

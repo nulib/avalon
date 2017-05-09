@@ -1,0 +1,59 @@
+@mixin ul-unstyled() {
+  padding-left: 0;
+  li {
+    background-image: none;
+    padding: 0;
+  }
+}
+
+@mixin nu-button() {
+  font: 16px $AkkuratProBold;
+  color: $white;
+  background: $nu-purple;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: normal;
+  line-height: 1.428571429;
+  margin: 0;
+  //padding: .8em 1em .7em 1em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  border: none;
+
+  &:hover, &:focus, &:active {
+    background: $nu-purple;
+    color: $white;
+    text-decoration: none;
+  }
+
+  &.normal-case { // for normal case buttons anchors
+      text-transform: none;
+  }
+}
+
+// Copied over from NU's .web-form select style
+@mixin select() {
+  background: #fff url(https://common.northwestern.edu/v8/css/images/icons/arrow-down-dkpurple.svg) no-repeat top 50% right 0.5rem/17px 10px;
+  color: $rich-black-50;
+  font-family: $AkkuratProBold;
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: .5em 2rem .5em .5em;
+  margin: 0 .65rem 0 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -webkit-border-radius: 0;
+  -webkit-transition: .3s linear border;
+  -moz-transition: .3s linear border;
+  -ms-transition: .3s linear border;
+  -o-transition: .3s linear border;
+  transition: .3s linear border;
+}

@@ -1,0 +1,32 @@
+// Overwrites an avalon style, primarily used to keep footer links white
+a:not(.btn):not(.facets-toggle) {
+  color: $nu-purple;
+}
+
+#content {
+  max-width: 100%;
+}
+
+#edit-playlist-button {
+  margin-left: 10px;
+}
+
+.alert {
+  padding: 15px;
+}
+
+.form-horizontal {
+  label {
+    font-family: $AkkuratProRegular;
+  }
+}
+
+.constraints-container {
+  padding: 1rem;
+}
+
+// The focus/blur outline which is applied to elements when navigating around
+.page_element_outline {
+  outline: solid 1px $nu-purple-30 !important;
+  outline-offset: 0 !important;
+}
