@@ -28,3 +28,5 @@
 // include all of our vendored js
 //= require_tree ../../../vendor/assets/javascripts/.
 //= require_tree .
+
+//= require 'nuwebcomm/scripts'

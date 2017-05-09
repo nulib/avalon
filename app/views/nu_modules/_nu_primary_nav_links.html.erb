@@ -1,0 +1,23 @@
+<li><%= link_to 'Browse', search_catalog_path(search_field: 'all_fields', utf8: '✓', q: '') %></li>
+<% if can? :read, Admin::Collection %>
+  <li class=<%= active_for_controller('admin/collections') %>><%= link_to 'Manage Content', admin_collections_path %></li>
+<% end %>
+<% if can? :manage, Admin::Group %>
+  <li class=<%= active_for_controller('admin/groups') %>><%= link_to 'Manage Groups', admin_groups_path, target: '_admin' %></li>
+<% end %>
+<% if user_session && user_session[:lti_group] %>
+  <li><%= link_to(vgroup_display(user_session[:lti_group]), search_catalog_path('f[read_access_virtual_group_ssim][]' => user_session[:lti_group])) %></li>
+<% end %>
+<% if render_bookmarks_control? %>
+  <li class=<%= active_for_controller('bookmarks') %>>
+    <%= link_to bookmarks_path, id:'bookmarks_nav' do %>
+      <%= t('blacklight.header_links.bookmarks') %>
+(<span data-role='bookmark-counter'><%= current_or_guest_user.bookmarks.count %></span>)
+    <% end %>
+  </li>
+<% end %>
+<% if current_ability.can? :create, Playlist %>
+  <li class=<%= active_for_controller('playlists') %>>
+    <%= link_to 'Playlists', playlists_path, id:'playlists_nav' %>
+  </li>
+<% end %>

@@ -28,16 +28,17 @@ Unless required by applicable law or agreed to in writing, software distributed
     <%= yield :additional_head_content %>
   </head>
 
-  <body data-mountpoint="<%=root_path%>">
+  <body data-mountpoint="<%=root_path%>" class="standard-page">
     <a id="skip-to-content" class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
     <%= render partial: 'shared/ajax_modal' %>
-    <%= render 'modules/header' %>
-    <div class="container-fluid">
+    <%= render 'nu_modules/header' %>
+    <%= render 'nu_modules/nav' %>
+    <div id="page">
       <%= render :partial => 'modules/global_navigation' %>
       <%= render 'modules/flash_messages' %>
       <%= yield %>
     </div>
-    <%= render 'modules/footer' %>
+    <%= render 'nu_modules/footer' %>
 
     <!-- With this many Javascript files performance will be much better
          if they are included here. That means the important content will

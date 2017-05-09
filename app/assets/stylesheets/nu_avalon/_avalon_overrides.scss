@@ -1,0 +1,26 @@
+a:not(.btn) {
+  color: inherit;
+  &:hover,
+  &:active,
+  &:visited {
+    color: inherit;
+  }
+}
+
+footer {
+  border: none;
+  margin: inherit;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+
+  ul {
+    float: none;
+    margin: 0;
+  }
+  li {
+    display: inherit;
+    &:before {
+      content: none;
+    }
+  }
+}
