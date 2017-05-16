@@ -13,7 +13,7 @@ Unless required by applicable law or agreed to in writing, software distributed
   specific language governing permissions and limitations under the License.
 ---  END LICENSE_HEADER BLOCK  ---
 %>
-<div class="col-md-9">
+<div class="col-sm-12">
   <div class="row">
     <div class="col-sm-12">
       <%= link_to "View Playlist", @playlist, { class: 'btn btn-xs btn-primary'} %>
@@ -48,8 +48,8 @@ Unless required by applicable law or agreed to in writing, software distributed
       </div>
     </div>
   </div>
- 
-  <%= render 'form' %> 
+
+  <%= render 'form' %>
 
   <hr>
   <% if @playlist.items.empty? %>
@@ -114,10 +114,10 @@ Unless required by applicable law or agreed to in writing, software distributed
             <% else %>
               <div class="col-sm-9 title" style="margin-top:5px">
                 <% if i.clip.master_file.nil? %>
-                  <i class="fa fa-times-circle" title="The source for this item has been deleted"></i> 
+                  <i class="fa fa-times-circle" title="The source for this item has been deleted"></i>
                   <span class="playlist_item_denied">[deleted item]</span>
                 <% else %>
-                  <i class="fa fa-lock" title="You don't have permission to view this item"></i> 
+                  <i class="fa fa-lock" title="You don't have permission to view this item"></i>
                   <span class="playlist_item_denied">[inaccessible item] <%= i.clip.master_file.media_object.id %></span>
                 <% end %>
               </div>

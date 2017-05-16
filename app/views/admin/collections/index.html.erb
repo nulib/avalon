@@ -16,7 +16,6 @@ Unless required by applicable law or agreed to in writing, software distributed
 <% @page_title = t('collections.title', :application_name => application_name) %>
 
 <div class='container-fluid'>
-  <div class="row col-md-9 col-lg-8">
   <% unless @collections.empty? %>
     <h2>My Collections</h2>
 
@@ -62,7 +61,6 @@ Unless required by applicable law or agreed to in writing, software distributed
 
     </div>
   <% end %>
-  </div>
 </div>
 
 <% @collection = Admin::Collection.new %>

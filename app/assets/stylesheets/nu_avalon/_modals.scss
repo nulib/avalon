@@ -1,0 +1,38 @@
+.modal-header {
+  .close {
+    background: none;
+    color: $rich-black-50;
+    font-size: 24px;
+    line-height: 1;
+    opacity: 1;
+    &:active,
+    &:focus,
+    &:hover,
+    &:active:focus {
+      background: none;
+      color: $rich-black-50;
+    }
+  }
+}
+.content {
+  .modal {
+    .xml_menu_bar,
+    .xml_menu_container {
+      li {
+        background-image: none;
+        padding: 0;
+      }
+      #add_top_menu {
+        li {
+          padding-left: 1rem;
+        }
+      }
+    }
+  }
+}
+
+.modal-body {
+  fieldset {
+    margin-bottom: 1.25rem;
+  }
+}

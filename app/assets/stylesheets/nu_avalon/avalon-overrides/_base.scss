@@ -1,0 +1,26 @@
+:not(.facet_limit-active).facet_limit {
+  > .panel-heading {
+    //background-color: $light-grey;
+    // border: 1px solid $light-grey;
+    // border-top: 0;
+  }
+}
+
+// Footer links keep white
+a:not(.btn):not(.facets-toggle) {
+  color: $nu-purple;
+}
+
+#content {
+  max-width: 100%;
+}
+
+#edit-playlist-button {
+  margin-left: 10px;
+}
+
+.form-horizontal {
+  label {
+    font-family: $AkkuratProRegular;
+  }
+}

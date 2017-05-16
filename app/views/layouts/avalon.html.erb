@@ -34,8 +34,10 @@ Unless required by applicable law or agreed to in writing, software distributed
     <%= render 'nu_modules/header' %>
     <%= render 'nu_modules/nav' %>
     <div id="page">
-      <%= render 'modules/flash_messages' %>
-      <%= yield %>
+      <main id="main-content" class="content">
+        <%= render 'modules/flash_messages' %>
+        <%= yield %>
+      </main>
     </div>
     <%= render 'nu_modules/footer' %>
 

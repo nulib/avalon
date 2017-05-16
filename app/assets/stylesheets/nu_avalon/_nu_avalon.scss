@@ -1,3 +1,162 @@
-html {
-  font-size: 100%;
+@import "mixins";
+@import "partials";
+@import "base";
+@import "alerts";
+@import "buttons";
+@import "modals";
+@import "pages/manage-content";
+
+// Browse alert box showing selected facets selected
+#appliedParams {
+  .appliedFilter {
+    background: $rich-black-50;
+  }
+  .btn {
+    margin: 0;
+    text-transform: none;
+    &#startOverLink {
+      @include nu-button();
+      margin: 0;
+    }
+    &.remove {
+      margin-right: 0;
+    }
+  }
+  .constraint-value {
+    padding-right: 0;
+  }
+}
+#sortAndPerPage {
+  .btn-group {
+    &.open {
+      button {
+        background: $nu-purple-60;
+      }
+    }
+    .dropdown-toggle {
+      color: $white;
+      .caret {
+        color: $white;
+      }
+    }
+  }
+  .dropdown-menu {
+    padding-left: 0;
+    > li {
+      background: none;
+      padding: .25rem .5rem;
+      a {
+        color: $nu-purple;
+      }
+    }
+  }
+}
+
+
+
+// Facets sidebar
+#facets {
+  padding-bottom: 2rem;
+}
+.facets {
+  position: relative;
+  z-index: 1;
+  a {
+    color: $rich-black-50 !important;
+  }
+  .facet_limit-active {
+    h3 {
+      a {
+        color: #fff !important;
+      }
+    }
+  }
+  .panel-body {
+    padding-left: 1.5rem;
+  }
+}
+.collapse-toggle {
+  .panel-heading {
+    border: 1px solid $light-grey;
+    border-bottom: 0;
+  }
+}
+.content {
+  .facet-values {
+    padding-left: 0;
+    > li {
+      background: none;
+    }
+  }
+}
+.facet_limit-active {
+  .panel-heading {
+    &.collapse-toggle {
+      .panel-title {
+        &:after {
+            color: $white;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 768px) {
+  .standard-page {
+    .content {
+      h2 {
+        background: $light-grey;
+        border-radius: 0;
+        font-size: 1.3rem;
+      }
+    }
+  }
+  #facets,
+  #facets-workflow {
+    background: $white;
+    padding-bottom: 1rem;
+    .facets-toggle {
+      margin: 0;
+      outline: 0;
+    }
+    .top-panel-heading {
+      border: 0;
+      padding-top: 0;
+    }
+  }
+  .facets {
+    #facet-panel-collapse,
+    #facet-panel-workflow-collapse {
+      width: 100%;
+      h3 {
+        font-size: 1rem;
+      }
+    }
+    .top-panel-heading {
+      border: 1px solid $light-grey;
+      padding: 5px 0;
+    }
+  }
+}
+
+
+.form-control:focus {
+  box-shadow: none;
+}
+
+
+.documentHeader {
+  &.row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+
+@media (min-width: 768px) {
+  #sidebar, #facets {
+    .navbar-toggle,
+    .facets-toggle {
+      display: none;
+    }
+  }
 }
