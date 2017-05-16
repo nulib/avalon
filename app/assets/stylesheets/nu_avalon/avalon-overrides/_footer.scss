@@ -1,18 +1,11 @@
-a:not(.btn) {
-  color: inherit;
-  &:hover,
-  &:active,
-  &:visited {
-    color: inherit;
-  }
-}
-
 footer {
   border: none;
   margin: inherit;
   padding-top: 3rem;
   padding-bottom: 3rem;
-
+  a {
+    color: $white !important;
+  }
   ul {
     float: none;
     margin: 0;

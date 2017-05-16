@@ -1,0 +1,20 @@
+#associated_files {
+  table {
+    th {
+      background: $rich-black-10;
+      color: $rich-black-80;
+    }
+  }
+}
+
+#mediaobject_structure {
+  ul {
+    &.header {
+      background-color: $rich-black-10;
+    }
+    li {
+      background-image: none;
+      padding: 0;
+    }
+  }
+}
