@@ -1,0 +1,18 @@
+.facet-values {
+  .remove {
+    .glyphicon {
+      color: $rich-black-50;
+    }
+  }
+}
+
+// Facets chevron
+.panel-heading {
+  &.collapse-toggle {
+    .panel-title {
+      &:after {
+          color: $rich-black-50;
+      }
+    }
+  }
+}

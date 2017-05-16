@@ -1,0 +1,40 @@
+@mixin ul-unstyled() {
+  padding-left: 0;
+  li {
+    background-image: none;
+    padding: 0;
+  }
+}
+
+@mixin nu-button() {
+  font: 16px $AkkuratProBold;
+  color: $white;
+  background: $nu-purple;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: normal;
+  line-height: 1.428571429;
+  margin: 0;
+  //padding: .8em 1em .7em 1em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  border: none;
+
+  &:hover, &:focus, &:active {
+    background: $nu-purple;
+    color: $white;
+    text-decoration: none;
+  }
+
+  &.normal-case { // for normal case buttons anchors
+      text-transform: none;
+  }
+}

@@ -1,0 +1,18 @@
+.standard-page {
+  #sidebar {
+    float: left;
+    margin: 0;
+    @extend .col-sm-3;
+  }
+  .content {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .standard-page {
+    #sidebar {
+      width: 100%;
+    }
+  }
+}
