@@ -10,8 +10,3 @@ h2, h3 {
 .fa {
   font-family: "FontAwesome" !important;
 }
-ul {
-  &.nav {
-    @include ul-unstyled();
-  }
-}

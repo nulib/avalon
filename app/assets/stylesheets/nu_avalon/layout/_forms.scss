@@ -1,0 +1,18 @@
+#access_control_form {
+  fieldset {
+    margin-bottom: 1rem;
+  }
+}
+
+.form-control:focus {
+  box-shadow: none;
+}
+
+// Login form
+.omniauth-form {
+  form {
+    button {
+      width: 100%;
+    }
+  }
+}
