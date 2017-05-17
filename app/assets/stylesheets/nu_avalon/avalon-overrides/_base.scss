@@ -24,3 +24,9 @@ a:not(.btn):not(.facets-toggle) {
     font-family: $AkkuratProRegular;
   }
 }
+
+// The focus/blur outline which is applied to elements when navigating around
+.page_element_outline {
+  outline: solid 1px $nu-purple-30 !important;
+  outline-offset: 0 !important;
+}
