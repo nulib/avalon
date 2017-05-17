@@ -1,8 +1,6 @@
-// Buttons
-.content button,
-.btn-default,
-.btn-primary,
-input[type="submit"] {
+// Define a class to extend
+// TODO: Organize this/these
+.nu-avalon-button {
   background: $nu-purple;
   @include nu-button();
   &:active {
@@ -24,12 +22,15 @@ input[type="submit"] {
   &.btn-sm {
     @extend .btn-sm;
   }
-
-  @media (max-width: 767px) {
-    margin-bottom: .5rem;
-  }
 }
 
+// General Base Buttons
+.content button,
+.btn-default,
+.btn-primary,
+input[type="submit"] {
+  @extend .nu-avalon-button;
+}
 .content {
   a {
     &.btn {
@@ -38,6 +39,9 @@ input[type="submit"] {
       text-transform: uppercase;
       &:hover {
         text-decoration: none;
+      }
+      @media (max-width: 767px) {
+        margin-bottom: .5rem;
       }
     }
   }
@@ -48,6 +52,9 @@ input[type="submit"] {
   input[type="submit"] {
     &:not(:last-child) {
       margin-right: .5rem;
+      @media (max-width: 767px) {
+        margin-bottom: .5rem;
+      }
     }
   }
 }
@@ -72,5 +79,15 @@ ul.dropdown-menu {
   width: 100%;
   .btn {
     width: 100%;
+  }
+}
+
+
+// Individual instances
+#sortAndPerPage {
+  .btn {
+    @media (max-width: 767px) {
+      margin-bottom: .5rem;
+    }
   }
 }

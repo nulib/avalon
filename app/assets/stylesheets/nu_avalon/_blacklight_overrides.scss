@@ -11,7 +11,15 @@
   &.collapse-toggle {
     .panel-title {
       &:after {
-          color: $rich-black-50;
+        color: $rich-black-50;
+        content: "\e259"
+      }
+    }
+    &.collapsed {
+      .panel-title {
+        &:after {
+          content: "\e258"
+        }
       }
     }
   }
