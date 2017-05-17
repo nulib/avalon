@@ -1,11 +1,11 @@
-<div id="sidebar" class="col-sm-3">
+<div id="sidebar" class="<%= user_signed_in? ? 'col-sm-3' : 'hidden' %>">
   <%= render 'search_sidebar' %>
 </div>
 
-<div id="content" class="col-sm-9">
+<div id="content" class="<%= user_signed_in? ? 'col-sm-9' : 'col-sm-12' %>">
   <% unless has_search_parameters? %>
     <%# if there are no input/search related params, display the "home" partial -%>
-    <%= render 'home' %>
+    <%= render file: 'nu_catalog/_home_text.html.erb' %>
     <%= render 'shared/sitelinks_search_box' %>
   <% else %>
     <%= render 'search_results' %>
