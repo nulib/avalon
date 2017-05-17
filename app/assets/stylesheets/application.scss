@@ -58,11 +58,12 @@
 @import "blacklight_folders/forms";
 @import "blacklight_folders/folders";
 @import "blacklight_folders/nestable";
-@import "nu_avalon/blacklight_overrides";
+
 
 @import "about_page";
 @import "admin";
 @import "blacklight";
+@import "nu_avalon/blacklight_overrides";
 @import "nu_avalon/bootstrap_overrides";
 @import "branding";
 @import "avalon";
