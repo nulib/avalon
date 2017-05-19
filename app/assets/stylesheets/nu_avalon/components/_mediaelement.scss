@@ -1,0 +1,15 @@
+.mejs-controls {
+  ul {
+    li {
+      background: none;
+    }
+  }
+  .mejs-button {
+    button {
+      background-color: inherit;
+      &:active:focus {
+        background-color: inherit;
+      }
+    }
+  }
+}
