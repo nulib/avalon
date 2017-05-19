@@ -1,0 +1,33 @@
+#add_to_playlist {
+  background: $rich-black-50;
+  border: 0;
+  border-radius: 0;
+  padding-top: 1rem;
+
+  h3 {
+    color: $white;
+  }
+
+  table {
+    tr, tr.stripe {
+      background: $rich-black-50;
+      &:hover {
+        background: $rich-black-50;
+      }
+      &.hover {
+        td {
+          background: $rich-black-50;
+          color: $white;
+        }
+      }
+    }
+    td {
+      border: 0;
+    }
+  }
+
+  .responsive-table {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+}
