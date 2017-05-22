@@ -7,8 +7,18 @@
   .mejs-button {
     button {
       background-color: inherit;
-      &:active:focus {
+      &:active:focus,
+      &:hover {
         background-color: inherit;
+      }
+    }
+    &.mejs-add-to-playlist {
+      button {
+        &:active,
+        &:hover,
+        &:focus {
+          background: transparent url('add_to_playlist_icon.svg') no-repeat;
+        }
       }
     }
   }
