@@ -21,3 +21,6 @@
     <%= link_to 'Playlists', playlists_path, id:'playlists_nav' %>
   </li>
 <% end %>
+
+<li class="<%= current_page?('/aboutnu') ? 'active' : ''%>"><%= link_to 'About', 'aboutnu' %></li>
+<li class="<%= current_page?('/help') ? 'active' : ''%>"><%= link_to 'Help', 'help' %></li>
