@@ -164,6 +164,10 @@ Rails.application.routes.draw do
   end
   get '/jobs', to: redirect('/')
 
+  # NU Pages routing
+  get '/help', to: 'nu_pages#help'
+  get '/aboutnu', to: 'nu_pages#about'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
