@@ -34,5 +34,14 @@ module Avalon
     config.active_record.raise_in_transactional_callbacks = true
 
     config.active_job.queue_adapter = :resque
+
+    if ENV['REDIS_HOST']
+      config.cache_store = :redis_store, {
+        host: ENV['REDIS_HOST'],
+        port: ENV['REDIS_PORT'] || 6379,
+        db: 0,
+        namespace: 'avalon'
+      }
+    end
   end
 end
