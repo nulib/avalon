@@ -3,7 +3,7 @@ gem 'fedora-migrate', '~> 0.5.0'
 gem 'rdf-rdfxml'
 
 gem 'hydra-head', '~> 10.3.4'
-gem 'active-fedora', '>= 10.3.0'
+gem 'active-fedora', '~> 11.2'
 gem 'active_fedora-datastreams'
 gem 'active_fedora-noid', '~> 2.0.0'
 gem 'speedy-af', git: 'https://github.com/projecthydra-labs/speedy_af.git', tag: 'v0.1.0'

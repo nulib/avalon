@@ -1,11 +1,11 @@
 # Copyright 2011-2017, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
-# 
+#
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software distributed
 #   under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 #   CONDITIONS OF ANY KIND, either express or implied. See the License for the
@@ -19,12 +19,6 @@ module FedoraMigrate
       @pids_whitelist = pids
       @overwrite = overwrite
       class_order.each do |klass|
-        klass.class_eval do
-          # We don't really need multiple true but there is a bug with indexing single valued URI objects
-          property :migrated_from, predicate: RDF::URI("http://www.w3.org/ns/prov#wasDerivedFrom"), multiple: true do |index|
-            index.as :symbol
-          end
-        end
         Parallel.map(gather_pids_for_class(klass), in_thread: parallel_threads, progress: "Migrating #{klass.to_s}") do |pid|
           next unless qualifying_pid?(pid, klass)
           remove_object(pid, klass) unless overwrite?
@@ -119,7 +113,7 @@ module FedoraMigrate
           end
         end
       end
-      
+
       def end_status(result, method, klass)
         if result.status
           if method == :migrate and second_pass_needed?(klass)
@@ -130,7 +124,7 @@ module FedoraMigrate
         end
         return 'failed'
       end
-      
+
       def second_pass_needed?(klass)
         object_mover(klass).instance_methods.include?(:second_pass)
       end
