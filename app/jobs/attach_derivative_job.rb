@@ -22,8 +22,9 @@ class AttachDerivativeJob < ActiveJob::Base
       })
     end
 
-    derivative.absolute_location = "s3://#{bucket.name}/#{target_prefix}#{filename}"
-    derivative.set_streaming_locations!
+    derivative.location_url = derivative.absolute_location = "s3://#{bucket.name}/#{target_prefix}#{filename}"
+    uri = URI.parse(derivative.absolute_location)
+    derivative.hls_url = uri.merge("hls/#{File.basename(uri.path,'.*')}.m3u8").to_s
     derivative.save
   end
 end
