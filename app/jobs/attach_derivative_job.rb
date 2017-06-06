@@ -3,8 +3,9 @@ class AttachDerivativeJob < ActiveJob::Base
 
   def perform(derivative_id)
     derivative = Derivative.find(derivative_id)
-    location = derivative.derivativeFile.split(/\//)[-4..-2].join('/')
-    filename = File.basename(derivative.derivativeFile)
+    return if derivative.absolute_location =~ %r{^s3://}
+    location = derivative.absolute_location.split(/\//)[-4..-2].join('/')
+    filename = File.basename(derivative.absolute_location)
     client = Aws::S3::Client.new
     bucket = Aws::S3::Bucket.new(name: Settings.encoding.derivative_bucket)
     source_prefix = Pathname("pending/#{location}/")
@@ -21,7 +22,7 @@ class AttachDerivativeJob < ActiveJob::Base
       })
     end
 
-    derivative.derivativeFile = "s3://#{bucket.name}/#{target_prefix}#{filename}"
+    derivative.absolute_location = "s3://#{bucket.name}/#{target_prefix}#{filename}"
     derivative.set_streaming_locations!
     derivative.save
   end
