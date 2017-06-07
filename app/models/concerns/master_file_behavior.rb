@@ -68,7 +68,8 @@ module MasterFileBehavior
   end
 
   def embed_title
-    "#{ self.media_object.title } - #{ self.title || self.file_location.split( "/" ).last }"
+    working_title = (self.title || self.file_location || self.absolute_location).to_s.split('/').last
+    [self.media_object.title,working_title].compact.join(' - ')
   end
 
   def embed_code(width, permalink_opts = {})
