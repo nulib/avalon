@@ -1,0 +1,10 @@
+#accordion {
+  &.panel-group {
+    .panel-title {
+      // Panel accordion toggle button
+      .fa-minus-square {
+        color: $nu-purple;
+      }
+    }
+  }
+}
