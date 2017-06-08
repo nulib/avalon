@@ -55,7 +55,7 @@ gem 'iconv'
 gem 'mediainfo', git: "https://github.com/avalonmediasystem/mediainfo.git", branch: 'remote_files'
 gem 'omniauth-identity'
 gem 'omniauth-lti', git: "https://github.com/avalonmediasystem/omniauth-lti.git", tag: 'avalon-r4'
-gem 'oauth', '0.5.1'
+gem 'ims-lti', '~> 1.1.13'
 gem 'omniauth-openam'
 gem 'net-ldap'
 gem 'edtf'
@@ -163,6 +163,9 @@ group :mysql, optional: true do
 end
 group :postgres, optional: true do
   gem 'pg'
+end
+group :ssl_dev, optional: true do
+  gem 'puma'
 end
 
 extra_gems = File.expand_path("../Gemfile.local",__FILE__)

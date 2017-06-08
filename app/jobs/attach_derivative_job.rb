@@ -15,7 +15,7 @@ class AttachDerivativeJob < ActiveJob::Base
       source_objects = bucket.objects(prefix: source_prefix.to_s)
       source_objects.each do |source|
         target = target_prefix.join(Pathname(source.key).relative_path_from(source_prefix)).to_s.sub(%r{/segments/},'/hls/')
-
+        next if bucket.object(target).exists?
         client.copy_object({
           copy_source: "#{source.bucket_name}/#{source.key}",
           bucket: bucket.name,
