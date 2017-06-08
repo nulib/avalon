@@ -28,7 +28,7 @@
       &:active:focus,
       &:active,
       &:focus {
-        background-color: $nu-purple-30;
+        background-color: $white;
       }
     }
   }
@@ -42,26 +42,31 @@
   .appliedFilter {
     .btn,
     .facets-toggle {
-      background-color: $nu-purple-30;
+      background-color: $nu-purple;
       border: 0;
-      color: $nu-purple;
+      color: $white;
       font-size: 16px;
     }
     .constraint-value {
       &:hover {
-        background: $nu-purple-30;
-        color: $nu-purple;
+        background: $nu-purple;
+        color: $white;
       }
+    }
+    // Arrow in filter
+    .filterName:after {
+      color: $white;
     }
     .remove {
       &:active,
       &:hover,
-      &:focus {
-        background: $nu-purple-30;
-        color: $nu-purple;
+      &:focus,
+      &:active:focus {
+        background: $nu-purple;
+        color: $white;
       }
       > span {
-        color: $nu-purple;
+        color: $white;
       }
     }
   }
