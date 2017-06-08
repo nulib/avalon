@@ -326,6 +326,51 @@ describe MediaObject do
     end
   end
 
+  describe "Update datastream with empty strings" do
+    it "should remove pre-existing values" do
+      media_object = FactoryGirl.create( :fully_searchable_media_object )
+      params = {
+        'alternative_title' => [''],
+        'translated_title' => [''],
+        'uniform_title' => [''],
+        'creator' => [''],
+        'format' => [''],
+        'contributor' => [''],
+        'publisher' => [''],
+        'subject' => [''],
+        'related_item_url' => [{label:'',url:''}],
+        'geographic_subject' => [''],
+        'temporal_subject' => [''],
+        'topical_subject' => [''],
+        'language' => [''],
+        'table_of_contents' => [''],
+        'physical_description' => [''],
+        'record_identifier' => [''],
+        'note' => [{type:'',note:''}],
+        'other_identifier' => [{id:'',source:''}]
+      }
+      media_object.assign_attributes(params)
+      expect(media_object.alternative_title).to eq([])
+      expect(media_object.translated_title).to eq([])
+      expect(media_object.uniform_title).to eq([])
+      expect(media_object.creator).to eq([])
+      expect(media_object.format).to eq([])
+      expect(media_object.contributor).to eq([])
+      expect(media_object.publisher).to eq([])
+      expect(media_object.subject).to eq([])
+      expect(media_object.related_item_url).to eq([])
+      expect(media_object.geographic_subject).to eq([])
+      expect(media_object.temporal_subject).to eq([])
+      expect(media_object.topical_subject).to eq([])
+      expect(media_object.language).to eq([])
+      expect(media_object.table_of_contents).to eq([])
+      expect(media_object.physical_description).to eq([])
+      expect(media_object.record_identifier).to eq([])
+      expect(media_object.note).to be_nil
+      expect(media_object.other_identifier).to be_nil
+   end
+  end
+
   describe "Update datastream directly" do
     it "should reflect datastream changes on media object" do
       newtitle = Faker::Lorem.sentence
