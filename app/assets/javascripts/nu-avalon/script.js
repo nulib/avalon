@@ -1,6 +1,6 @@
 // Find any alerts on page
 function checkAlerts() {
-  var alertElements = document.getElementsByClassName('alert'),
+  var alertElements = document.getElementsByClassName('alert-success'),
     el;
 
   if (alertElements.length > 0) {
