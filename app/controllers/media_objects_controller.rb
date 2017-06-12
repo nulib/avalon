@@ -22,6 +22,7 @@ class MediaObjectsController < ApplicationController
 
   before_filter :authenticate_user!, except: [:show, :set_session_quality, :show_stream_details]
   before_filter :authenticate_api!, only: [:show], if: proc{|c| request.format.json?}
+  before_filter :redirect_v4_style_pids, only: [:show], if: proc{|c| [params[:id], params[:content]].compact.any? { |i| i =~ /^[a-z]+:[0-9]+$/}}
   load_and_authorize_resource except: [:destroy, :update_status, :set_session_quality, :tree, :deliver_content, :confirm_remove, :show_stream_details]
   # authorize_resource only: [:create, :update]
 
@@ -452,9 +453,22 @@ class MediaObjectsController < ApplicationController
 
     mo_parameters
   end
+
   def master_files_params
     # TODO: Restrist permitted params!!!
     params.permit!
     params[:files]
+  end
+
+  def redirect_v4_style_pids
+    new_media_object_id = ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:id]}"}, rows: 1, fl: 'id').first['id']
+    new_master_file_id = params[:content] ? ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:content]}"}, rows: 1, fl: 'id').first['id'] : nil
+    if new_master_file_id.present?
+      redirect_to id_section_media_object_path id: new_media_object_id, content: new_master_file_id
+    elsif params[:part].present?
+      redirect_to indexed_section_media_object_path id: new_media_object_id, part: params[:part]
+    else
+      redirect_to media_object_path id: new_media_object_id
+    end
   end
 end
