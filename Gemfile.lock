@@ -361,6 +361,8 @@ GEM
     et-orbi (1.0.4)
       tzinfo
     execjs (2.7.0)
+    ezid-client (1.7.1)
+      hashie (~> 3.4, >= 3.4.3)
     factory_girl (4.8.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.8.0)
@@ -848,6 +850,7 @@ DEPENDENCIES
   edtf
   email_spec
   equivalent-xml
+  ezid-client
   factory_girl_rails
   fakefs
   faker

@@ -167,6 +167,9 @@ end
 group :ssl_dev, optional: true do
   gem 'puma'
 end
+group :ezid, optional: true do
+  gem 'ezid-client'
+end
 
 extra_gems = File.expand_path("../Gemfile.local",__FILE__)
 eval File.read(extra_gems) if File.exists?(extra_gems)
