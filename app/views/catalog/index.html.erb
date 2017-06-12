@@ -1,10 +1,13 @@
-<% hide_sidebar = !user_signed_in? || (user_signed_in? && !has_facet_values?) %>
+<% hide_sidebar = !has_facet_values? %>
 
-<div id="sidebar" class="<%= hide_sidebar ? 'hidden' : 'col-sm-3' %>">
+<div id="sidebar" class="col-sm-3">
   <%= render 'search_sidebar' %>
+  <% if !has_facet_values? %>
+    <div class="alert alert-warning">No facets</div>
+  <% end %>
 </div>
 
-<div id="content" class="<%= hide_sidebar ? 'col-sm-12' : 'col-sm-9' %>">
+<div id="content" class="col-sm-9">
   <% unless has_search_parameters? %>
     <%# if there are no input/search related params, display the "home" partial -%>
     <%= render file: 'nu_catalog/_home_text.html.erb' %>
