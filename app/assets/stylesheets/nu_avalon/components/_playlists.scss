@@ -1,3 +1,9 @@
+// Extend a local class
+.playlist-edit-button {
+  color: $nu-purple;
+  font-size: 1.25rem;
+}
+
 #add_to_playlist {
   background: $rich-black-50;
   border: 0;
@@ -29,5 +35,27 @@
   .responsive-table {
     margin-bottom: 0;
     margin-top: 0;
+  }
+}
+
+// Edit icon next to 'Playlist Details' when editing a playlist
+#playlist_edit_button {
+  @extend .playlist-edit-button;
+  padding-bottom: 12px;
+}
+#playlist_item_edit_button {
+  @extend .playlist-edit-button;
+}
+// Playlist edit cancel button
+#playlist_edit_cancel {
+  @extend .btn-xs;
+}
+
+// Editing a playlist - Playlist Items list
+form#playlist_sort_form {
+  .glyphicon.dd-handle {
+    &:hover {
+      color: $nu-purple;
+    }
   }
 }
