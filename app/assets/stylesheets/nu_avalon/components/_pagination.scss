@@ -1,0 +1,8 @@
+// Force pagination hover to be white color text
+.standard-page {
+  .pagination {
+    a:hover {
+      color: $white !important;
+    }
+  }
+}
