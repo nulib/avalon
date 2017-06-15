@@ -110,47 +110,47 @@ specific language governing permissions and limitations under the License.
   <% end %>
 
   <div id="web_upload">
-    <legend>Upload through the web</legend>
+   <legend>Upload through the web</legend>
     <p class="muted">Uploaded files must not exceed <%= number_to_human_size MasterFile::MAXIMUM_UPLOAD_SIZE %></p>
 
     <fieldset id='uploader'>
-      <%= form_tag(master_files_path, :enctype=>"multipart/form-data", class: "uploader-form form-horizontal step") do -%>
-      <input type="hidden" name="container_id" value="<%=h @media_object.id %>"/>
-      <input type="hidden" name="step" value="file_upload"/>
+        <%= form_tag(master_files_path, :enctype=>"multipart/form-data", class: upload_form_classes, data: upload_form_data) do -%>
+          <input type="hidden" name="container_id" value="<%=h @media_object.id %>"/>
+          <input type="hidden" name="step" value="file_upload"/>
 
-      <%= hidden_field_tag("container_content_type", container_content_type, :id => "file_upload_content_type") if defined?(container_content_type) %>
+          <%= hidden_field_tag("container_content_type", container_content_type, :id => "file_upload_content_type") if defined?(container_content_type) %>
 
-      <%- field_tag_options = defined?(uploader_options) ? uploader_options : {multiple: true} %>
+          <%- field_tag_options = defined?(uploader_options) ? uploader_options : {multiple: true} %>
 
-      <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-        <div class="form-control" data-trigger="fileinput">
-          <i class="glyphicon glyphicon-file fileinput-exists"></i>
-          <span class="fileinput-filename"></span>
-        </div>
-        <span class="fileinput-submit fileinput-exists input-group-addon btn btn-default btn-file">
-          <input type="hidden" name="upload_file" value="upload_file"></input>
-          <a href="#" data-trigger="submit" data-toggle="modal" data-target="#uploading">Upload</a>
-        </span>
-        <span class="input-group-addon btn btn-default btn-file">
-          <span class="fileinput-new">Select file</span>
-          <span class="fileinput-exists">Change</span>
-          <input type="file" name="Filedata[]"></input>
-        </span>
-        <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-        <span class="input-group-addon fileinput-exists" style="background-color: white; padding-top: 8px; padding-bottom: 2px; border: none;">
-          <%= check_box_tag(:workflow, 'skip_transcoding', false, id: nil)%>
-          <%= label_tag(:skip_transcoding) do %>
-          <div style="font-size: inherit;" class="tooltip-help" data-title="Skip Transcoding" data-tooltip="#skip-transcoding-tooltip">
-            Skip transcoding
+          <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+            <div class="form-control" data-trigger="fileinput">
+              <i class="glyphicon glyphicon-file fileinput-exists"></i>
+              <span class="fileinput-filename"></span>
+            </div>
+            <span class="fileinput-submit fileinput-exists input-group-addon btn btn-default btn-file">
+              <input type="hidden" name="upload_file" value="upload_file"></input>
+              <a href="#" data-trigger="submit" data-toggle="modal" data-target="#uploading">Upload</a>
+            </span>
+            <span class="input-group-addon btn btn-default btn-file">
+              <span class="fileinput-new">Select file</span>
+              <span class="fileinput-exists">Change</span>
+              <input type="file" name="Filedata[]"></input>
+            </span>
+            <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+            <span class="input-group-addon fileinput-exists" style="background-color: white; padding-top: 8px; padding-bottom: 2px; border: none;">
+              <%= check_box_tag(:workflow, 'skip_transcoding', false, id: nil)%>
+              <%= label_tag(:skip_transcoding) do %>
+                <div style="font-size: inherit;" class="tooltip-help" data-title="Skip Transcoding" data-tooltip="#skip-transcoding-tooltip">
+                  Skip transcoding
+                </div>
+              <% end %>
+            </span>
           </div>
-          <% end %>
-        </span>
-      </div>
 
-      <%= hidden_field_tag(:new_asset, true, :id => "files_new_asset") if params[:new_asset] %>
-      <%= hidden_field_tag("id",params[:id], :id => "file_upload_id") if params[:id] %>
-      <%= hidden_field_tag(:original, params[:original], :id => "files_original") %>
-      <% end %>
+          <%= hidden_field_tag(:new_asset, true, :id => "files_new_asset") if params[:new_asset] %>
+          <%= hidden_field_tag("id",params[:id], :id => "file_upload_id") if params[:id] %>
+          <%= hidden_field_tag(:original, params[:original], :id => "files_original") %>
+        <% end %>
     </fieldset>
 
     <div class="collapse form-tooltip equal-height" id="skip-transcoding-tooltip">
@@ -173,15 +173,15 @@ specific language governing permissions and limitations under the License.
   <div id="dropbox_upload">
     <legend id="dropbox_modal_label">Import from a dropbox</legend>
     <p class="muted">Use the dropbox to import large files. Attach selected files after uploading. Files will be begin
-      processing when you click Save and continue.</p>
-      <%= form_tag(master_files_path, id: 'dropbox_form', method: 'post') do %>
+   processing when you click Save and continue.</p>
+    <%= form_tag(master_files_path, id: 'dropbox_form', method: 'post') do %>
       <%= hidden_field_tag("workflow") %>
       <input type="hidden" name="container_id" value="<%=h @media_object.id %>"/>
       <%= button_tag("Open Dropbox", type: 'button', class: 'btn btn-large btn-primary', id: "browse-btn",
-      'data-toggle' => 'browse-everything', 'data-route' => browse_everything_engine.root_path,
-      'data-target' => '#dropbox_form', 'data-context' => @media_object.collection.id ) %>
-      <% end %>
-      <%= render partial: "dropbox_details" %>
-    </div>
+        'data-toggle' => 'browse-everything', 'data-route' => browse_everything_engine.root_path,
+        'data-target' => '#dropbox_form', 'data-context' => @media_object.collection.id ) %>
+    <% end %>
+    <%= render partial: "dropbox_details" %>
+  </div>
 
-    <%= render "workflow_buttons", form: 'master_files_form' %>
+  <%= render "workflow_buttons", form: 'master_files_form' %>
