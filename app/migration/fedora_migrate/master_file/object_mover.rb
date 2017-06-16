@@ -60,7 +60,7 @@ module FedoraMigrate
         return unless source.datastreams.keys.include?(MH_METADATA_DATASTREAM)
         mover = FedoraMigrate::MasterFile::MhMetadataDatastreamMover.new(source.datastreams[MH_METADATA_DATASTREAM], target)
         result = mover.migrate
-        if target.workflow_name.nil? || (not MasterFile::WORKFLOWS.include?(target.workflow_name))
+        if target.workflow_name.nil? || (not ::MasterFile::WORKFLOWS.include?(target.workflow_name))
           target.workflow_name = target.file_format == 'Sound' ? 'fullaudio' : 'avalon'
         end
         result

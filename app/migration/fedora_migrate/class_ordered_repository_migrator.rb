@@ -20,7 +20,7 @@ module FedoraMigrate
       @overwrite = overwrite
       class_order.each do |klass|
         ::MediaObject.skip_callback(:save, :before, :update_dependent_properties!) if klass == ::MediaObject
-        Parallel.map(gather_pids_for_class(klass), in_thread: parallel_threads, progress: "Migrating #{klass.to_s}") do |pid|
+        Parallel.map_with_index(gather_pids_for_class(klass), in_processes: parallel_processes, progress: "Migrating #{klass.to_s}") do |pid, i|
           next unless qualifying_pid?(pid, klass)
           # Let solr catch up
           ActiveFedora::SolrService.instance.conn.commit if (i % 100 == 0)
