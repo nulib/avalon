@@ -41,22 +41,22 @@ EOC
       end
       ids = ENV['pids'].split(',') unless ENV['pids'].nil?
       ids = Array(ids) | File.readlines(ENV['pidfile']).map(&:strip) unless ENV['pidfile'].nil?
-      parallel_threads = ENV['parallel_threads']
+      parallel_processes = ENV['parallel_processes']
       overwrite = !!ENV['overwrite']
 
       #disable callbacks
       Admin::Collection.skip_callback(:save, :around, :reindex_members)
-      ::MediaObject.skip_callback(:save, :before, :update_dependent_properties!)
+      #::MediaObject.skip_callback(:save, :before, :update_dependent_properties!)
 
-      models = [Admin::Collection, ::MediaObject, ::MasterFile, ::Derivative, ::Lease]
-      migrator = FedoraMigrate::ClassOrderedRepositoryMigrator.new('avalon', class_order: models, parallel_threads: parallel_threads)
+      models = [Admin::Collection, ::Lease, ::MediaObject, ::MasterFile, ::Derivative]
+      migrator = FedoraMigrate::ClassOrderedRepositoryMigrator.new('avalon', class_order: models, parallel_processes: parallel_processes)
       migrator.migrate_objects(ids, overwrite)
       migrator
     end
 
     desc "Migrate my database"
     task db: :environment do
-      Bookmark.all.each do |b|
+      Bookmark.find_each do |b|
         status_record = MigrationStatus.find_or_create_by(source_class: Bookmark.name, f3_pid: "Bookmark:#{b.id}")
         next if status_record.status == "completed"
         status_record.update_attributes status: "migrate", log: nil
@@ -71,7 +71,7 @@ EOC
           status_record.update_attributes status: "failed", log: %{#{e.class.name}: "#{e.message}"}
         end
       end
-      AvalonClip.all.each do |anno|
+      AvalonClip.find_each do |anno|
         status_record = MigrationStatus.find_or_create_by(source_class: AvalonClip.name, f3_pid: "AvalonClip:#{anno.id}")
         next if status_record.status == "completed"
         status_record.update_attributes status: "migrate", log: nil
@@ -87,7 +87,7 @@ EOC
           status_record.update_attributes status: "failed", log: %{#{e.class.name}: "#{e.message}"}
         end
       end
-      AvalonMarker.all.each do |anno|
+      AvalonMarker.find_each do |anno|
         status_record = MigrationStatus.find_or_create_by(source_class: AvalonMarker.name, f3_pid: "AvalonMarker:#{anno.id}")
         next if status_record.status == "completed"
         status_record.update_attributes status: "migrate", log: nil

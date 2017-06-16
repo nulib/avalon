@@ -19,16 +19,24 @@ module FedoraMigrate
       @pids_whitelist = pids
       @overwrite = overwrite
       class_order.each do |klass|
+        ::MediaObject.skip_callback(:save, :before, :update_dependent_properties!) if klass == ::MediaObject
         Parallel.map(gather_pids_for_class(klass), in_thread: parallel_threads, progress: "Migrating #{klass.to_s}") do |pid|
           next unless qualifying_pid?(pid, klass)
+          # Let solr catch up
+          ActiveFedora::SolrService.instance.conn.commit if (i % 100 == 0)
+          ActiveFedora::SolrService.instance.conn.optimize if (i % 1000 == 0)
           remove_object(pid, klass) unless overwrite?
           migrate_object(source_object(pid), klass)
         end
+        ::MediaObject.set_callback(:save, :before, :update_dependent_properties!) if klass == ::MediaObject
       end
       class_order.each do |klass|
         if second_pass_needed?(klass)
-          Parallel.map(gather_pids_for_class(klass), in_thread: parallel_threads, progress: "Migrating #{klass.to_s} (second pass)") do |pid|
-            next unless qualifying_pid?(pid, klass)
+          Parallel.map_with_index(gather_pids_for_class(klass), in_processes: parallel_processes, progress: "Migrating #{klass.to_s} (second pass)") do |pid, i|
+            next unless qualifying_pid?(pid, klass, :second_pass)
+            # Let solr catch up
+            ActiveFedora::SolrService.instance.conn.commit if (i % 100 == 0)
+            ActiveFedora::SolrService.instance.conn.optimize if (i % 1000 == 0)
             migrate_object(source_object(pid), klass, :second_pass)
           end
         end
@@ -36,14 +44,18 @@ module FedoraMigrate
       @report.reload
     end
 
-    def migration_required?(pid, klass)
+    def migration_required?(pid, klass, method=:migrate)
       status_report = MigrationStatus.find_by(source_class: klass, f3_pid: pid, datastream: nil)
-      status_report.nil? || (status_report.status != 'completed') || overwrite?
+      status_report.nil? ||
+        (status_report.status != 'completed' && status_report.status != 'waiting' && method == :migrate) ||
+        (status_report.status != 'completed' && method == :second_pass) ||
+        overwrite?
     end
 
     private
 
       def gather_pids_for_class(klass)
+        # TODO make this faster by querying for @pids_whitelist instead of all objects
         query = "SELECT ?pid WHERE { ?pid <info:fedora/fedora-system:def/model#hasModel> <#{class_to_model_name(klass)}> }"
         # Query and filter using pids whitelist
         pids = FedoraMigrate.source.connection.sparql(query)["pid"].collect {|pid| pid.split('/').last}
@@ -70,7 +82,7 @@ module FedoraMigrate
         return nil unless target
         target_id = target.id
         target_class = target.class
-        success = target.destroy.eradicate
+        success = target.delete.eradicate
         raise RuntimeError("Failed to cleanout object: #{target_id}") unless success
         target_class.new(id: target_id)
       end
@@ -93,7 +105,7 @@ module FedoraMigrate
               end
             end
             status_record.update_attributes status: method.to_s, log: nil
-            options[:report] = @report.reload[source.pid]
+            options[:report] = @report.results[source.pid] = reload_single_item_report(source.pid) if method == :second_pass
             result.object = object_mover(klass).new(source, target, options).send(method)
             status_record.reload
             if status_record.status == "failed"
@@ -137,13 +149,13 @@ module FedoraMigrate
         @options[:class_order]
       end
 
-      def parallel_threads
-        @options[:parallel_threads] || (Parallel.processor_count - 2)
+      def parallel_processes
+        (@options[:parallel_processes] || (Parallel.processor_count - 2)).to_i
       end
 
-      def qualifying_pid?(pid, klass)
+      def qualifying_pid?(pid, klass, method=:migrate)
         name = pid.split(/:/).first
-        name.match(namespace) && migration_required?(pid, klass)
+        name.match(namespace) && migration_required?(pid, klass, method)
       end
 
       def parse_model_name(object)
@@ -157,6 +169,12 @@ module FedoraMigrate
 
       def construct_migrate_from_uri(pid)
         RDF::URI.new(FedoraMigrate.fedora_config.credentials[:url]) / "/objects/#{pid}"
+      end
+
+      def reload_single_item_report(pid)
+        path = @report.path
+        file = File.join(path, pid.tr(':', "_") + ".json")
+        JSON.parse(File.read(file))
       end
   end
 end
