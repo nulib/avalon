@@ -1,6 +1,6 @@
-require 'ezid-client'
+unless ENV['EZID_DEFAULT_SHOULDER'].nil?
+  require 'ezid-client'
 
-unless Ezid::Client.config.default_shoulder.nil?
   Avalon::Permalink.on_generate do |obj, url|
     metadata = {
       '_target' => url,

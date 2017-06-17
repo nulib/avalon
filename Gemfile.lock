@@ -163,12 +163,12 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    active-fedora (11.2.0)
+    active-fedora (11.3.0)
       active-triples (~> 0.11.0)
       activemodel (>= 4.2, < 6)
       activesupport (>= 4.2.4, < 6)
       deprecation
-      ldp (~> 0.6.0)
+      ldp (~> 0.7.0)
       rsolr (>= 1.1.2, < 3)
       ruby-progressbar (~> 1.0)
       solrizer (>= 3.4, < 5)
@@ -471,7 +471,7 @@ GEM
     kaminari-core (1.0.1)
     launchy (2.4.3)
       addressable (~> 2.3)
-    ldp (0.6.4)
+    ldp (0.7.0)
       deprecation
       faraday
       http_logger
@@ -492,7 +492,7 @@ GEM
       railties (>= 4, < 5.2)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    mail (2.6.5)
+    mail (2.6.6)
       mime-types (>= 1.16, < 4)
     marc (1.0.0)
       scrub_rb (>= 1.0.1, < 2)
@@ -771,7 +771,7 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     stackprof (0.2.10)
-    stomp (1.4.3)
+    stomp (1.4.4)
     sxp (1.0.0)
       rdf (~> 2.0)
     term-ansicolor (1.6.0)
