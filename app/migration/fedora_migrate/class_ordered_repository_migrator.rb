@@ -18,8 +18,10 @@ module FedoraMigrate
     def migrate_objects(pids = nil, overwrite = false)
       @pids_whitelist = pids
       @overwrite = overwrite
+      ::MasterFile.skip_callback(:save, :after, :update_stills_from_offset!)
+      ::MediaObject.skip_callback(:save, :after, :update_dependent_permalinks_job)
+      ::MediaObject.skip_callback(:save, :before, :update_dependent_properties!)
       class_order.each do |klass|
-        ::MediaObject.skip_callback(:save, :before, :update_dependent_properties!) if klass == ::MediaObject
         Parallel.map_with_index(gather_pids_for_class(klass), in_processes: parallel_processes, progress: "Migrating #{klass.to_s}") do |pid, i|
           next unless qualifying_pid?(pid, klass)
           # Let solr catch up
@@ -28,8 +30,10 @@ module FedoraMigrate
           remove_object(pid, klass) unless overwrite?
           migrate_object(source_object(pid), klass)
         end
-        ::MediaObject.set_callback(:save, :before, :update_dependent_properties!) if klass == ::MediaObject
       end
+      ::MediaObject.set_callback(:save, :before, :update_dependent_properties!)
+      ::MediaObject.set_callback(:save, :after, :update_dependent_permalinks_job)
+      ::MasterFile.set_callback(:save, :after, :update_stills_from_offset!)
       class_order.each do |klass|
         if second_pass_needed?(klass)
           Parallel.map_with_index(gather_pids_for_class(klass), in_processes: parallel_processes, progress: "Migrating #{klass.to_s} (second pass)") do |pid, i|
