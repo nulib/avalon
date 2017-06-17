@@ -7,7 +7,6 @@ class AttachDerivativeJob < ActiveJob::Base
     unless derivative.absolute_location =~ %r{^s3://}
       location = derivative.absolute_location.split(/\//)[-4..-2].join('/')
       filename = File.basename(derivative.absolute_location)
-      client = Aws::S3::Client.new
       bucket = Aws::S3::Bucket.new(name: Settings.encoding.derivative_bucket)
       source_prefix = Pathname("pending/#{location}/")
       target_prefix = Pathname("#{derivative.master_file_id}/#{derivative.quality}/")
@@ -15,12 +14,9 @@ class AttachDerivativeJob < ActiveJob::Base
       source_objects = bucket.objects(prefix: source_prefix.to_s)
       source_objects.each do |source|
         target = target_prefix.join(Pathname(source.key).relative_path_from(source_prefix)).to_s.sub(%r{/segments/},'/hls/')
-        next if bucket.object(target).exists?
-        client.copy_object({
-          copy_source: "#{source.bucket_name}/#{source.key}",
-          bucket: bucket.name,
-          key: target
-        })
+        destination = bucket.object(target)
+        next if destination.exists?
+        destination.copy_from(source, multipart_copy: source.size > (10*1024*1024))
       end
       derivative.absolute_location = "s3://#{bucket.name}/#{target_prefix}#{filename}"
       changed = true

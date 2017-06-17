@@ -30,6 +30,7 @@ class ApplicationController < ActionController::Base
   before_action :rewrite_v4_ids, if: proc{|c| request.method_symbol == :get && [params[:id], params[:content]].compact.any? { |i| i =~ /^[a-z]+:[0-9]+$/}}
 
   def rewrite_v4_ids
+    return if params[:controller] =~ /migration/
     new_id = ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:id]}"}, rows: 1, fl: 'id').first['id']
     new_content_id = params[:content] ? ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:content]}"}, rows: 1, fl: 'id').first['id'] : nil
     redirect_to(url_for(params.merge(id: new_id, content: new_content_id)))
