@@ -80,7 +80,7 @@ module MasterFileBehavior
         embed_master_file_url(self.id, only_path: false, protocol: '//')
       end
       height = is_video? ? (width/display_aspect_ratio.to_f).floor : AUDIO_HEIGHT
-      "<iframe title=\"#{ embed_title }\" src=\"#{url}\" width=\"#{width}\" height=\"#{height}\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>"
+      "<iframe title=\"#{ html_safe(embed_title) }\" src=\"#{url}\" width=\"#{width}\" height=\"#{height}\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>"
     rescue
       ""
     end
