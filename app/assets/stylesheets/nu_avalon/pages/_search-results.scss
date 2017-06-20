@@ -5,4 +5,11 @@
       padding-right: 15px;
     }
   }
+  // Metadata - bold labels
+  .document-metadata {
+    dt {
+      color: $rich-black-80;
+      font-family: $AkkuratProBold;
+    }
+  }
 }
