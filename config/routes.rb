@@ -10,6 +10,10 @@ Rails.application.routes.draw do
 
   concern :exportable, Blacklight::Routes::Exportable.new
 
+  # NU Pages routing
+  get '/help', to: 'nu_pages#help'
+  get '/aboutnu', to: 'nu_pages#about'
+
   resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do
     concerns :exportable
   end
@@ -163,10 +167,6 @@ Rails.application.routes.draw do
     mount Resque::Server, at: '/jobs'
   end
   get '/jobs', to: redirect('/')
-
-  # NU Pages routing
-  get '/help', to: 'nu_pages#help'
-  get '/aboutnu', to: 'nu_pages#about'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
