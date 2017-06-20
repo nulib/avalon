@@ -23,9 +23,9 @@ Unless required by applicable law or agreed to in writing, software distributed
       </div>
       <div class="modal-body">
 	<%= bootstrap_form_for @collection, remote: true, html: { modal: true }, format: 'json' do |f| %>
-	  <%= hidden_field_tag 'admin_collection[managers][]', user_key, class: 'col-md-5' %>
-	  <%= f.text_field :name, class: 'col-md-5' %>
-	  <%= f.text_area :description, rows: 3, class: 'col-md-5'  %>
+	  <%= hidden_field_tag 'admin_collection[managers][]', user_key %>
+	  <%= f.text_field :name %>
+	  <%= f.text_area :description, rows: 3 %>
 	  <% if @collection.new_record? || can?(:update_unit, @collection)%>
 	    <%= f.select(:unit, Admin::Collection.units) %>
 	  <% end %>

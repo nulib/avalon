@@ -19,7 +19,7 @@ Unless required by applicable law or agreed to in writing, software distributed
   <% unless @collections.empty? %>
     <h2>My Collections</h2>
 
-    <table class='table table-striped'>
+    <table id="my-collections-table" class='table table-striped'>
       <tbody>
       <% @collections.to_a.each do |collection| %>
         <tr>

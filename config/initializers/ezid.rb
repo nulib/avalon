@@ -1,7 +1,7 @@
 unless ENV['EZID_DEFAULT_SHOULDER'].nil?
   require 'ezid-client'
 
-  Avalon::Permalink.on_generate do |obj, url|
+  Permalink.on_generate do |obj, url|
     mo = case obj
     when MediaObject then obj
     when MasterFile then obj.media_object

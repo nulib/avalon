@@ -22,18 +22,23 @@
   'components/avalon-player',
   'components/block-wrapper',
   'components/buttons',
+  'components/dropdown-toggle',
   'components/facets',
   'components/mediaelement',
   'components/pagination',
   'components/playlists',
   'components/tabs',
-  'components/tree-table';
+  'components/tree-table',
+  'components/toggle',
+  'components/web-upload';
 
 // 6. Page-specific styles
 @import
   'pages/home',
   'pages/manage-content',
   'pages/manage-files',
+  'pages/media-objects',
+  'pages/my-collections',
   'pages/search-results';
 
 // 7. Themes

@@ -4,7 +4,8 @@
   background: $nu-purple;
   @include nu-button();
   &:active {
-    &:focus {
+    &:focus,
+    &:hover {
       background-color: $nu-purple-60;
       border-color: $nu-purple-60;
       color: $white;
