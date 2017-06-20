@@ -26,7 +26,7 @@ module MasterFileManagementJobs
       end
     end
 
-    def s3_to_local(source, dest)
+    def s3_to_file(source, dest)
       source_object = source.object
       FileUtils.mkdir_p File.dirname(dest.uri.path) unless File.exist? File.dirname(dest.uri.path)
       if source_object.download_file(dest.uri.path)
@@ -34,14 +34,14 @@ module MasterFileManagementJobs
       end
     end
 
-    def local_to_s3(source, dest)
+    def file_to_s3(source, dest)
       dest_object = dest.object
       if dest_object.upload_file(source.uri.path)
         FileUtils.rm(source.uri.path)
       end
     end
 
-    def local_to_local(source, dest)
+    def file_to_file(source, dest)
     	FileUtils.mkdir_p File.dirname(dest.uri.path) unless File.exist? File.dirname(dest.uri.path)
     	FileUtils.mv source.uri.path, dest.uri.path
     end

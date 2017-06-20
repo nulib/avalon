@@ -11,13 +11,13 @@ class SolrCollectionAdmin
     timestamp = Time.now.strftime('%Y%m%d%H%M%S')
     backup_name = "#{@collection}_backup_#{timestamp}"
     @conn.get("#{@collection}/update", optimize: 'true') unless optimize
-    response = @conn.get('admin/collections', action: 'BACKUP', name: backup_name, collection: @collection, location: location)
+    response = @conn.get('admin/collections', action: 'BACKUP', name: backup_name, collection: @collection, location: location, wt: 'json')
     response.body
   end
 
   def restore(location, opts={})
     raise ArgumentError, "Required parameter `name` missing or invalid" unless opts[:name]
-    params = { action: 'RESTORE', collection: @collection, location: location }.merge(opts)
+    params = { action: 'RESTORE', collection: @collection, location: location, wt: 'json' }.merge(opts)
     response = @conn.get('admin/collections', params)
     response.body
   end
