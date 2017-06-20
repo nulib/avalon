@@ -112,7 +112,7 @@ class ElasticTranscoderJob < ActiveEncode::Base
         self.input = File.join(SecureRandom.uuid,s3_object.key)
         logger.info("Copying to `#{source_bucket}/#{input}'")
         target = Aws::S3::Object.new(bucket_name: source_bucket, key: self.input)
-        target.copy_from(s3_object, multipart_copy: s3_object.size > (10*1024*1024))
+        target.copy_from(s3_object, multipart_copy: s3_object.size > 15.megabytes)
       end
     end
 
