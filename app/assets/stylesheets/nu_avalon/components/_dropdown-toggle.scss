@@ -1,0 +1,23 @@
+// Dropdown toggles - take from NU select styling
+// created a mixin due to complex selector and can't @extend directly.
+// Keep an eye if NU select styles change.
+.open > .btn-default.dropdown-toggle,
+.open > .btn-default.dropdown-toggle:focus,
+button.dropdown-toggle,
+button.dropdown-toggle:hover,
+button.dropdown-toggle:active,
+button.dropdown-toggle:focus,
+button.dropdown-toggle:active:focus {
+  @include select();
+
+  .caret {
+    display: none;
+  }
+
+}
+#sort-dropdown,
+#per_page-dropdown {
+  .dropdown-toggle {
+    color: $rich-black-50;
+  }
+}

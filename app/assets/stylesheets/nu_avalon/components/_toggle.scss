@@ -1,0 +1,35 @@
+// Local vars
+.toggle-on-style {
+  background: $rich-black-10;
+  color: $rich-black-80;
+}
+.toggle-off-style {
+  background: $rich-black-50;
+  color: $white;
+}
+
+// Autoplay toggle on/off
+.toggle {
+  &.off {
+    .toggle-handle {
+      background: $rich-black-10;
+    }
+  }
+  .toggle-handle {
+    background: $rich-black-50;
+  }
+  .toggle-on {
+    @extend .toggle-on-style;
+    &:hover,
+    &:active:focus {
+      @extend .toggle-on-style;
+    }
+  }
+  .toggle-off {
+    @extend .toggle-off-style;
+    &:hover,
+    &:active:focus {
+      @extend .toggle-off-style;
+    }
+  }
+}
