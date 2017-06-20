@@ -1,0 +1,14 @@
+// At least one place these styles are located
+// is in a modal window, importing files from Dropbox/s3
+table.treetable {
+  thead {
+    background: $nu-purple;
+    color: $white;
+    tr {
+      th {
+        border: none;
+        padding: .5rem .75rem;
+      }
+    }
+  }
+}
