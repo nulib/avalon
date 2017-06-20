@@ -6,5 +6,19 @@
         color: $nu-purple;
       }
     }
+    i.now-playing {
+      color: $nu-purple;
+    }
+  }
+}
+.content {
+  #accordion {
+    ul > li {
+      // Sections panel group
+      &.stream-li {
+        background: none;
+        padding: 5px;
+      }
+    }
   }
 }
