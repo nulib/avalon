@@ -16,7 +16,7 @@ class AttachDerivativeJob < ActiveJob::Base
         target = target_prefix.join(Pathname(source.key).relative_path_from(source_prefix)).to_s.sub(%r{/segments/},'/hls/')
         destination = bucket.object(target)
         next if destination.exists?
-        destination.copy_from(source, multipart_copy: source.size > (10*1024*1024))
+        destination.copy_from(source, multipart_copy: source.size > 15.megabytes)
       end
       derivative.absolute_location = "s3://#{bucket.name}/#{target_prefix}#{filename}"
       changed = true

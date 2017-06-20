@@ -1,12 +1,12 @@
-/* 
+/*
  * Copyright 2011-2017, The Trustees of Indiana University and Northwestern
  *   University.  Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
- * 
+ *
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed
  *   under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
  *   CONDITIONS OF ANY KIND, either express or implied. See the License for the
@@ -14,10 +14,37 @@
  * ---  END LICENSE_HEADER BLOCK  ---
 */
 
-#header-navbar {display: none;}
+// New
+header,
+footer,
+#administrative_options,
+#right-column,
+#share-button,
+#share-list,
+#top-nav {
+  display: none;
+}
+.standard-page {
+  #main-content {
+    min-height: auto;
+    margin-bottom: 0;
+  }
+  #page {
+    margin: 0;
+    padding: 0;
 
-footer {display: none;}
+    section {
+      margin-bottom: 0;
+    }
+  }
+}
+@media screen and (max-width: 1145px) {
+  .standard-page #page {
+    margin: 0;
+  }
+}
 
+// Old
 body {
   background-color: #000000;
   width: 100%;
@@ -25,11 +52,9 @@ body {
   margin: 0;
   overflow: hidden;
 }
-
 .container-fluid {
   padding: 0;
 }
-
 .mejs-layers {
     pointer-events: none !important;
 }
