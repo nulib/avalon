@@ -9,6 +9,12 @@
         background-image: none;
       }
     }
+    // Close x button for alert info (currently grey) style
+    &.alert-info {
+      .close {
+        color: $nu-purple;
+      }
+    }
   }
 }
 
@@ -67,31 +73,6 @@
       }
       > span {
         color: $white;
-      }
-    }
-  }
-}
-#sortAndPerPage {
-  .btn-group {
-    &.open {
-      button {
-        background: $nu-purple-60;
-      }
-    }
-    .dropdown-toggle {
-      color: $white;
-      .caret {
-        color: $white;
-      }
-    }
-  }
-  .dropdown-menu {
-    padding-left: 0;
-    > li {
-      background: none;
-      padding: .25rem .5rem;
-      a {
-        color: $nu-purple;
       }
     }
   }
