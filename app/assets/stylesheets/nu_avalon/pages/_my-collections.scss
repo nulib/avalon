@@ -1,0 +1,14 @@
+#my-collections-table {
+  td {
+    &:nth-child(1) {
+      width: 25%;
+    }
+    &:nth-child(4) {
+      width: 40%;
+    }
+    &:last-child {
+      text-align: right;
+      width: 80px;
+    }
+  }
+}
