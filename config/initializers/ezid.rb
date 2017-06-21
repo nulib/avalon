@@ -1,3 +1,5 @@
+require File.join(Rails.root, 'app/models/concerns/permalink')
+
 unless ENV['EZID_DEFAULT_SHOULDER'].nil?
   require 'ezid-client'
 
@@ -17,5 +19,16 @@ unless ENV['EZID_DEFAULT_SHOULDER'].nil?
     }
     identifier = Ezid::Identifier.mint(metadata)
     "http://n2t.net/#{identifier.to_s}"
+  end
+end
+
+module Permalink
+  def permalink_with_query(query_vars = {})
+    val = self.attributes['permalink']
+    if val
+      val = File.join(val, query_vars.delete(:urlappend)) if query_vars&.key?(:urlappend) && val =~ /ark:/
+      val = "#{val}?#{query_vars.to_query}" if query_vars.present?
+    end
+    val ? val.to_s : nil
   end
 end
