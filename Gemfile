@@ -151,7 +151,7 @@ group :aws, optional: true do
   gem 'aws-sdk-rails'
   gem 'cloudfront-signer'
   gem 'zk'
-  gem 'active_elastic_job', '~> 1.7'
+  gem 'active_elastic_job', '~> 2.0'
 end
 
 group :zoom, optional: true do
