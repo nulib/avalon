@@ -29,6 +29,10 @@ class ApplicationController < ActionController::Base
   around_action :handle_api_request, if: proc{|c| request.format.json?}
   before_action :rewrite_v4_ids, if: proc{|c| request.method_symbol == :get && [params[:id], params[:content]].compact.any? { |i| i =~ /^[a-z]+:[0-9]+$/}}
 
+  def alive
+    render inline: 'OK'
+  end
+
   def rewrite_v4_ids
     return if params[:controller] =~ /migration/
     new_id = ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:id]}"}, rows: 1, fl: 'id').first['id']
