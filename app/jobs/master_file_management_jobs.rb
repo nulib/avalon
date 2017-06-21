@@ -19,15 +19,15 @@ module MasterFileManagementJobs
     queue_as :master_file_management_move
 
     def s3_to_s3(source, dest)
-      source_object = source.object
-      dest_object = dest.object
+      source_object = FileLocator::S3File.new(source.source).object
+      dest_object = FileLocator::S3File.new(dest.source).object
       if dest_object.copy_from(source_object, multipart_copy: source_object.size > 15.megabytes)
         source_object.delete
       end
     end
 
     def s3_to_file(source, dest)
-      source_object = source.object
+      source_object = FileLocator::S3File.new(source.source).object
       FileUtils.mkdir_p File.dirname(dest.uri.path) unless File.exist? File.dirname(dest.uri.path)
       if source_object.download_file(dest.uri.path)
         source_object.delete
@@ -35,7 +35,7 @@ module MasterFileManagementJobs
     end
 
     def file_to_s3(source, dest)
-      dest_object = dest.object
+      dest_object = FileLocator::S3File.new(dest.source).object
       if dest_object.upload_file(source.uri.path)
         FileUtils.rm(source.uri.path)
       end
@@ -76,7 +76,7 @@ module MasterFileManagementJobs
       if locator.exists?
         case locator.uri.scheme
         when 'file' then File.delete(oldpath)
-        when 's3'   then locator.object.delete
+        when 's3'   then FileLocator::S3File.new(locator.source).object.delete
         end
       	masterfile.file_location = ""
       	masterfile.save
