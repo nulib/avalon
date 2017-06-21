@@ -13,7 +13,8 @@ Rails.application.routes.draw do
   # NU Pages routing
   get '/help', to: 'nu_pages#help'
   get '/aboutnu', to: 'nu_pages#about'
-
+  get 'is_it_alive', to: 'application#alive'
+  
   resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do
     concerns :exportable
   end
