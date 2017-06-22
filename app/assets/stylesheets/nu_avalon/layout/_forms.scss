@@ -16,3 +16,15 @@
     }
   }
 }
+
+// Intended for manage content legend items initially
+// Keep an eye if this impacts other usages of <legend>
+legend {
+  border-bottom: 2px solid $medium-grey;
+  margin-bottom: 1rem;
+  padding: 0 0 .5rem 0;
+}
+// Sub legends (indented) on manage content page
+fieldset fieldset legend {
+  font-size: 21px;
+}
