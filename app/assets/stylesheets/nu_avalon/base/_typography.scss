@@ -4,9 +4,27 @@ html {
 #page h1 {
   font-family: $CamptonBook;
 }
-h2, h3 {
-  font-family: $CamptonBold;
-}
 .fa {
   font-family: "FontAwesome" !important;
+}
+
+h1, h2 {
+  font: 46px/1.2em $CamptonBook;
+  color: $nu-purple;
+  margin-bottom: 1rem;
+}
+h3 {
+  font: 34px/1.2em $CamptonBold;
+  color: $nu-purple;
+  margin-bottom: .5rem;
+}
+h4 {
+  font: 26px/1.2em $AkkuratProRegular;
+  color: $rich-black-50;
+  margin-bottom: 1rem;
+}
+h5 {
+  font: 21px/1.3em $AkkuratProRegular;
+  color: $nu-purple;
+  margin-bottom: 1rem;
 }
