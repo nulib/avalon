@@ -21,7 +21,6 @@ function removeNode(el) {
 }
 
 function removeLoader() {
-  console.log('removeLoader');
   var loader = document.getElementsByClassName('loader');
   if (loader.length > 0) {
     loader[0].parentNode.removeChild(loader[0]);
@@ -43,11 +42,15 @@ function addLoader(el) {
 }
 
 function addPoller(counter) {
+  var totalTimeEl = null,
+    durationText = '';
+
   if (counter > 0) {
-    var totalTimeEl = document.getElementsByClassName('mejs-duration');
+    totalTimeEl = document.getElementsByClassName('mejs-duration');
     if (totalTimeEl.length > 0) {
+      durationText = totalTimeEl[0].innerText || totalTimeEl[0].textContent;
       // Is it all Os or valid time?
-      if (totalTimeEl.innerText === '00:00') {
+      if (durationText === '00:00' || durationText === '') {
         rePoll(counter);
       } else {
         removeLoader();
