@@ -1,98 +1,93 @@
-var NU_AVALON_JS = {
-  addLoader: function (el) {
-    var loaderEl = document.createElement('div'),
-      playerType = this.getPlayerType(el);
+function addLoader(el) {
+  var loaderEl = document.createElement('div'),
+    playerType = getPlayerType(el);
 
-    // Keep track of which element we're putting the loader on, for sizing purpose
-    this.mejsEl = el.firstElementChild;
-    if (this.mejsEl !== null) {
-      loaderEl.className = (playerType === 'audio') ? 'loader-bar' : 'loader';
-      this.mejsEl.classList.add('loader-opacity');
-      this.mejsEl.appendChild(loaderEl);
-      this.addPoller(15);
-      this.insuranceCleanup(20000);
-    }
-  },
+  loaderEl.className = (playerType === 'audio') ? 'loader-bar' : 'loader';
 
-  addPoller: function (counter) {
-    var totalTimeEl,
-      totalTimeEls,
-      durationText = '';
+  // Add a faded-out class to the player behind the loader
+  el[0].classList.add('loader-opacity');
 
-    if (counter > 0) {
-      totalTimeEls = document.getElementsByClassName('mejs-duration');
-      if (totalTimeEls.length > 0) {
-        totalTimeEl = totalTimeEls[0];
-        durationText = totalTimeEl.innerText || totalTimeEl.textContent;
-        // Is it all Os or valid time?
-        if (durationText === '00:00' || durationText === '') {
-          this.rePoll(counter);
-        } else {
-          this.removeLoader();
-        }
+  el[0].appendChild(loaderEl);
+  addPoller(15);
+  insuranceCleanup(20000);
+}
+
+function addPoller(counter) {
+  var totalTimeEl = null,
+    durationText = '';
+
+  if (counter > 0) {
+    totalTimeEl = document.getElementsByClassName('mejs-duration');
+    if (totalTimeEl.length > 0) {
+      durationText = totalTimeEl[0].innerText || totalTimeEl[0].textContent;
+      // Is it all Os or valid time?
+      if (durationText === '00:00' || durationText === '') {
+        rePoll(counter);
       } else {
-        this.rePoll(counter);
+        removeLoader();
       }
-    }
-  },
-
-  // Find any alerts on page
-  checkAlerts: function () {
-    var alertElements = document.getElementsByClassName('alert-success'),
-      el;
-
-    if (alertElements.length > 0) {
-      el = alertElements[0];
-      // Fade out
-      setTimeout(function () {
-        el.style.opacity = '0';
-        NU_AVALON_JS.removeNode(el);
-      }, 5000);
-    }
-  },
-
-  getAvalonPlayer: function () {
-    var els = document.getElementsByClassName('avalon-player');
-    if (els.length > 0) {
-      this.addLoader(els[0]);
-    }
-  },
-
-  getPlayerType: function (el) {
-    var playerType = (el.getElementsByTagName('audio').length > 0) ? 'audio' : 'video';
-    return playerType;
-  },
-
-  // Insurance loader removal after 20 seconds
-  insuranceCleanup: function (milliseconds) {
-    setTimeout(function() {
-      NU_AVALON_JS.removeLoader();
-    }, milliseconds);
-  },
-
-  mejsEl: null,
-
-  rePoll: function (counter) {
-    setTimeout(function() {
-      NU_AVALON_JS.addPoller(counter - 1);
-    }, 1000);
-  },
-
-  // Remove a node, after slight delay
-  removeNode: function (el) {
-    setTimeout(function () {
-      el.parentNode.removeChild(el);
-    }, 500);
-  },
-
-  removeLoader: function () {
-    var loaders = document.querySelectorAll('.loader, .loader-bar')
-    if (loaders.length > 0) {
-      this.mejsEl.classList.remove('loader-opacity');
-      this.mejsEl.removeChild(loaders[0]);
+    } else {
+      rePoll(counter);
     }
   }
 }
 
-NU_AVALON_JS.checkAlerts();
-NU_AVALON_JS.getAvalonPlayer();
+// Find any alerts on page
+function checkAlerts() {
+  var alertElements = document.getElementsByClassName('alert-success'),
+    el;
+
+  if (alertElements.length > 0) {
+    el = alertElements[0];
+    // Fade out
+    setTimeout(function () {
+      el.style.opacity = '0';
+      removeNode(el);
+    }, 5000);
+  }
+}
+
+function getAvalonPlayer() {
+  var el = document.getElementsByClassName('avalon-player');
+  if (el.length > 0) {
+    addLoader(el);
+  }
+}
+
+function getPlayerType(el) {
+  var playerType = (el[0].getElementsByTagName('audio').length > 0) ? 'audio' : 'video';
+  return playerType;
+}
+
+// Insurance loader removal after 20 seconds
+function insuranceCleanup(milliseconds) {
+  setTimeout(function() {
+    removeLoader();
+  }, milliseconds);
+}
+
+function rePoll(counter) {
+  setTimeout(function() {
+    addPoller(counter - 1);
+  }, 1000);
+}
+
+// Remove a node, after slight delay
+function removeNode(el) {
+  setTimeout(function () {
+    el.parentNode.removeChild(el);
+  }, 500);
+}
+
+function removeLoader() {
+  var loader = document.querySelectorAll('.loader, .loader-bar'),
+    parentNode = null;
+  if (loader.length > 0) {
+    parentNode = loader[0].parentNode;
+    parentNode.classList.remove('loader-opacity');
+    parentNode.removeChild(loader[0]);
+  }
+}
+
+checkAlerts();
+getAvalonPlayer();
