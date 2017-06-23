@@ -1,6 +1,11 @@
+// Must set a position for placement of loader
+.avalon-player > div:first-child {
+  position: relative;
+}
+
 // Circular CSS loader
 .loader {
-  font-size: 25px;
+  font-size: 30px;
   width: 1em;
   height: 1em;
   border-radius: 50%;
@@ -15,9 +20,10 @@
   margin: auto;
   position: absolute;
   z-index: 10;
-  top: 195px;
+  top: 0px;
   left: 0;
   right: 0;
+  bottom: 0;
 }
 // Horizontal CSS loader bar
 .loader-bar,
@@ -62,13 +68,6 @@
 // Fade out the element behind loader to drive home the point it's not ready
 .loader-opacity {
   opacity: .5;
-}
-
-// Mobile
-@media screen and (max-width: 550px) {
-  .loader {
-    top: 90px;
-  }
 }
 
 @-webkit-keyframes load1 {
