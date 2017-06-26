@@ -86,13 +86,13 @@ var NU_AVALON_JS = {
   },
 
   removeLoader: function () {
-    var loaders = document.querySelectorAll('.loader, .loader-bar')
+    var loaders = document.querySelectorAll('.loader, .loader-bar');
     if (loaders.length > 0) {
       this.mejsEl.classList.remove('loader-opacity');
       this.mejsEl.removeChild(loaders[0]);
     }
   }
-}
+};
 
 NU_AVALON_JS.checkAlerts();
 NU_AVALON_JS.getAvalonPlayer();
