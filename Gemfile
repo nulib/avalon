@@ -92,6 +92,7 @@ gem 'mediaelement-track-scrubber', git: 'https://github.com/avalonmediasystem/me
 gem 'resque', '~> 1.26.0'
 gem 'resque-scheduler', '~> 4.3.0'
 gem 'redis-rails'
+gem 'redis-rack-cache'
 
 group :production do
   gem 'lograge'
