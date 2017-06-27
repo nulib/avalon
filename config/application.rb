@@ -45,11 +45,6 @@ module Avalon
         db: 0,
         namespace: 'avalon'
       }
-
-      config.action_dispatch.rack_cache = {
-        metastore: "redis://#{redis_host}:#{redis_port}/1/metastore",
-        entitystore: "redis://#{redis_host}:#{redis_port}/1/entitystore"
-      }
     end
 
     config.action_dispatch.default_headers = { 'X-Frame-Options' => 'ALLOWALL' }
