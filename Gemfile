@@ -95,6 +95,7 @@ gem 'redis-rails'
 
 group :production do
   gem 'lograge'
+  gem 'google-analytics-rails', '1.1.0'
 end
 
 group :development, :test do
