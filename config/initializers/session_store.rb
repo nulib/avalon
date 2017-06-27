@@ -1,9 +1,15 @@
-# Be sure to restart your server when you modify this file.
-
-#Avalon::Application.config.session_store :cookie_store, :key => '_avalon_session'
-Avalon::Application.config.session_store :active_record_store
-
-# Use the database for sessions instead of the cookie-based default,
-# which shouldn't be used to store highly confidential information
-# (create the session table with "rails generate session_migration")
-# Avalon::Application.config.session_store :active_record_store
+if ENV['REDIS_HOST']
+  Avalon::Application.config.session_store :redis_store, {
+    servers: [
+      {
+        host: ENV['REDIS_HOST'],
+        port: ENV['REDIS_PORT'] || 6379,
+        db: 0,
+        namespace: 'avalon'
+      },
+    ],
+    expire_after: 90.minutes
+  }
+else
+  Avalon::Application.config.session_store :active_record_store
+end

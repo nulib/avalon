@@ -36,11 +36,19 @@ module Avalon
     config.active_job.queue_adapter = :resque
 
     if ENV['REDIS_HOST']
+      redis_host = ENV['REDIS_HOST']
+      redis_port = ENV['REDIS_PORT'] || 6379
+
       config.cache_store = :redis_store, {
-        host: ENV['REDIS_HOST'],
-        port: ENV['REDIS_PORT'] || 6379,
+        host: redis_host,
+        port: redis_port,
         db: 0,
         namespace: 'avalon'
+      }
+
+      config.action_dispatch.rack_cache = {
+        metastore: "redis://#{redis_host}:#{redis_port}/1/metastore",
+        entitystore: "redis://#{redis_host}:#{redis_port}/1/entitystore"
       }
     end
 
