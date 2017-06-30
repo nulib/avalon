@@ -47,5 +47,6 @@ Unless required by applicable law or agreed to in writing, software distributed
          from a CDN -->
     <%= javascript_include_tag "application" %>
     <%= yield :page_scripts %>
+    <%= analytics_init if GoogleAnalytics.valid_tracker? %>
   </body>
 </html>
