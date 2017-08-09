@@ -39,4 +39,11 @@
       }
     }
   }
+  // Add marker to playlist
+  .mejs-add-marker-to-playlist-item {
+    button,
+    button:hover {
+      background: transparent image_url('add_bookmark.svg') no-repeat;
+    }
+  }
 }

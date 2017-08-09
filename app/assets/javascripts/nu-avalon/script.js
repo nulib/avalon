@@ -1,10 +1,23 @@
+/**
+ * This name spaced file exposes custom NU Avalon JS functionality
+ */
 var NU_AVALON_JS = {
   addLoader: function (el) {
     var loaderEl = document.createElement('div'),
-      playerType = this.getPlayerType(el);
+      playerType = this.getPlayerType(el),
+      isIFrame = window != window.top;
 
-    // Keep track of which element we're putting the loader on, for sizing purpose
-    this.mejsEl = el.firstElementChild;
+    if (!isIFrame) {
+      // Regular way to add the loader in Avalon app
+      this.mejsEl = el.firstElementChild;
+    } else {
+      // We're in an iFrame - most likely embedded and need to
+      // mount the loader to a non-Rails generated element
+      this.mejsEl = document.getElementById('content');
+      // Center the spinner
+      loaderEl.setAttribute('style', 'top: 0; bottom: 0');
+    }
+
     if (this.mejsEl !== null) {
       loaderEl.className = (playerType === 'audio') ? 'loader-bar' : 'loader';
       this.mejsEl.classList.add('loader-opacity');
@@ -14,6 +27,11 @@ var NU_AVALON_JS = {
     }
   },
 
+  /**
+   * Keep checking to see if MediaElement has updated the time duration
+   * field, which is a roundabout way of identifying a 'ready' state.
+   * This is a temporary fix which will not be needed with MediaElement 4 upgrade.
+   */
   addPoller: function (counter) {
     var totalTimeEl,
       totalTimeEls,
@@ -36,7 +54,8 @@ var NU_AVALON_JS = {
     }
   },
 
-  // Find any alerts on page
+  // Find any alerts on page, and fade them out after a few seconds
+  // Note this is separate from other scripts on the page
   checkAlerts: function () {
     var alertElements = document.getElementsByClassName('alert-success'),
       el;
@@ -86,10 +105,18 @@ var NU_AVALON_JS = {
   },
 
   removeLoader: function () {
-    var loaders = document.querySelectorAll('.loader, .loader-bar');
+    var loaders = document.querySelectorAll('.loader, .loader-bar'),
+      loaderOpacityEls = document.querySelectorAll('.loader-opacity'),
+      loaderCount = (loaderOpacityEls.length > 0) ? loaderOpacityEls.length : 0;
+
     if (loaders.length > 0) {
-      this.mejsEl.classList.remove('loader-opacity');
       this.mejsEl.removeChild(loaders[0]);
+    }
+    // Need to separate this from above conditional for embedded players
+    if (loaderCount > 0) {
+      for (var i = 0; i < loaderCount; i++) {
+        loaderOpacityEls[i].classList.remove('loader-opacity');
+      }
     }
   }
 };
