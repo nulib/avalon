@@ -12,6 +12,10 @@ Rails.application.routes.draw do
 
   concern :exportable, Blacklight::Routes::Exportable.new
 
+  # NU Pages routing
+  get '/help', to: 'nu_pages#help'
+  get '/aboutnu', to: 'nu_pages#about'
+
   get '/mejs/:version', to: 'application#mejs'
 
   resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do

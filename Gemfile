@@ -24,7 +24,7 @@ gem 'fedora-migrate', '~> 0.5.0'
 gem 'rdf-rdfxml'
 
 # Samvera version pins
-gem 'blacklight', '~> 6.6'
+gem 'blacklight', '=6.11.0'
 gem 'rdf', '~> 2.2'
 gem 'rsolr', '~> 1.0'
 
@@ -35,7 +35,7 @@ gem 'activerecord-session_store'
 gem 'acts_as_list'
 gem 'api-pagination'
 gem 'avalon-about', git: 'https://github.com/avalonmediasystem/avalon-about.git', tag: 'avalon-r6'
-gem 'bootstrap-toggle-rails'
+gem 'bootstrap-toggle-rails', git: 'https://github.com/rkallensee/bootstrap-toggle-rails.git'
 gem 'bootstrap_form'
 gem 'speedy-af', '~> 0.1.1'
 
