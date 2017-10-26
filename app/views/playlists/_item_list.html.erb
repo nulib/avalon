@@ -22,7 +22,7 @@ Unless required by applicable law or agreed to in writing, software distributed
     <div class="pull-right" id="edit-playlist-button">
       <%= link_to edit_playlist_path(@playlist) do %>
       <button type="button" class="btn btn-default btn-xs" style="display:block;" >
-        <span class="fa fa-edit"> Edit Playlist</span>
+        <span class="fa fa-edit"></span> Edit Playlist
       </button>
       <% end %>
     </div>
@@ -30,7 +30,7 @@ Unless required by applicable law or agreed to in writing, software distributed
    <% if current_ability.can? :duplicate, @playlist %>
      <%= button_tag( type: 'button', data: { playlist: @playlist },
        class: 'copy-playlist-button btn btn-default btn-xs pull-right') do
-       "<span class='fa fa-clone'> Copy Playlist </span>".html_safe
+       "<span class='fa fa-clone'></span> Copy Playlist".html_safe
       end
       %>
     <% end %>

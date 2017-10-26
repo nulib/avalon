@@ -47,3 +47,44 @@
     }
   }
 }
+
+
+
+
+/**
+ * Mediaelement 4 style overrides / edits
+ */
+.mejs__style_helper {
+  background: transparent image-url('/assets/mediaelement/mejs-controls.svg');
+  background-color: transparent;
+}
+.mejs__button {
+  &.mejs__volume-button {
+    > button {
+      @extend .mejs__style_helper;
+      background-position: -60px 0;
+      &:hover {
+        @extend .mejs__style_helper;
+        background-position: -60px 0;
+      }
+    }
+  }
+  &.mejs__qualities-button,
+  &.mejs__fullscreen-button {
+    > button {
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
+
+  &.mejs__add-to-playlist-button {
+    > button {
+      &:hover {
+        background: transparent image-url('/assets/mejs4/add-to-playlist-control.png') no-repeat;
+        background-size: contain;
+      }
+    }
+  }
+
+}
