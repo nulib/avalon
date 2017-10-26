@@ -72,13 +72,13 @@ class PlaylistsController < ApplicationController
       "data": pagedPlaylists.collect do |playlist|
         copy_button = view_context.button_tag( type: 'button', data: { playlist: playlist },
           class: 'copy-playlist-button btn btn-default btn-xs') do
-          "<span class='fa fa-clone'> Copy </span>".html_safe
+          "<span class='fa fa-clone'></span> Copy".html_safe
         end
         edit_button = view_context.link_to(edit_playlist_path(playlist), class: 'btn btn-default btn-xs') do
-          "<span class='fa fa-edit'> Edit</span>".html_safe
+          "<span class='fa fa-edit'></span> Edit".html_safe
         end
         delete_button = view_context.link_to(playlist_path(playlist), method: :delete, class: 'btn btn-xs btn-danger btn-confirmation', data: {placement: 'bottom'}) do
-          "<span class='fa fa-times'> Delete</span>".html_safe
+          "<span class='fa fa-times'></span> Delete".html_safe
         end
         [
           view_context.link_to(playlist.title, playlist_path(playlist), title: playlist.comment),

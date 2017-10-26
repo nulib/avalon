@@ -15,9 +15,9 @@
 </div>
 <h3 class="playlist-title">
   <% if @playlist.visibility==Playlist::PRIVATE %>
-    <span class="fa fa-lock" alt="<%= t('playlist.lockAltText') %>" title="<%= t('playlist.lockAltText') %>"></span>
+    <span class="fa fa-lock" alt="<%= t('playlist.privateAltText') %>" title="<%= t('playlist.privateAltText') %>"></span>
   <% else %>
-    <span class="glyphicon glyphicon-unlock" alt="<%= t('playlist.unlockAltText') %>" title="<%= t('playlist.unlockAltText') %>"></span>
+    <span class="glyphicon glyphicon-unlock" alt="<%= t('playlist.publicAltText') %>" title="<%= t('playlist.publicAltText') %>"></span>
   <% end %>
   <%= @playlist.title %>
 </h3>

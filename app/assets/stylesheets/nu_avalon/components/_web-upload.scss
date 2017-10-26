@@ -1,6 +1,9 @@
 #web_upload {
   .fileinput-submit {
     background: $nu-purple;
+    a {
+      color: $white;
+    }
   }
 }
 #uploader {

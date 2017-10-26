@@ -17,6 +17,20 @@
   }
 }
 
+.form-group {
+  &.has-error {
+    span {
+      color: $rich-black-80;
+      &.help-block {
+        color: $red;
+      }
+    }
+    .form-control {
+      border-color: $medium-grey;
+    }
+  }
+}
+
 // Intended for manage content legend items initially
 // Keep an eye if this impacts other usages of <legend>
 legend {
