@@ -1,14 +1,29 @@
 #accordion {
   &.panel-group {
-    .panel-title {
-      // Panel accordion toggle button
-      .fa-minus-square {
-        color: $nu-purple;
-      }
-    }
     i.now-playing {
       color: $nu-purple;
     }
+
+    li {
+      list-style: none;
+      background: none;
+      padding: 0;
+    }
+
+    .panel-heading {
+      #expand_button {
+        margin-top: 0;
+      }
+    }
+
+    .panel-title {
+      // Panel accordion toggle button
+      .fa-minus-square,
+      .fa-plus-square {
+        color: $nu-purple;
+      }
+    }
+
   }
 }
 .content {
@@ -17,8 +32,29 @@
       // Sections panel group
       &.stream-li {
         background: none;
-        padding: 5px;
+        padding: 0 0 5px 0;
       }
     }
   }
+}
+
+// Button in the Media Objects Structures sections, which will add a section to playlist
+.add-to-playlist-button {
+  background: $nu-purple url(/assets/add_to_playlist_icon.svg) no-repeat center;
+  border-radius: 4px;
+  margin-left: 8px;
+  width: 30px;
+}
+
+.content button.structure_add_to_playlist {
+  @extend .add-to-playlist-button;
+
+  &:hover {
+    @extend .add-to-playlist-button;
+  }
+}
+
+// Highlighted effect for currently playing section range
+a.playable.wrap.current-stream {
+  background: $light-grey;
 }
