@@ -24,8 +24,8 @@ GIT
 
 GIT
   remote: https://github.com/avalonmediasystem/media-element-add-to-playlist.git
-  revision: 5585bd06178dee4dbd2f8ff64164aad803adeb43
-  tag: avalon-r6.2
+  revision: 86b61edd2f3d12f750a586be6eda834dfb045452
+  tag: master
   specs:
     media_element_add_to_playlist (0.0.1)
       rails (~> 4.0)
@@ -404,7 +404,7 @@ GEM
       rubydora (~> 1.8)
     font-awesome-rails (4.7.0.2)
       railties (>= 3.2, < 5.2)
-    globalid (0.4.0)
+    globalid (0.4.1)
       activesupport (>= 4.2.0)
     google-analytics-rails (1.1.0)
     google-api-client (0.13.6)
@@ -520,8 +520,8 @@ GEM
     loofah (2.1.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    mail (2.6.6)
-      mime-types (>= 1.16, < 4)
+    mail (2.7.0)
+      mini_mime (>= 0.1.1)
     marc (1.0.2)
       scrub_rb (>= 1.0.1, < 2)
       unf
@@ -627,7 +627,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (2.2.2)
       rake
-    rake (12.1.0)
+    rake (12.2.1)
     rb-readline (0.5.5)
     rchardet (1.6.1)
     rdf (2.2.11)
@@ -817,7 +817,7 @@ GEM
       actionpack (>= 3.1)
       jquery-rails
       railties (>= 3.1)
-    tzinfo (1.2.3)
+    tzinfo (1.2.4)
       thread_safe (~> 0.1)
     uber (0.0.15)
     uglifier (3.2.0)

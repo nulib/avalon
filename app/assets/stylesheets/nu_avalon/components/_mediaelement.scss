@@ -55,7 +55,7 @@
  * Mediaelement 4 style overrides / edits
  */
 .mejs__style_helper {
-  background: transparent image-url('/assets/mediaelement/mejs-controls.svg');
+  background: transparent image-url('mediaelement/mejs-controls.svg');
   background-color: transparent;
 }
 .mejs__button {
@@ -81,7 +81,7 @@
   &.mejs__add-to-playlist-button {
     > button {
       &:hover {
-        background: transparent image-url('/assets/mejs4/add-to-playlist-control.png') no-repeat;
+        background: transparent image-url('mejs4/add-to-playlist-control.png') no-repeat;
         background-size: contain;
       }
     }
