@@ -29,9 +29,7 @@ Unless required by applicable law or agreed to in writing, software distributed
   <%= display_metadata('Main contributor', @media_object.creator) %>
   <% unless @media_object.abstract.blank? %>
   <dt>Summary</dt>
-  <dd>
-    <pre><%= @media_object.abstract %></pre>
-  </dd>
+  <dd><%= @media_object.abstract %></dd>
   <% end %>
   <%= display_metadata('Contributor', @media_object.contributor) %>
   <%= display_metadata('Publisher', @media_object.publisher) %>
