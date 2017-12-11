@@ -3,7 +3,9 @@ domain:
   host: localhost
   port: 80
   protocol: http
-dropbox: {}
+dropbox:
+  path: '/masterfiles/dropbox'
+  upload_uri: 'sftp://localhost/masterfiles/dropbox'
 encoding:
   engine_adapter: matterhorn
 matterhorn:
