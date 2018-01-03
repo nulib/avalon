@@ -1,3 +1,9 @@
+#left_column {
+  > #content {
+    margin-bottom: 0;
+  }
+}
+
 // Progress bar
 .standard-page #page {
   section#progress {

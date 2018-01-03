@@ -29,6 +29,10 @@ $avalon-primary-color: #84a791;
     text-align: left;
   }
 
+  .form-group.text-right > button {
+    margin-bottom: 15px;
+  }
+
 }
 
 .mejs-form-alert {
