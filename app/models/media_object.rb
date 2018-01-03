@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -72,10 +72,17 @@ class MediaObject < ActiveFedora::Base
   end
 
   def validate_dates
-    [:date_created, :date_issued, :copyright_date].each do |d|
-      if self.send(d).present? && Date.edtf(self.send(d)).nil?
-        errors.add(d, I18n.t("errors.messages.dateformat", date: self.send(d)))
-      end
+    validate_date :date_created
+    validate_date :date_issued
+    validate_date :copyright_date
+  end
+
+  def validate_date(date_field)
+    date = send(date_field)
+    return if date.blank?
+    edtf_date = Date.edtf(date)
+    if edtf_date.nil? || edtf_date.class == EDTF::Unknown # remove second condition to allow 'uuuu'
+      errors.add(date_field, I18n.t("errors.messages.dateformat", date: date))
     end
   end
 

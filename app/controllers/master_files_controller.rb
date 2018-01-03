@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -50,6 +50,9 @@ class MasterFilesController < ApplicationController
     if can? :read, @master_file
       @stream_info = secure_streams(@master_file.stream_details)
     end
+
+    @player_width = "100%"
+    @player_height = "100%"
     respond_to do |format|
       format.html do
         response.headers.delete "X-Frame-Options"

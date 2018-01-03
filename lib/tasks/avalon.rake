@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -43,6 +43,7 @@ EOC
       ids = Array(ids) | File.readlines(ENV['pidfile']).map(&:strip) unless ENV['pidfile'].nil?
       parallel_processes = ENV['parallel_processes']
       overwrite = !!ENV['overwrite']
+      skip_completed = !!ENV['skip_completed']
       namespace = ENV['namespace'] || Settings&.fedora&.namespace || 'avalon'
 
       #disable callbacks
@@ -53,7 +54,7 @@ EOC
 
       models = [Admin::Collection, ::Lease, ::MediaObject, ::MasterFile, ::Derivative]
       migrator = FedoraMigrate::ClassOrderedRepositoryMigrator.new(namespace, class_order: models, parallel_processes: parallel_processes)
-      migrator.migrate_objects(ids, overwrite)
+      migrator.migrate_objects(ids, overwrite, skip_completed)
       migrator
     end
 
@@ -219,9 +220,19 @@ EOC
       WithLocking.run(name: 'batch_ingest') do
         logger.info "<< Scanning for new batch packages in existing collections >>"
         Admin::Collection.all.each do |collection|
-          Avalon::Batch::Ingest.new(collection).ingest
+          Avalon::Batch::Ingest.new(collection).scan_for_packages
         end
       end
+    end
+
+    desc "Starts Status Checking and Email Notification of Existing Batches"
+    task :ingest_status_check => :environment do
+      IngestBatchStatusEmailJobs::IngestFinished.perform_later
+    end
+
+    desc "Status Checking and Email Notification for Stalled Batches"
+    task :ingest_stalled_check => :environment do
+      IngestBatchStatusEmailJobs::StalledJob.perform_later
     end
   end
   namespace :user do

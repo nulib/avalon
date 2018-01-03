@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -78,9 +78,17 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def get_user_collections
-    if can? :manage, Admin::Collection
-      Admin::Collection.all
+  # Returns collections for current_user or requested user
+  # @param [String] The user to match against (optional)
+  # @return [Collection] Collections to which current_user or requested user has manage access
+  def get_user_collections(user = nil)
+    # return all collections to admin, unless specific user is passed in
+    if can?(:manage, Admin::Collection)
+      if user.blank?
+        Admin::Collection.all
+      else
+        Admin::Collection.where("inheritable_edit_access_person_ssim" => user).to_a
+      end
     else
       Admin::Collection.where("inheritable_edit_access_person_ssim" => user_key).to_a
     end

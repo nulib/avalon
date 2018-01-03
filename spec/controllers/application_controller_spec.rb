@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -60,6 +60,15 @@ describe ApplicationController do
       login_as :user
       expect(controller.get_user_collections).to be_empty
     end
+    it 'returns no collections to end-user, even when passing user param' do
+      login_as :user
+      expect(controller.get_user_collections collection1.managers.first).to be_empty
+    end
+    it 'returns requested user\'s collections for an administrator' do
+      login_as :administrator
+      expect(controller.get_user_collections collection1.managers.first).to include(collection1)
+      expect(controller.get_user_collections collection1.managers.first).not_to include(collection2)
+    end
   end
 
   describe "exceptions handling" do
@@ -70,11 +79,6 @@ describe ApplicationController do
   end
 
   describe "rewrite_v4_ids" do
-    xit 'skips miration controllers' do
-      get :show, id: 'avalon:1234', controller: 'MigrationStatusController'
-      expect(response).to have_http_status(:ok)
-    end
-
     it 'skips when id is not a Fedora 3 pid' do
       get :show, id: 'abc1234'
       expect(response).not_to have_http_status(304)
@@ -83,12 +87,6 @@ describe ApplicationController do
     it 'skips post requests' do
       post :create, id: 'avalon:1234'
       expect(response).not_to have_http_status(304)
-    end
-
-    xit 'redirects' do
-      master_file = FactoryGirl.create(:master_file, identifier: ['avalon:1234'])
-      get :show, id: 'avalon:1234'
-      expect(response).to redirect_to(url_for(master_file.id))
     end
   end
 end

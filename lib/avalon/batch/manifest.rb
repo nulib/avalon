@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -93,6 +93,10 @@ module Avalon
         @errors ||= []
       end
 
+      def delete
+        self.class.delete(@file)
+      end
+
       private
       def true?(value)
         not (value.to_s =~ /^(y(es)?|t(rue)?)$/i).nil?
@@ -132,7 +136,8 @@ module Avalon
               opts[opt] = val
             end
           }
-          entries << Entry.new(fields.select { |f| !FILE_FIELDS.include?(f) }, content, opts, index, self)
+          files = content.each { |file| file[:file] = path_to(file[:file]) }
+          entries << Entry.new(fields.select { |f| !FILE_FIELDS.include?(f) }, files, opts, index, self)
         end
       end
 

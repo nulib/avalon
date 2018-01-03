@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -19,7 +19,7 @@ module Avalon
       extend Forwardable
 
       attr_reader :manifest, :collection
-      def_delegators :@manifest, :each
+      def_delegators :@manifest, :each, :dir
 
       def self.locate(root, collection)
         Avalon::Batch::Manifest.locate(root).collect { |f| self.new(f, collection) }
@@ -36,8 +36,8 @@ module Avalon
 
       def user
         @user ||=
-          User.where(Devise.authentication_keys.first => @manifest.email).first || 
-          User.where(username: @manifest.email).first || 
+          User.where(Devise.authentication_keys.first => @manifest.email).first ||
+          User.where(username: @manifest.email).first ||
           User.where(email: @manifest.email).first
         @user
       end

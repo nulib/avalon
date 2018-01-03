@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -161,6 +161,14 @@ describe Admin::CollectionsController, type: :controller do
       expect(json.first['roles']['managers']).to eq(collection.managers)
       expect(json.first['roles']['editors']).to eq(collection.editors)
       expect(json.first['roles']['depositors']).to eq(collection.depositors)
+    end
+    it "should return list of collections for good user" do
+      get 'index', user: collection.managers.first, format:'json'
+      expect(json.count).to eq(1)
+    end
+    it "should return no collections for bad user" do
+      get 'index', user: 'foobar', format:'json'
+      expect(json.count).to eq(0)
     end
   end
 

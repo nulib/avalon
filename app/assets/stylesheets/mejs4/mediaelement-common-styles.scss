@@ -51,50 +51,126 @@ $avalon-primary-color: #84a791;
   }
 }
 
-.scrubber-marker {
-  width: 1em !important;
-  bottom: 0;
-  transform: translate(-50%,200%)
+// MEJS4 custom highlight for a section within the MEJS time rail element
+.mejs-highlight-clip {
+  background: linear-gradient($avalon-primary-color, $avalon-primary-color);
+  opacity: 0.55;
+  height: 24px;
+  top: -7px;
+  display: block;
+  position: relative;
+  z-index: -1;
 }
 
-.mejs-time-marker-rail {
-  margin: 5px;
+// Loading spinner
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+.spinner {
+  opacity: .6;
+
+  &::before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    margin-top: -50px;
+    margin-left: -50px;
+    border-radius: 50%;
+    border: 10px solid #fff;
+    border-top-color: #84a791;
+    animation: spinner .8s linear infinite;
+  }
 }
 
-.mejs-time-float-marker {
-  background: #eee;
-  height: auto !important;
-  width: 100px !important;
-  border: solid 1px #333;
-  top: auto;
-  bottom: 8px;
-  transform: translate(-50%, 0);
-  text-align: center;
-  color: #111;
-  z-index: 1;
+// Player Controls
+.mejs__button {
+  width: 30px;
 }
 
-.mejs-time-float-current-marker {
-  position: relative !important;
-  left: 0;
-  height: auto !important;
-  width: 92px !important;
-  margin: 4px;
-  text-align: center;
+.mejs__button > button {
+  background: transparent image-url('/assets/mejs4_icons-01.svg');
+  background-repeat: none;
+  background-size: 170px 40px;
 }
 
-.mejs-time-float-corner-marker {
-  display: block !important;
-  position: absolute !important;
-  bottom: -10px;
-  left: 50% !important;
-  width: 0 !important;
-  height: 0 !important;
-  line-height: 0;
-  border: solid 5px #eee;
-  border-color: #eee transparent transparent transparent;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-  transform: translate(-50%,0);
+.mejs__play > button {
+  background-position: 0px 0px;
+}
+
+.mejs__pause > button {
+  background-position: -20px 0px;
+}
+
+.mejs__fullscreen-button > button {
+    background-position: -60px 0px;
+}
+
+.mejs__unfullscreen > button {
+  background-position: -80px 0px;
+}
+
+.mejs__mute, .mejs__unmute {
+  width: 36px;
+}
+
+.mejs__mute > button {
+  background-position: 0px -20px;
+  width: 25px;
+}
+
+.mejs__unmute > button {
+  background-position: -25px -20px;
+  width: 25px;
+}
+
+.mejs__qualities-button > button {
+  background-position: -40px 0px;
+  text-indent: 200px; //hide standard text off to the side
+  margin: 10px 6px;
+  width: 20px;
+}
+
+.mejs__captions-button > button {
+  width: 22px;
+  background-position: -140px -20px;
+}
+
+.mejs__captions-enabled > button {
+  border-bottom: 2px solid red;
+  padding: 11px;
+}
+
+.mejs__hd-toggle-button {
+  width: 35px;
+}
+
+.mejs__hd-toggle-button > button {
+  width: 27px;
+  background-position: -141px -2px;
+  filter: brightness(60%);
+  -webkit-filter: brightness(60%);
+}
+
+.mejs__hdtoggle-on > button {
+  filter: none;
+  -webkit-filter: none;
+}
+
+// Accessibility
+.mejs__button > button:focus, .mejs__overlay-button:focus, .mejs__time-total:focus, .mejs__volume-slider:focus, .mejs__qualities-selector-input:focus {
+  outline: solid 2px yellow;
+}
+
+// Chrome hack from mejs4: prevent outlining buttons on a mouse click
+.mejs__container-keyboard-inactive a,
+.mejs__container-keyboard-inactive a:focus,
+.mejs__container-keyboard-inactive button,
+.mejs__container-keyboard-inactive button:focus,
+.mejs__container-keyboard-inactive [role=slider],
+.mejs__container-keyboard-inactive [role=slider]:focus {
+  outline: 0;
 }

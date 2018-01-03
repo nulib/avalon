@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -497,6 +497,15 @@ describe MediaObjectsController, type: :controller do
     let!(:media_object) { FactoryGirl.create(:published_media_object, visibility: 'public') }
 
     context "Known items should be retrievable" do
+      context 'with fedora 3 pid' do
+        let!(:media_object) {FactoryGirl.create(:published_media_object, visibility: 'public', identifier: [fedora3_pid])}
+        let(:fedora3_pid) { 'avalon:1234' }
+
+        it "should redirect" do
+          expect(get :show, id: fedora3_pid).to redirect_to(media_object_url(media_object.id))
+        end
+      end
+
       it "should be accesible by its PID" do
         get :show, id: media_object.id
         expect(response.response_code).to eq(200)
@@ -515,12 +524,18 @@ describe MediaObjectsController, type: :controller do
       end
 
       it "should provide a JSON stream description to the client" do
-        FactoryGirl.create(:master_file, media_object: media_object)
-        media_object.master_files.each { |part|
-          xhr :get, :show_stream_details, id: media_object.id, content: part.id
-          json_obj = JSON.parse(response.body)
-          expect(json_obj['is_video']).to eq(part.is_video?)
-        }
+        part = FactoryGirl.create(:master_file, media_object: media_object)
+        xhr :get, :show_stream_details, id: media_object.id, content: part.id
+        json_obj = JSON.parse(response.body)
+        expect(json_obj['is_video']).to eq(part.is_video?)
+        expect(json_obj['link_back_url']).to eq(Rails.application.routes.url_helpers.id_section_media_object_url(media_object, part))
+      end
+
+      it "should provide a JSON stream description with permalink to the client" do
+        part = FactoryGirl.create(:master_file, media_object: media_object, permalink: 'https://permalink.host/path/id')
+        xhr :get, :show_stream_details, id: media_object.id, content: part.id
+        json_obj = JSON.parse(response.body)
+        expect(json_obj['link_back_url']).to eq('https://permalink.host/path/id')
       end
 
       it "should choose the correct default master_file" do
@@ -802,9 +817,14 @@ describe MediaObjectsController, type: :controller do
     end
 
     context 'publishing' do
-      before(:each) do
+      before(:all) do
         Permalink.on_generate { |obj| "http://example.edu/permalink" }
       end
+
+      after(:all) do
+        Permalink.on_generate { nil }
+      end
+
       it 'publishes media object' do
         media_object = FactoryGirl.create(:media_object, collection: collection)
         get 'update_status', id: media_object.id, status: 'publish'
@@ -898,8 +918,12 @@ describe MediaObjectsController, type: :controller do
     end
 
     context 'large objects' do
-      before(:each) do
+      before(:all) do
         Permalink.on_generate { |obj| sleep(0.5); "http://example.edu/permalink" }
+      end
+
+      after(:all) do
+        Permalink.on_generate { nil }
       end
 
       let!(:media_object) do

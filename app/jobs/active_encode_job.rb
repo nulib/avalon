@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -17,6 +17,12 @@ require 'active_encode'
 module ActiveEncodeJob
   module Core
     def error(master_file, exception)
+      unless master_file
+        Rails.logger.error exception.message
+        Rails.logger.error exception.backtrace.join("\n")
+        return
+      end
+
       # add message here to update master file
       master_file.status_code = 'FAILED'
       master_file.error = exception.message

@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -579,6 +579,10 @@ describe MediaObject do
     before(:each) {
       Permalink.on_generate{ |obj,target| 'http://www.example.com/perma-url' }
     }
+
+    after(:each) do
+      Permalink.on_generate { nil }
+    end
 
     context 'unpublished' do
       it 'is empty when unpublished' do
