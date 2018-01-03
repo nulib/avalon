@@ -1,4 +1,5 @@
 # Taken from https://github.com/projecthydra-labs/hyku/blob/master/lib/tasks/zookeeper.rake
+require 'avalon/solr_config_uploader'
 
 namespace :zookeeper do
   desc 'Push solr configs into zookeeper'

@@ -85,5 +85,5 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.active_job.queue_adapter     = Settings&.active_job&.queue_adapter || :resque
-  require 'active_job/queue_adapters/better_active_elastic_job_adapter' if config.active_job.queue_adapter == :active_elastic_job
+  require 'active_job/queue_adapters/better_active_elastic_job_adapter' if config.active_job.queue_adapter.to_s =~ /active_elastic_job/
 end
