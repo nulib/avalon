@@ -1,5 +1,5 @@
 <%#
-Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+Copyright 2011-2018, The Trustees of Indiana University and Northwestern
   University.  Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
 
@@ -16,9 +16,9 @@ Unless required by applicable law or agreed to in writing, software distributed
 <% show_progress = sections.any? { |s| s.status_code != 'COMPLETED' } %>
 <% unless hide_sections?(sections) and not show_progress %>
 
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="panel-group media-show-page" id="accordion" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="heading0" style="border-bottom: 1px solid #ddd;">
+    <div class="panel-heading" role="tab" id="sections_heading" style="border-bottom: 1px solid #ddd;">
       <h4 class="panel-title">
         <span id="section-label">Sections</span>
         <% if current_ability.can? :create, Playlist %>

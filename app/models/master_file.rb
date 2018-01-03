@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -522,7 +522,7 @@ class MasterFile < ActiveFedora::Base
       Rails.logger.warn("Masterfile `#{file_location}` not found. Extracting via HLS.")
       begin
         playlist_url = self.stream_details[:stream_hls].find { |d| d[:quality] == 'high' }[:url]
-        secure_url = SecurityHandler.secure_url(playlist_url, target: self.pid)
+        secure_url = SecurityHandler.secure_url(playlist_url, target: self.id)
         playlist = Avalon::M3U8Reader.read(secure_url)
         details = playlist.at(options[:offset])
         target = File.join(Dir.tmpdir,File.basename(details[:location]))

@@ -28,6 +28,10 @@ module Avalon
         def processed?(file)
           File.file?("#{file}.processed")
         end
+
+        def delete(file)
+          FileUtils.rm(file, force: true)
+        end
       end
 
       def start!
@@ -61,6 +65,10 @@ module Avalon
 
       def path_to(f)
         File.join(File.dirname(@file),f)
+      end
+
+      def dir
+        File.dirname(@file)
       end
 
       def retrieve(f)

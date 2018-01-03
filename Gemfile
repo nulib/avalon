@@ -35,7 +35,7 @@ gem 'activerecord-session_store'
 gem 'acts_as_list'
 gem 'api-pagination'
 gem 'avalon-about', git: 'https://github.com/avalonmediasystem/avalon-about.git', tag: 'avalon-r6'
-gem 'bootstrap-toggle-rails', git: 'https://github.com/rkallensee/bootstrap-toggle-rails.git'
+gem 'bootstrap-toggle-rails', git: 'https://github.com/rkallensee/bootstrap-toggle-rails.git', tag: 'v2.2.1.0'
 gem 'bootstrap_form'
 gem 'speedy-af', '~> 0.1.1'
 
@@ -65,7 +65,7 @@ gem 'marc'
 # MediaElement.js & Plugins
 gem 'mediaelement_rails', git: 'https://github.com/avalonmediasystem/mediaelement_rails.git', tag: 'avalon-r6_flash-fix'
 gem 'media-element-logo-plugin'
-gem 'media_element_add_to_playlist', git: 'https://github.com/avalonmediasystem/media-element-add-to-playlist.git', tag: 'master'
+gem 'media_element_add_to_playlist', git: 'https://github.com/avalonmediasystem/media-element-add-to-playlist.git', tag: 'avalon-r6.2'
 gem 'media_element_thumbnail_selector', git: 'https://github.com/avalonmediasystem/media-element-thumbnail-selector', tag: 'avalon-r4'
 gem 'mediaelement-hd-toggle', git:'https://github.com/avalonmediasystem/mediaelement-hd-toggle.git', tag: 'avalon-r6.3'
 gem 'mediaelement-qualityselector', git:'https://github.com/avalonmediasystem/mediaelement-qualityselector.git', tag: 'avalon-r4'
@@ -93,7 +93,8 @@ group :development do
   gem 'capistrano-rvm', require: false
   gem 'capistrano-passenger', require: false
 
-  gem 'rubocop', '~> 0.40.0', require: false
+  # Use Bixby instead of rubocop directly
+  gem 'bixby', require: false
   gem 'web-console', '~> 2.0'
   gem 'xray-rails'
 end

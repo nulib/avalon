@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -396,8 +396,13 @@ describe MasterFile do
         expect( subject.embed_title ).to eq( "test - test" )
       end
 
-      it "should have an appropriate title for the embed code with no label" do
-        expect( subject.embed_title ).to eq( "test - video.mp4" )
+      it "should have an appropriate title for the embed code with no label (only one section)" do
+        expect( subject.embed_title ).to eq( "test" )
+      end
+
+      it 'should have an appropriate title for the embed code with no label (more than 1 section)' do
+        allow(subject.media_object).to receive(:ordered_master_files).and_return([subject,subject])
+        expect( subject.embed_title ).to eq( 'test - video.mp4' )
       end
 
       it "should have an appropriate title for the embed code with no label or file_location" do

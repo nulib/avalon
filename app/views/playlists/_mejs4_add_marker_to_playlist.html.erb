@@ -1,4 +1,6 @@
-<div id="add_marker_to_playlist_item_alert" class="mejs-form-alert alert" style="display:none"></div>
+<div id="add_marker_to_playlist_item_alert" class="mejs-form-alert alert" style="display:none">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+</div>
 <div id="add_marker_to_playlist_item" class="mejs-form-wrapper" style="display:none" >
   <h3>Add marker to playlist item:</h3>
   <%= form_tag do %>
@@ -10,8 +12,10 @@
       </div>
     </div>
     <div class="col-sm-6">
-      <%= label_tag(:start_label, "Offset") %>
-      <%= text_field_tag(:marker_start, nil, class:"form-control form-model") %>
+      <div class="form-group">
+        <%= label_tag(:start_label, "Offset") %>
+        <%= text_field_tag(:marker_start, nil, class:"form-control form-model") %>
+      </div>
     </div>
   </div>
   <div class="form-group text-right">

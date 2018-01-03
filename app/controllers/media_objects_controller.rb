@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -439,6 +439,8 @@ class MediaObjectsController < ApplicationController
     set_player_token
     @currentStreamInfo = @currentStream.nil? ? {} : secure_streams(@currentStream.stream_details)
     @currentStreamInfo['t'] = view_context.parse_media_fragment(params[:t]) # add MediaFragment from params
+    @currentStreamInfo['lti_share_link'] = view_context.lti_share_url_for(@currentStream)
+    @currentStreamInfo['link_back_url'] = view_context.share_link_for(@currentStream)
   end
 
   def load_player_context

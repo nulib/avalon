@@ -1,4 +1,4 @@
-# Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -21,7 +21,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     begin
       render "modules/#{params[:provider]}_auth_form"
     rescue ActionView::MissingTemplate
-      super
+      redirect_to new_user_session_path, flash: { alert: I18n.t('devise.failure.invalid') }
     end
   end
 

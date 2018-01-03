@@ -4,6 +4,7 @@ if ENV['COVERAGE'] || ENV['TRAVIS']
 
   SimpleCov.start('rails') do
     add_filter '/spec'
+    add_filter '/app/migration'    
   end
   SimpleCov.command_name 'spec'
 end
@@ -26,6 +27,8 @@ require 'database_cleaner'
 require 'active_fedora/cleaner'
 require 'webmock/rspec'
 require 'active_fedora/noid/rspec'
+require "email_spec"
+require "email_spec/rspec"
 # require 'equivalent-xml/rspec_matchers'
 # require 'fakefs/safe'
 # require 'fileutils'

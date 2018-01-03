@@ -1,5 +1,5 @@
 <%#
-Copyright 2011-2017, The Trustees of Indiana University and Northwestern
+Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 University.  Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 
@@ -16,7 +16,7 @@ specific language governing permissions and limitations under the License.
 <%= form_for @media_object, html: { class: 'form-vertical', id: 'master_files_form' } do |media| %>
 <%= hidden_field_tag :donot_advance, true %>
 <%= hidden_field_tag :step, 'file-upload' %>
-<% unless @masterFiles.empty? %>
+<% unless @masterFiles.blank? %>
 <div id="associated_files">
   <legend>Associated files</legend>
   <p class="muted">For items with multiple files, enter a display label for each file. Users will click on these labels to switch between files.</p>
@@ -127,10 +127,8 @@ specific language governing permissions and limitations under the License.
               <i class="glyphicon glyphicon-file fileinput-exists"></i>
               <span class="fileinput-filename"></span>
             </div>
-            <span class="fileinput-submit fileinput-exists input-group-addon btn btn-default btn-file">
-              <input type="hidden" name="upload_file" value="upload_file"></input>
-              <a href="#" data-trigger="submit" data-toggle="modal" data-target="#uploading">Upload</a>
-            </span>
+            <a href="#" class="fileinput-submit fileinput-exists input-group-addon btn btn-default btn-file"
+              data-trigger="submit" data-toggle="modal" data-target="#uploading">Upload</a>
             <span class="input-group-addon btn btn-default btn-file">
               <span class="fileinput-new">Select file</span>
               <span class="fileinput-exists">Change</span>
