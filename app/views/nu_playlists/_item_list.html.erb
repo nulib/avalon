@@ -18,18 +18,20 @@ Unless required by applicable law or agreed to in writing, software distributed
     <span>Autoplay</span>
     <input type="checkbox" <%= 'checked' if params['autoadvance'].nil? or params['autoadvance']=='true' %> data-toggle="toggle" data-size="mini" name="autoadvance">
   </div>
-  <div>
+  <div class="inline-block-wrapper playlist-sidebar-buttons">
     <% if current_ability.can? :edit, @playlist %>
-      <div class="pull-right" id="edit-playlist-button">
+      <div id="edit-playlist-button">
         <%= link_to edit_playlist_path(@playlist), class: "btn btn-default btn-xs" do %>
           <i class="fa fa-edit" aria-hidden="true"></i> Edit
         <% end %>
       </div>
      <% end %>
      <% if current_ability.can? :duplicate, @playlist %>
+      <div>
        <%= button_tag( type: 'button', data: { playlist: @playlist }, class: 'copy-playlist-button btn btn-default btn-xs pull-right') do %>
          <i class="fa fa-clone" aria-hidden="true"></i> Copy
        <% end %>
+      </div>
       <% end %>
   </div>
 </div>
