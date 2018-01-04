@@ -41,7 +41,7 @@
 
 // Copied over from NU's .web-form select style
 @mixin select() {
-  background: #fff image-url('https://common.northwestern.edu/v8/css/images/icons/arrow-down-dkpurple.svg') no-repeat top 50% right 0.5rem/17px 10px;
+  background: #fff image-url('arrow-down-dkpurple.svg') no-repeat top 50% right 0.5rem/17px 10px;
   color: $rich-black-50;
   font-family: $AkkuratProBold;
   border: 1px solid #ccc;
