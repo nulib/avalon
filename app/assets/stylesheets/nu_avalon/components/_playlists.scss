@@ -67,6 +67,11 @@ form#playlist_sort_form {
   }
 }
 
+// Playlist sidebar buttons
+.playlist-sidebar-buttons > div {
+  margin: 0 3px;
+}
+
 // Markers table
 #markers table {
   // Buttons in markers table
