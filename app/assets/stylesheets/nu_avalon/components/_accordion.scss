@@ -28,6 +28,9 @@
 }
 .content {
   #accordion {
+    a {
+      font-family: $AkkuratProRegular;
+    }
     ul > li {
       // Sections panel group
       &.stream-li {

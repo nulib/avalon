@@ -30,3 +30,8 @@ a:not(.btn):not(.facets-toggle) {
   outline: solid 1px $nu-purple-30 !important;
   outline-offset: 0 !important;
 }
+
+// Update Media Object - Structure captions row
+#mediaobject_structure div.structure_tool div.tool_actions form {
+  text-align: right;
+}

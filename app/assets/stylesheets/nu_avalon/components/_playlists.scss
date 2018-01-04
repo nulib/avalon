@@ -66,3 +66,16 @@ form#playlist_sort_form {
     color: $white;
   }
 }
+
+// Markers table
+#markers table {
+  // Buttons in markers table
+  button {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  // Delete confirm popover
+  td:last-of-type .popover .popover-content {
+    min-width: 190px;
+  }
+}

@@ -24,3 +24,8 @@ label {
     color: $white;
   }
 }
+
+// Tables
+.table > thead > tr > th {
+  border-bottom: 0;
+}

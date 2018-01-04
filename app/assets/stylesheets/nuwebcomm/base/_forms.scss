@@ -26,12 +26,12 @@
 
 	.field {
 		margin-bottom: 1em;
-	   
+
         p {
             margin: 0;
         }
-    }    
-    
+    }
+
 	label, .label {
 		margin: .5em 0 .2em;
 		display: block;
@@ -40,7 +40,7 @@
             display: inline;
             margin: .5em 1em .2em 0;
         }
-        
+
 		&.right {
 			font-style: italic;
 			font-weight: normal;
@@ -102,9 +102,9 @@
 		&.required {
 			border: 1px solid $red;
 		}
-        
+
         // for smaller input fields
-        &.narrow { 
+        &.narrow {
             width: 25%; // previously: min-width: 15rem;
         }
 	}
@@ -113,7 +113,7 @@
 		outline: 0 none;
 		border-color: $nu-purple;
 	}
-    
+
 	input[type=text].required:focus, input[type=password].required:focus, input[type=email].required:focus, input[type=url].required:focus, input[type=date].required:focus, input[type=month].required:focus, input[type=time].required:focus, input[type=datetime].required:focus, input[type=datetime-local].required:focus, input[type=week].required:focus, input[type=number].required:focus, input[type=search].required:focus, input[type=tel].required:focus, input[type=color].required:focus, select.required:focus, textarea.required:focus {
 		border-color: $red;
 	}
@@ -144,7 +144,7 @@
 	}
 
 	select {
-		background: $white url("#{$path-images}/icons/arrow-down-dkpurple.svg")  no-repeat top 50% right .5rem / 17px 10px;
+		background: $white image-url("#{$path-images}/icons/arrow-down-dkpurple.svg")  no-repeat top 50% right .5rem / 17px 10px;
 		color: $rich-black-50;
 		font-family: $AkkuratProBold;
 		border: 1px solid $medium-grey;
@@ -218,9 +218,9 @@
 	}
 
 	label, .label {
-        
+
 		span {
-            
+
 			&.required {
 				display: inline;
 				margin-left: 0.5rem;
@@ -229,7 +229,7 @@
 	}
 
 	span {
-        
+
 		&.required {
 			display: inline;
 		}
@@ -281,7 +281,7 @@
 @media only screen and (max-width: 480px) {
 
 	.web-form {
-        
+
 		button[type=submit] {
 			margin: .7em 0 0
 		}
@@ -294,12 +294,12 @@
 		input[type=text], input[type=password], input[type=email], input[type=url], input[type=date], input[type=month], input[type=time], input[type=datetime], input[type=datetime-local], input[type=week], input[type=number], input[type=search], input[type=tel], input[type=color], select, textarea {
 			width: 100%;
 			//min-width: inherit;
-		
+
             // for smaller input fields
-            &.narrow { 
+            &.narrow {
                 width: 50%;
-            }        
-        
+            }
+
         }
 
 		.form-help-inline, -message-inline, -message {
