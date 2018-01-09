@@ -14,6 +14,10 @@
 
 class IngestBatchEntryJob < ActiveJob::Base
   queue_as :ingest
+  # Throttle to this per second to stay within limit
+  # for submitting to AWS Elastic Transcoder
+  # https://docs.aws.amazon.com/elastictranscoder/latest/developerguide/limits.html
+  throttle threshold: 2, period: 1.second
 
   # ActiveJob will serialize/deserialize the batch_entry automatically using GlobalIDs
   def perform(batch_entry)
