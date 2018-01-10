@@ -45,9 +45,8 @@ module Avalon
         db: 0,
         namespace: 'avalon'
       }
+      ActiveJob::TrafficControl.client = Redis.new(config.cache_store[1])
     end
-
-    ActiveJob::TrafficControl.client = Redis.new
 
     config.action_dispatch.default_headers = { 'X-Frame-Options' => 'ALLOWALL' }
   end
