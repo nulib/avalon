@@ -1,4 +1,6 @@
 Rails.application.configure do
+  full_logging = ENV['RAILS_FULL_LOGGING'] == 'true'
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -11,7 +13,7 @@ Rails.application.configure do
   config.eager_load = true
 
   # Full error reports are disabled and caching is turned on.
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local       = full_logging
   config.action_controller.perform_caching = true
 
   # Enable Rack::Cache to put a simple HTTP cache in front of your application
@@ -46,14 +48,16 @@ Rails.application.configure do
 
   # Enable logging to both stdout and file, in more compact format
   config.logger = Logger.new("| tee -a log/production.log")
-  config.lograge.enabled = true
-  config.lograge.custom_options = lambda do |event|
-    {:time => event.time}
+  unless full_logging
+    config.lograge.enabled = true
+    config.lograge.custom_options = lambda do |event|
+      {:time => event.time}
+    end
   end
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :info
+  config.log_level = full_logging ? :debug : :info
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
