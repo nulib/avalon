@@ -149,7 +149,7 @@ end
 
 # Install the bundle --with postgres if using postgresql as the database backend
 group :postgres, optional: true do
-  gem 'pg'
+  gem 'pg', '~> 0.18'
 end
 
 # Install the bundle --with mysql if using mysql as the database backend
