@@ -30,11 +30,9 @@ $('#accordion').replaceWith("<%= escape_javascript(render partial: 'info') %>");
 reload_player('<%= @current_masterfile.id %>', '<%= link %>', <%= @current_masterfile.is_video? %>);
 
 // Update playlist items
-$('.fa-arrow-circle-right').remove();
 $('.now_playing').addClass('queue').removeClass('now_playing');
 new_now_playing=$($("<%=target_href%>").first().closest('li'));
 new_now_playing.addClass('now_playing').removeClass('queue');
-new_now_playing.prepend("<i class='fa fa-arrow-circle-right'></i>");
 
 // Initialize marker functionality for playlist item loaded by ajax
 currentPlayer.domNode.dataset['currentPlaylistItem']='<%= @current_playlist_item.id %>';
