@@ -84,3 +84,12 @@ form#playlist_sort_form {
     min-width: 190px;
   }
 }
+
+// Playlist panels
+.content #accordion #source_details {
+  h3 {
+    a {
+      font-family: $AkkuratProBold;
+    }
+  }
+}
