@@ -59,3 +59,20 @@
     z-index: 100;
   }
 }
+
+
+// Playlists page
+.content {
+  .side-playlist > li {
+    margin-left: 0;
+    padding-left: 0;
+
+    &.now_playing:before {
+      left: -18px;
+    }
+  }
+}
+
+.playlist-title .fa {
+  font-size: 1em;
+}
