@@ -13,7 +13,7 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 class S3SplitJob < ActiveJob::Base
-  queue_as :s3_split
+  queue_as Settings.active_job.queues.ingest
   def perform(file)
     ffmpeg = Settings.ffmpeg.path
     input = FileLocator.new(file).location

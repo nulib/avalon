@@ -13,7 +13,7 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 class BatchIngestJob < ActiveJob::Base
-  queue_as :batch_ingest
+  queue_as Settings.active_job.queues.ingest
   def perform(filename)
     return unless Avalon::Batch::Manifest.is_spreadsheet?(filename) && Avalon::Batch::S3Manifest.status(filename).blank?
 

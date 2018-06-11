@@ -71,7 +71,7 @@ en:
       alert: {
         one: "This item was not deleted:",
         other: "These items were not deleted:"
-      }     	     
+      }
     move:
       form:
         title: "Move Selected Items"
@@ -86,7 +86,7 @@ en:
       alert: {
         one: "This item was not moved:",
         other: "These items were not moved:"
-      }     	     
+      }
       error: "You do not have permission to add to collection %{collection_name}."
     add_to_playlist:
       form:
@@ -125,4 +125,4 @@ en:
       alert: {
         one: "Failed to update access control settings for this item:",
         other: "Failed to update access control settings for these items:"
-      }     	     
+      }

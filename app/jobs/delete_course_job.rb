@@ -13,7 +13,7 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 class DeleteCourseJob < ActiveJob::Base
-  queue_as :delete_course
+  queue_as Settings.active_job.queues.ingest
   def perform(context_id)
     Course.unlink_all(context_id)
     Course.find_by(context_id: context_id)&.destroy

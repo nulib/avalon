@@ -14,7 +14,7 @@
 
 module BulkActionJobs
   class AccessControl < ActiveJob::Base
-    queue_as :bulk_access_control
+    queue_as Settings.active_job.queues.ingest
     def perform documents, params
       errors = []
       successes = []

@@ -1,6 +1,15 @@
 name: 'Avalon Media System' # used in page titles
 active_job:
   queue_adapter: :inline
+  queues:
+    ingest: :default
+batch_throttling:
+  ingest:
+    threshold: 5
+    spacing: 1
+  update:
+    threshold: 5
+    spacing: 1
 domain:
   host: localhost
   port: 80

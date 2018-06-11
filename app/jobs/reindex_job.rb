@@ -13,7 +13,7 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 class ReindexJob < ActiveJob::Base
-  queue_as :reindex
+  queue_as Settings.active_job.queues.ingest
   def perform(ids)
     ids.each do |id|
       ActiveFedora::Base.find(id, cast: true).update_index

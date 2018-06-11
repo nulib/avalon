@@ -13,7 +13,7 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 class ExtractStillJob < ActiveJob::Base
-  queue_as :extract_still
+  queue_as Settings.active_job.queues.ingest
   def perform(id, options)
     return unless id
     mf = MasterFile.find(id)
