@@ -1,2 +1,3 @@
-domain:
-  port: 3000
+active_job:
+  queue_adapter: inline
+localstack: {}

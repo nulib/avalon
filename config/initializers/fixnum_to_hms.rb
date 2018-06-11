@@ -1,4 +1,4 @@
-class Fixnum
+class Integer
   def to_hms
     h = 1.hour * 1000
     m = 1.minute * 1000

@@ -102,6 +102,7 @@ end
 
 group :development, :test do
   gem 'byebug'
+  gem 'docker-stack'
   gem 'dotenv-rails'
   gem 'equivalent-xml'
   gem 'fcrepo_wrapper'
@@ -131,15 +132,16 @@ end
 group :production do
   gem 'google-analytics-rails', '1.1.0'
   gem 'lograge'
+  gem 'puma'
 end
 
 # Install the bundle --with aws when running on Amazon Elastic Beanstalk
 group :aws, optional: true do
-  gem 'aws-sdk', '~> 2.0'
-  gem 'aws-sdk-rails'
+  gem 'aws-sdk', '~> 3.0'
+  gem 'aws-sdk-rails', git: 'https://github.com/nulib/aws-sdk-rails.git', branch: 'sdk-v3'
   gem 'cloudfront-signer'
   gem 'zk'
-  gem 'active_elastic_job', '~> 2.0'
+  gem 'active_elastic_job', git: 'https://github.com/nulib/active-elastic-job.git', branch: 'latest-aws-sdk'
 end
 
 # Install the bundle --with zoom to use the Z39.50 bib retriever
@@ -149,7 +151,7 @@ end
 
 # Install the bundle --with postgres if using postgresql as the database backend
 group :postgres, optional: true do
-  gem 'pg', '~> 0.18'
+  gem 'pg', '~> 0.21'
 end
 
 # Install the bundle --with mysql if using mysql as the database backend

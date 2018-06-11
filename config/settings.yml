@@ -1,4 +1,6 @@
 name: 'Avalon Media System' # used in page titles
+active_job:
+  queue_adapter: :inline
 domain:
   host: localhost
   port: 80
@@ -50,12 +52,7 @@ streaming:
 groups:
   system_groups: [administrator, group_manager, manager]
 master_file_management:
-  strategy: 'none' #'delete', or 'move' (for move uncomment and configure next line)
-  #path: '/path/to/move/to'
-#bib_retriever:
-#  protocol: sru
-#  url: http://zgate.example.edu:9000/exampledb
-#  query: rec.id='%s'
+  strategy: 'none'
 controlled_vocabulary:
   path: config/controlled_vocabulary.yml
 auth:
