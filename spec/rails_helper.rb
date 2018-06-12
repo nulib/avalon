@@ -4,7 +4,7 @@ if ENV['COVERAGE'] || ENV['TRAVIS']
 
   SimpleCov.start('rails') do
     add_filter '/spec'
-    add_filter '/app/migration'    
+    add_filter '/app/migration'
   end
   SimpleCov.command_name 'spec'
 end
@@ -86,6 +86,7 @@ RSpec.configure do |config|
     }
     Settings.dropbox.path = Settings.spec['fake_dropbox']
     MasterFile.skip_callback(:save, :after, :update_stills_from_offset!)
+    Capybara.server = :webrick
   end
 
   config.after :suite do
