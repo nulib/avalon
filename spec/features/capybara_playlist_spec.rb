@@ -59,7 +59,7 @@ describe 'Playlist' do
     visit '/playlists'
     click_on('private_playlist')
     page.should have_content('private_playlist')
-    expect(page).to have_link('Edit Playlist')
+    expect(page).to have_link('Edit')
     page.should have_content('This is test')
     page.should have_content('This playlist currently has no playable items')
   end
@@ -75,7 +75,7 @@ describe 'Playlist' do
     click_on('Edit')
     click_on('View Playlist')
     page.should have_content('private_playlist')
-    expect(page).to have_link('Edit Playlist')
+    expect(page).to have_link('Edit')
     page.should have_content('This is test')
     page.should have_content('This playlist currently has no playable items')
   end
@@ -138,8 +138,8 @@ describe 'Playlist' do
     visit '/playlists'
     click_on('Edit')
     page.should have_content('Editing playlist')
-    page.should have_content('View Playlist')
-    page.should have_content('Delete Playlist')
+    page.should have_content(/View Playlist/i)
+    page.should have_content(/Delete Playlist/i)
     page.first("#playlist_edit_button").click
     page.should have_button('Save Changes')
     fill_in('playlist_title', with: 'edit_public_playlist')
@@ -163,8 +163,8 @@ describe 'Playlist' do
     visit '/playlists'
     click_on('Edit')
     page.should have_content('Editing playlist')
-    page.should have_content('View Playlist')
-    page.should have_content('Delete Playlist')
+    page.should have_content(/View Playlist/i)
+    page.should have_content(/Delete Playlist/i)
     page.first("#playlist_edit_button").click
     page.should have_button('Save Changes')
     choose('Private')
@@ -185,8 +185,8 @@ describe 'Playlist' do
     visit '/playlists'
     click_on('Edit')
     page.should have_content('Editing playlist')
-    page.should have_content('View Playlist')
-    page.should have_content('Delete Playlist')
+    page.should have_content(/View Playlist/i)
+    page.should have_content(/Delete Playlist/i)
     page.first("#playlist_edit_button").click
     page.should have_button('Save Changes')
     choose('Public')

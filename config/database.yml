@@ -12,9 +12,10 @@ development:
   database: docker_dev
 
 test:
-  <<: *default
-  port: <%= Rails.env.development? ? 5433 : 5434 %>
-  database: docker_test
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  database: db/test.sqlite3
 
 production:
   adapter: sqlite3

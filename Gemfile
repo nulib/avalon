@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Core rails
-gem 'rails', '4.2.9'
+gem 'rails', '~> 4.2.9'
 gem 'sqlite3'
 
 # Assets
@@ -33,7 +33,7 @@ gem 'about_page', git: 'https://github.com/avalonmediasystem/about_page.git', ta
 gem 'active_annotations', '~> 0.2.2'
 gem 'activerecord-session_store'
 gem 'acts_as_list'
-gem 'api-pagination'
+gem 'api-pagination', '~> 4.6.3'
 gem 'avalon-about', git: 'https://github.com/avalonmediasystem/avalon-about.git', tag: 'avalon-r6'
 gem 'bootstrap-toggle-rails', git: 'https://github.com/rkallensee/bootstrap-toggle-rails.git', tag: 'v2.2.1.0'
 gem 'bootstrap_form'

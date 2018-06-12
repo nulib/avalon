@@ -402,7 +402,7 @@ describe MasterFile do
 
       it 'should have an appropriate title for the embed code with no label (more than 1 section)' do
         allow(subject.media_object).to receive(:ordered_master_files).and_return([subject,subject])
-        expect( subject.embed_title ).to eq( 'test - video.mp4' )
+        expect( subject.embed_title ).to eq( 'test' )
       end
 
       it "should have an appropriate title for the embed code with no label or file_location" do
@@ -469,13 +469,13 @@ describe MasterFile do
 
   describe '#post_processing_move_filename' do
     let(:id) { 'avalon:12345' }
-    let(:id_prefix) { 'avalon_12345' }
+    let(:id_prefix) { 'av/al/on/_1' }
     let(:path) { '/path/to/video.mp4' }
     it 'prepends the id' do
       expect(MasterFile.post_processing_move_filename(path, id: id).starts_with?(id_prefix)).to be_truthy
     end
     it 'returns a filename' do
-      expect(File.dirname(MasterFile.post_processing_move_filename(path, id: id))).to eq('.')
+      expect(File.dirname(MasterFile.post_processing_move_filename(path, id: id))).to eq('av/al/on/_1/avalon_12345')
     end
     it 'does not prepend the id if already present' do
       path = '/path/to/avalon_12345-video.mp4'

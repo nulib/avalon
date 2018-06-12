@@ -1,11 +1,11 @@
 # Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
-# 
+#
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software distributed
 #   under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 #   CONDITIONS OF ANY KIND, either express or implied. See the License for the
@@ -72,14 +72,14 @@ end
 describe 'Search' do
   it 'is able to enter keyword and perform search' do
     visit '/'
-    fill_in('Search', with: 'Video')
-    click_button 'Search'
+    fill_in('Search audio or video', with: 'Video')
+    click_button 'Search audio or video'
     expect(page.current_url).to eq('http://www.example.com/catalog?utf8=%E2%9C%93&search_field=all_fields&q=Video')
   end
   it 'gives appropriate error when keyword returns no results' do
     visit '/'
-    fill_in('Search', with: 'Video')
-    click_button 'Search'
+    fill_in('Search audio or video', with: 'Video')
+    click_button 'Search audio or video'
     page.should have_content('No results found for your search')
     page.should have_content('No entries found')
     page.should have_content('Use fewer keywords to start, then refine your search using the links on the left')

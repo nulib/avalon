@@ -15,3 +15,14 @@ auth:
     :params:
       :oauth_credentials:
         key: 'secret'
+streaming:
+  server: :generic
+  stream_token_ttl: 20 #minutes
+  content_path: '/srv/avalon/content'
+  rtmp_base: 'rtmp://localhost:1937/avalon'
+  http_base: 'http://localhost:8882/avalon'
+  default_quality: 'low'
+matterhorn:
+  root: 'http://localhost:8082/'
+  baseApplication: 'avalon'
+  cleanup_log: 'log/cleanup_jobs.log'

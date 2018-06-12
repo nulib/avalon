@@ -18,14 +18,11 @@ describe 'homepage' do
   after { Warden.test_reset! }
   it 'validates presence of header and footer on homepage' do
     visit 'http://0.0.0.0:3000'
-    page.should have_content('Sample Content')
+    page.should have_content('Marcellus')
     page.should have_link('Browse')
-    page.should have_content('Featured Collection')
-    page.should have_content('Featured Video')
-    page.should have_content('Featured Audio')
-    page.should have_link('Avalon Media System Project Website')
-    page.should have_link('Contact Us')
-    page.should have_content('Avalon Media System Release')
+    page.should have_content('Featured Collections')
+    page.should have_link('Library')
+    page.should have_link('Feedback')
     page.should have_content('Search')
   end
   it 'validates absence of features when not logged in' do
@@ -47,13 +44,13 @@ describe 'homepage' do
   end
 end
 describe 'checks navigation to external links' do
-  it 'checks navigation to Avalon Website' do
+  xit 'checks navigation to Avalon Website' do
     visit '/'
     click_link('Avalon Media System Project Website')
     expect(page.status_code).to eq(200)
     expect(page.current_url).to eq('http://www.avalonmediasystem.org/')
   end
-  it 'checks navigation to Contact us page' do
+  xit 'checks navigation to Contact us page' do
     visit '/'
     click_link('Contact Us')
     expect(page.current_url).to eq('http://www.example.com/comments')
@@ -68,7 +65,7 @@ describe 'checks navigation to external links' do
   it 'verifies presence of features after login' do
     user = FactoryGirl.create(:administrator)
     login_as user, scope: :user
-    visit'/'
+    visit '/'
     page.should have_link('Manage Content')
     page.should have_link('Manage Groups')
     page.should have_link('Manage Selected Items')

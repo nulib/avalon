@@ -51,7 +51,7 @@ module ActiveEncodeJob
   class Update < ActiveJob::Base
     include ActiveEncodeJob::Core  #I'm not sure if the error callback is really makes sense here!
     queue_as Settings.active_job.queues.ingest
-    throttle threshold: Settings.batch_throttling.update.threshold, period: Settings.batch_throttling.update.spacing, drop: false
+    throttle threshold: Settings.encode_throttling.update.threshold, period: Settings.encode_throttling.update.spacing, drop: false
 
     def perform(master_file_id)
       Rails.logger.info "Updating encode progress for MasterFile: #{master_file_id}"

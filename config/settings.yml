@@ -3,8 +3,8 @@ active_job:
   queue_adapter: :inline
   queues:
     ingest: :default
-batch_throttling:
-  ingest:
+encode_throttling:
+  create:
     threshold: 5
     spacing: 1
   update:
@@ -31,6 +31,9 @@ email:
   comments: 'avalon-comments@example.edu'
   notification: 'avalon-notifications@example.edu'
   support: 'avalon-support@example.edu'
+redis:
+  host: localhost
+  port: 6379
 solr:
   configset: avalon
   configset_source_path: <%= File.join(Rails.root, 'solr', 'config') %>

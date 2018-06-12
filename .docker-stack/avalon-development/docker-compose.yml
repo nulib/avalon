@@ -1,10 +1,12 @@
 ---
 version: '3.4'
 volumes:
-  fedora: 
-  solr: 
-  db: 
-  localstack: 
+  fedora:
+  solr:
+  db:
+  localstack:
+  streaming:
+  work:
 services:
   fedora:
     image: nulib/fcrepo4
@@ -71,6 +73,41 @@ services:
       - curl
       - "-f"
       - http://localhost:4572/
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  matterhorn:
+    image: avalonmediasystem/matterhorn
+    volumes:
+      - ./masterfiles:/masterfiles
+      - streaming:/streamfiles
+      - work:/work
+    ports:
+      - 8081:8080
+    healthcheck:
+      test:
+      - CMD
+      - curl
+      - "-f"
+      - http://localhost:8080/
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  hls:
+    image: avalonmediasystem/nginx
+    volumes:
+      - streaming:/data
+    ports:
+      - 1936:1935
+      - 8881:80
+    extra_hosts:
+     - avalon:172.16.123.1
+    healthcheck:
+      test:
+      - CMD
+      - curl
+      - "-f"
+      - http://localhost/
       interval: 30s
       timeout: 5s
       retries: 3

@@ -1,3 +1,14 @@
 active_job:
   queue_adapter: inline
 localstack: {}
+matterhorn:
+  root: 'http://localhost:8081/'
+  baseApplication: 'avalon'
+  cleanup_log: 'log/cleanup_jobs.log'
+streaming:
+  server: :generic
+  stream_token_ttl: 20 #minutes
+  content_path: '/srv/avalon/content'
+  rtmp_base: 'rtmp://localhost:1936/avalon'
+  http_base: 'http://localhost:8881/avalon'
+  default_quality: 'low'
