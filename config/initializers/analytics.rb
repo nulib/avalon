@@ -1,1 +1,0 @@
-require 'google-analytics-rails'
