@@ -6,4 +6,4 @@ test: &test
   url: http://127.0.0.1:<%= ENV['SOLR_TEST_PORT'] || 8985 %>/solr/test-core
 production:
   adapter: solr
-  url: http://127.0.0.1:8983/solr/avalon
+  url: <%= ENV['SOLR_URL'] || "http://127.0.0.1:8983/solr/avalon" %>
