@@ -12,8 +12,7 @@
 #   specific language governing permissions and limitations under the License.
 # ---  END LICENSE_HEADER BLOCK  ---
 
-class BatchIngestJob < ActiveJob::Base
-  queue_as Settings.active_job.queues.ingest
+class BatchIngestJob < ApplicationJob
   def perform(filename)
     return unless Avalon::Batch::Manifest.is_spreadsheet?(filename) && Avalon::Batch::S3Manifest.status(filename).blank?
 

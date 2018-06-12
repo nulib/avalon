@@ -1,11 +1,11 @@
 # Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
-# 
+#
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software distributed
 #   under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 #   CONDITIONS OF ANY KIND, either express or implied. See the License for the
@@ -13,8 +13,7 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 module BulkActionJobs
-  class AccessControl < ActiveJob::Base
-    queue_as Settings.active_job.queues.ingest
+  class AccessControl < ApplicationJob
     def perform documents, params
       errors = []
       successes = []
@@ -100,7 +99,7 @@ module BulkActionJobs
     end
   end
 
-  class UpdateStatus < ActiveJob::Base
+  class UpdateStatus < ApplicationJob
     def perform documents, user_key, params
       errors = []
       successes = []
@@ -128,7 +127,7 @@ module BulkActionJobs
     end
   end
 
-  class Delete < ActiveJob::Base
+  class Delete < ApplicationJob
     def perform documents, params
       errors = []
       successes = []
@@ -144,7 +143,7 @@ module BulkActionJobs
     end
   end
 
-  class Move < ActiveJob::Base
+  class Move < ApplicationJob
     def perform documents, params
       collection = Admin::Collection.find( params[:target_collection_id] )
       errors = []

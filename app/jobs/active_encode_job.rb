@@ -30,9 +30,9 @@ module ActiveEncodeJob
     end
   end
 
-  class Create < ActiveJob::Base
+  class Create < ApplicationJob
     include ActiveEncodeJob::Core
-    queue_as Settings.active_job.queues.ingest
+  
     def perform(master_file_id, input, options)
       mf = MasterFile.find(master_file_id)
       encode = mf.encoder_class.new(input, options.merge({output_key_prefix: "#{mf.id}/"}))
@@ -48,9 +48,9 @@ module ActiveEncodeJob
     end
   end
 
-  class Update < ActiveJob::Base
+  class Update < ApplicationJob
     include ActiveEncodeJob::Core  #I'm not sure if the error callback is really makes sense here!
-    queue_as Settings.active_job.queues.ingest
+
     throttle threshold: Settings.encode_throttling.update.threshold, period: Settings.encode_throttling.update.spacing, drop: false
 
     def perform(master_file_id)

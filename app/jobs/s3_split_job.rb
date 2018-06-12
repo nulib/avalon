@@ -12,8 +12,7 @@
 #   specific language governing permissions and limitations under the License.
 # ---  END LICENSE_HEADER BLOCK  ---
 
-class S3SplitJob < ActiveJob::Base
-  queue_as Settings.active_job.queues.ingest
+class S3SplitJob < ApplicationJob
   def perform(file)
     ffmpeg = Settings.ffmpeg.path
     input = FileLocator.new(file).location

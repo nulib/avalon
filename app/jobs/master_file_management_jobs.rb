@@ -15,9 +15,7 @@
 require 'fileutils'
 
 module MasterFileManagementJobs
-  class Move < ActiveJob::Base
-    queue_as Settings.active_job.queues.ingest
-
+  class Move < ApplicationJob
     def s3_to_s3(source, dest)
       source_object = FileLocator::S3File.new(source.source).object
       dest_object = FileLocator::S3File.new(dest.source).object
@@ -65,8 +63,8 @@ module MasterFileManagementJobs
     end
   end
 
-  class Delete < ActiveJob::Base
-    queue_as Settings.active_job.queues.ingest
+  class Delete < ApplicationJob
+
     def perform(id)
       Rails.logger.debug "Deleting masterfile"
 

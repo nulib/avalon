@@ -12,8 +12,7 @@
 #   specific language governing permissions and limitations under the License.
 # ---  END LICENSE_HEADER BLOCK  ---
 
-class DeleteCourseJob < ActiveJob::Base
-  queue_as Settings.active_job.queues.ingest
+class DeleteCourseJob < ApplicationJob
   def perform(context_id)
     Course.unlink_all(context_id)
     Course.find_by(context_id: context_id)&.destroy

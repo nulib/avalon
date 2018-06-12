@@ -12,8 +12,7 @@
 #   specific language governing permissions and limitations under the License.
 # ---  END LICENSE_HEADER BLOCK  ---
 
-class IngestBatchEntryJob < ActiveJob::Base
-  queue_as Settings.active_job.queues.ingest
+class IngestBatchEntryJob < ApplicationJob
   # Throttle to this per second to stay within limit
   # for submitting to AWS Elastic Transcoder
   # https://docs.aws.amazon.com/elastictranscoder/latest/developerguide/limits.html
