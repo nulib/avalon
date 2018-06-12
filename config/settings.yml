@@ -36,7 +36,7 @@ redis:
   port: 6379
 solr:
   configset: avalon
-  configset_source_path: <%= File.join(Rails.root, 'solr', 'config') %>
+  configset_source_path: <%= File.join(Rails.root, 'solr', 'conf') %>
   collection_options:
     async:
     auto_add_replicas:
