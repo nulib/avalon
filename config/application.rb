@@ -34,10 +34,10 @@ module Avalon
     config.active_record.raise_in_transactional_callbacks = true
 
     begin
-      require Settings.active_job.queue_adapter
+      require Settings.active_job.queue_adapter.to_s
     rescue LoadError
     end
-    config.active_job.queue_adapter = Settings.active_job.queue_adapter
+    config.active_job.queue_adapter = Settings.active_job.queue_adapter.to_s
 
     if ENV['REDIS_HOST']
       redis_host = ENV['REDIS_HOST']
