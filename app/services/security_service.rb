@@ -34,7 +34,14 @@ class SecurityService
     when :aws
       configure_signer
       domain = Addressable::URI.parse(Settings.streaming.http_base).host
-      cookie_domain = (context[:request_host].split(/\./) & domain.split(/\./)).join('.')
+      domain_segments = domain.split(/\./).reverse
+      stream_segments = context[:request_host].split(/\./).reverse
+      cookie_domain_segments = []
+      domain_segments.each.with_index do |segment, index|
+        break if stream_segments[index] != segment
+        cookie_domain_segments << segment
+      end
+      cookie_domain = cookie_domain_segments.reverse.join('.')
       resource = "http*://#{domain}/#{context[:target]}/*"
       Rails.logger.info "Creating signed policy for resource #{resource}"
       expiration = Settings.streaming.stream_token_ttl.minutes.from_now
