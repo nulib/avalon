@@ -165,6 +165,7 @@
       </analyzer>
     </fieldType>
 
+<!--
     <fieldType class="solr.TextField" name="textSuggest" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
@@ -173,6 +174,7 @@
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
       </analyzer>
     </fieldType>
+-->
   </types>
 
 
@@ -321,8 +323,9 @@
     <dynamicField name="*_llsi" type="location" stored="true" indexed="true" multiValued="false"/>
     <dynamicField name="*_llsim" type="location" stored="true" indexed="true" multiValued="true"/>
 
+<!--
     <dynamicField name="*suggest" type="textSuggest" indexed="true" stored="false" multiValued="true" />
-
+-->
     <!-- you must define copyField source and dest fields explicity or schemaBrowser doesn't work -->
     <field name="all_text_timv" type="text" stored="false" indexed="true" multiValued="true" termVectors="true" termPositions="true" termOffsets="true"/>
 
@@ -349,9 +352,10 @@
 
    <!-- <copyField source="*_tesim" dest="all_text_timv" maxChars="3000"/> -->
    <!-- for suggestions -->
+<!--
    <copyField source="*_tesim" dest="suggest"/>
    <copyField source="*_ssim" dest="suggest"/>
-
+-->
  <!-- Similarity is the scoring routine for each document vs. a query.
       A custom similarity may be specified here, but the default is fine
       for most applications.  -->
