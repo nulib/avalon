@@ -1,5 +1,8 @@
 node {
   def tag_name = env.BRANCH_NAME.split('/').last()
+  if ( tag_name == "master" ) {
+    tag_name = "production"
+  }
   checkout scm
   sh "docker build -t nulib/avr:${tag_name} ."
   docker.withRegistry('', 'docker-hub-credentials') {
