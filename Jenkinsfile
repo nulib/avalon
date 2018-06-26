@@ -7,4 +7,5 @@ node {
   }
   sh "docker tag \$(docker image ls -q --filter 'label=edu.northwestern.library.role=support' --filter 'label=edu.northwestern.library.app=AVR' | head -1) nulib/avr-build:${tag_name}"
   sh "docker image prune -f"
+  sh "docker run -t -v /home/ec2-user/.aws:/root/.aws nulib/ebdeploy ${tag_name} avr"
 }
