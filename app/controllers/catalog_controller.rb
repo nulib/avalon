@@ -1,11 +1,11 @@
 # Copyright 2011-2018, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
-# 
+#
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software distributed
 #   under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 #   CONDITIONS OF ANY KIND, either express or implied. See the License for the
@@ -77,6 +77,8 @@ class CatalogController < ApplicationController
     config.add_facet_field 'collection_ssim', label: 'Collection', limit: 5
     config.add_facet_field 'unit_ssim', label: 'Unit', limit: 5
     config.add_facet_field 'language_sim', label: 'Language', limit: 5
+    config.add_facet_field 'read_access_virtual_group_ssim', label: 'Course', limit: 10, if: Proc.new {|context, config, opts| not context.user_session[:virtual_groups].empty?}, helper_method: :vgroup_display
+
     # Hide these facets if not a Collection Manager
     config.add_facet_field 'workflow_published_sim', label: 'Published', limit: 5, if: Proc.new {|context, config, opts| Ability.new(context.current_user, context.user_session).can? :create, MediaObject}, group: "workflow"
     config.add_facet_field 'avalon_uploader_ssi', label: 'Created by', limit: 5, if: Proc.new {|context, config, opts| Ability.new(context.current_user, context.user_session).can? :create, MediaObject}, group: "workflow"
