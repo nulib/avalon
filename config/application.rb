@@ -47,7 +47,8 @@ module Avalon
         host: redis_host,
         port: redis_port,
         db: 0,
-        namespace: 'avalon'
+        namespace: "_#{Rails.application.class.parent_name.downcase}_cache",
+        expires_in: 30.days
       }
       ActiveJob::TrafficControl.client = Redis.new(config.cache_store[1])
     end
