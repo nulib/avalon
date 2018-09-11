@@ -20,7 +20,7 @@ class CanvasService
     return [] if user.nil?
     response = @client.get("api/v1/users/#{user}/courses", enrollment_state: 'active')
     result = JSON.parse(response.body)
-    result.collect { |course| course['course_code'] }
+    Hash[result.collect { |course| course.values_at('course_code', 'name') }]
   end
 
 end
