@@ -92,6 +92,10 @@ class User < ActiveRecord::Base
     list.flatten.include? user_key
   end
 
+  def canvas_courses
+    @canvas_courses ||= CanvasService.new.courses_for_user(username)
+  end
+
   #TODO extract the ldap stuff into a mixin?
   def ldap_groups
     User.walk_ldap_groups(User.ldap_member_of(user_key), []).sort
