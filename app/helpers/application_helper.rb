@@ -177,8 +177,10 @@ module ApplicationHelper
   end
 
   def vgroup_display value
-    c = Course.find_by_context_id(value)
-    c.nil? ? value : (c.title || c.label || value)
+    Rails.cache.fetch("VGROUP_#{value}") do
+      c = Course.find_by_context_id(value)
+      c.nil? ? value : (c.title || c.label || value)
+    end
   end
 
   def truncate_center label, output_label_length, end_length = 0
