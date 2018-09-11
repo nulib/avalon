@@ -52,7 +52,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if @user.persisted?
       flash[:success] = I18n.t "devise.omniauth_callbacks.success", :kind => auth_type
       sign_in @user, :event => :authentication
-      user_session[:virtual_groups] = @user.ldap_groups + CanvasService.new.courses_for_user(@user.username)
+      user_session[:virtual_groups] = @user.ldap_groups + @user.canvas_courses.keys
       user_session[:full_login] = true
 
       if auth_type == 'lti'

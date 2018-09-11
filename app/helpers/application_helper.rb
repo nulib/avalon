@@ -178,8 +178,12 @@ module ApplicationHelper
 
   def vgroup_display value
     Rails.cache.fetch("VGROUP_#{value}") do
-      c = Course.find_by_context_id(value)
-      c.nil? ? value : (c.title || c.label || value)
+      result = current_user.canvas_courses[value]
+      if result.nil?
+        c = Course.find_by_context_id(value)
+        result = c.nil? ? value : (c.title || c.label || value)
+      end
+      result
     end
   end
 
