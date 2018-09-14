@@ -74,7 +74,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_to URI.parse(params[:url]).path
     elsif session[:previous_url]
       redirect_to session.delete :previous_url
-    elsif auth_type == 'lti' && user_session[:virtual_groups].present?
+    elsif auth_type == 'lti' && user_session[:lti_group].present?
       redirect_to search_catalog_path('f[read_access_virtual_group_ssim][]' => user_session[:lti_group])
     else
       redirect_to root_url
