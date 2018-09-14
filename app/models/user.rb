@@ -93,7 +93,7 @@ class User < ActiveRecord::Base
   end
 
   def canvas_courses
-    @canvas_courses ||= CanvasService.new.courses_for_user(username)
+    @canvas_courses ||= CanvasService.courses_for_user(username)
   end
 
   #TODO extract the ldap stuff into a mixin?

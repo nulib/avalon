@@ -5,6 +5,8 @@ matterhorn:
   root: 'http://localhost:8081/'
   baseApplication: 'avalon'
   cleanup_log: 'log/cleanup_jobs.log'
+redis:
+  port: 6380
 streaming:
   server: :generic
   stream_token_ttl: 20 #minutes

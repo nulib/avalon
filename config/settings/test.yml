@@ -15,6 +15,8 @@ auth:
     :params:
       :oauth_credentials:
         key: 'secret'
+redis:
+  post: 6381
 streaming:
   server: :generic
   stream_token_ttl: 20 #minutes

@@ -177,14 +177,8 @@ module ApplicationHelper
   end
 
   def vgroup_display value
-    Rails.cache.fetch("VGROUP_#{value}") do
-      result = current_user&.canvas_courses[value]
-      if result.nil?
-        c = Course.find_by_context_id(value)
-        result = c.nil? ? value : (c.title || c.label || value)
-      end
-      result
-    end
+    course = CanvasService.find_course(value)
+    course.nil? ? value : course['name']
   end
 
   def truncate_center label, output_label_length, end_length = 0
