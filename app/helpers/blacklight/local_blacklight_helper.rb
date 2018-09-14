@@ -26,9 +26,7 @@ module Blacklight::LocalBlacklightHelper
   end
 
   def hide_course_from_user?(value)
-    result = Ability.new(current_user).is_member_of_any_collection? || 
-             (current_user.present? && current_user.canvas_courses.keys.include?(value))
-    !result
+    current_user.nil? || !current_user.canvas_courses.keys.include?(value)
   end
 
   def is_old_context_id?(value)
@@ -36,8 +34,7 @@ module Blacklight::LocalBlacklightHelper
   end
 
   def render_facet_item(facet_field, item)
-    return nil if facet_field == 'read_access_virtual_group_ssim' && 
-                  (is_old_context_id?(item.value) || hide_course_from_user?(item.value))
+    return nil if facet_field == 'read_access_virtual_group_ssim' && hide_course_from_user?(item.value)
     super
   end
   

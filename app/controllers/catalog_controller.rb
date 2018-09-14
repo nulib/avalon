@@ -79,7 +79,7 @@ class CatalogController < ApplicationController
     config.add_facet_field 'collection_ssim', label: 'Collection', limit: 5
     config.add_facet_field 'unit_ssim', label: 'Unit', limit: 5
     config.add_facet_field 'language_sim', label: 'Language', limit: 5
-    config.add_facet_field 'read_access_virtual_group_ssim', label: 'Course', limit: 10, if: Proc.new {|context, config, opts| context&.user_session&.fetch(:virtual_groups).present?}, helper_method: :vgroup_display
+    config.add_facet_field 'read_access_virtual_group_ssim', label: 'Course', limit: 1000, if: Proc.new {|context, config, opts| context&.user_session&.fetch(:virtual_groups).present?}, helper_method: :vgroup_display
 
     # Hide these facets if not a Collection Manager
     config.add_facet_field 'workflow_published_sim', label: 'Published', limit: 5, if: Proc.new {|context, config, opts| Ability.new(context.current_user, context.user_session).can? :create, MediaObject}, group: "workflow"
