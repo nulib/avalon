@@ -11,4 +11,13 @@ node {
   sh "docker tag \$(docker image ls -q --filter 'label=edu.northwestern.library.role=support' --filter 'label=edu.northwestern.library.app=AVR' | head -1) nulib/avr-build:${tag_name}"
   sh "docker image prune -f"
   sh "docker run -t -v /home/ec2-user/.aws:/root/.aws nulib/ebdeploy ${tag_name} avr"
+
+  properties([parameters([string(name: 'HONEYBADGER_API_KEY', defaultValue: '')])])
+  if (params.HONEYBADGER_API_KEY) {
+    def api_key = params.HONEYBADGER_API_KEY
+    def repo = scm.getUserRemoteConfigs()[0].getUrl()
+    def sha = sh(script: "git log -n 1 --pretty=format:'%h'",returnStdout: true).trim()
+    httpRequest "https://api.honeybadger.io/v1/deploys?api_key=${api_key}&deploy[environment]=${tag_name}&deploy[repository]=${repo}&deploy[local_username]=jenkins&deploy[revision]=${sha}"
+  }
 }
+

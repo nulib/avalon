@@ -1042,6 +1042,7 @@ GEM
       concurrent-ruby (~> 1.0)
     hashdiff (0.3.7)
     hashie (3.5.7)
+    honeybadger (4.0.0)
     hooks (0.4.1)
       uber (~> 0.0.14)
     htmlentities (4.3.4)
@@ -1521,6 +1522,7 @@ DEPENDENCIES
   fedora-migrate (~> 0.5.0)
   google-analytics-rails (= 1.1.0)
   hashdiff
+  honeybadger (~> 4.0)
   hooks
   hydra-head (~> 10.3.4)
   iconv
@@ -1583,4 +1585,4 @@ DEPENDENCIES
   zoom
 
 BUNDLED WITH
-   1.16.1
+   1.16.3
