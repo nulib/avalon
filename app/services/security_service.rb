@@ -6,7 +6,7 @@ class SecurityService
       configure_signer
       context[:protocol] ||= :stream_hls
       uri = Addressable::URI.parse(url)
-      expiration = Settings.streaming.stream_token_ttl.minutes.from_now
+      expiration = Settings.streaming.stream_token_ttl.to_f.minutes.from_now
       case context[:protocol]
       when :stream_flash
         # WARNING: UGLY FILENAME MUNGING AHEAD
@@ -44,7 +44,7 @@ class SecurityService
       cookie_domain = cookie_domain_segments.reverse.join('.')
       resource = "http*://#{domain}/#{context[:target]}/*"
       Rails.logger.info "Creating signed policy for resource #{resource}"
-      expiration = Settings.streaming.stream_token_ttl.to_i.minutes.from_now
+      expiration = Settings.streaming.stream_token_ttl.to_f.minutes.from_now
       params = Aws::CF::Signer.signed_params(resource, expires: expiration, resource: resource)
       params.each_pair do |param,value|
         result["CloudFront-#{param}"] = {

@@ -29,7 +29,7 @@ describe SecurityHelper, type: :helper do
 	  value: 'abcdefg',
 	  path: "/#{stream_info[:id]}",
 	  domain: "example.com",
-	  expires: Settings.streaming.stream_token_ttl.minutes.from_now
+	  expires: Settings.streaming.stream_token_ttl.to_f.minutes.from_now
 	}}}
 
     before do
