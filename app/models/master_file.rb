@@ -497,6 +497,10 @@ class MasterFile < ActiveFedora::Base
     end
   end
 
+  def highest_quality_derivative
+    ['high', 'medium', 'low'].lazy.map { |q| derivatives.where(quality_ssi: q).first }.find(&:itself)
+  end
+
   protected
 
   def mediainfo
@@ -512,23 +516,22 @@ class MasterFile < ActiveFedora::Base
     source = FileLocator.new(file_location)
     options[:master] = true
     if source.source.nil? or (source.uri.scheme == 's3' and not source.exist?)
-      source = FileLocator.new(self.derivatives.where(quality_ssi: 'high').first.absolute_location)
+      source = FileLocator.new(highest_quality_derivative.absolute_location)
       options[:master] = false
     end
     response = { source: source&.location }.merge(options)
-    return response if response[:source].to_s =~ %r(^https?://)
+    response_uri = URI(response[:source])
+    return response if response_uri.scheme.match?(/^https?$/) && !response_uri.path.end_with?('.m3u8')
 
     unless File.exists?(response[:source])
       Rails.logger.warn("Masterfile `#{file_location}` not found. Extracting via HLS.")
-      begin
-        playlist_url = self.stream_details[:stream_hls].find { |d| d[:quality] == 'high' }[:url]
-        secure_url = SecurityHandler.secure_url(playlist_url, target: self.id)
-        playlist = Avalon::M3U8Reader.read(secure_url)
-        details = playlist.at(options[:offset])
-        target = File.join(Dir.tmpdir,File.basename(details[:location]))
-        File.open(target,'wb') { |f| open(details[:location]) { |io| f.write(io.read) } }
-        response = { source: target, offset: details[:offset], master: false }
+      source = FileLocator.new(highest_quality_derivative.hls_url)
+      playlist = Avalon::M3U8Reader.read(source.location)
+      details = playlist.at(options[:offset])
+      if source.uri.scheme == 's3'
+        details[:location] = URI(details[:location]).tap { |uri| uri.scheme = source.uri.scheme; uri.host = source.uri.host }.to_s
       end
+      response = { source: FileLocator.new(details[:location]).location, offset: details[:offset], master: false }
     end
     return response
   end
