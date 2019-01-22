@@ -519,9 +519,10 @@ class MasterFile < ActiveFedora::Base
       source = FileLocator.new(highest_quality_derivative.absolute_location)
       options[:master] = false
     end
+
     response = { source: source&.location }.merge(options)
     response_uri = URI(response[:source])
-    return response if response_uri.scheme.match?(/^https?$/) && !response_uri.path.end_with?('.m3u8')
+    return response if source.exist? && response_uri.scheme.match?(/^https?$/) && !response_uri.path.end_with?('.m3u8')
 
     unless File.exists?(response[:source])
       Rails.logger.warn("Masterfile `#{file_location}` not found. Extracting via HLS.")
