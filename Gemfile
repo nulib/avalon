@@ -142,7 +142,6 @@ group :aws, optional: true do
   gem 'cloudfront-signer'
   gem 'zk'
   gem 'active_elastic_job', git: 'https://github.com/nulib/active-elastic-job.git', branch: 'latest-aws-sdk'
-  gem 'retriable'
 end
 
 # Install the bundle --with zoom to use the Z39.50 bib retriever

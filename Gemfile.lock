@@ -1562,7 +1562,6 @@ DEPENDENCIES
   resque (~> 1.27.0)
   resque-scheduler (~> 4.3.0)
   rest-client
-  retriable
   roo
   rsolr (~> 1.0)
   rspec-rails
