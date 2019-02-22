@@ -1,6 +1,6 @@
 Aws::ElasticTranscoder::Client.prepend(
   Module.new do
-    [:create_job, :read_job, :cancel_job].each do |method|
+    [:create_job, :read_job, :cancel_job, :list_presets, :read_preset, :read_pipeline, :create_preset].each do |method|
       define_method(method) do |*method_args|
         retry_proc = ->(exception, try, elapsed_time, next_interval) do
           Rails.logger.warn("Exception calling `#{self.class.name}##{method}': #{exception.class}: `#{exception.message}' - #{try} tries in #{elapsed_time} seconds and #{next_interval} seconds until the next try.")
