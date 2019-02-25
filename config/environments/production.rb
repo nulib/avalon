@@ -46,6 +46,7 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
 
+  config.logger = Logger.new("| tee -a log/production.log")
   unless full_logging
     config.lograge.enabled = true
     config.lograge.custom_options = -> (event) { { time: event.time } }
