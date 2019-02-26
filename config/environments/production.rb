@@ -46,13 +46,11 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
 
-  # Enable logging to both stdout and file, in more compact format
   config.logger = Logger.new("| tee -a log/production.log")
   unless full_logging
     config.lograge.enabled = true
-    config.lograge.custom_options = lambda do |event|
-      {:time => event.time}
-    end
+    config.lograge.custom_options = -> (event) { { time: event.time } }
+    config.lograge.ignore_actions = ['CatalogController#index']
   end
 
   # Use the lowest log level to ensure availability of diagnostic information

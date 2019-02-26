@@ -13,11 +13,6 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 class IngestBatchEntryJob < ApplicationJob
-  # Throttle to this per second to stay within limit
-  # for submitting to AWS Elastic Transcoder
-  # https://docs.aws.amazon.com/elastictranscoder/latest/developerguide/limits.html
-  throttle threshold: Settings.encode_throttling.create.threshold, period: Settings.encode_throttling.create.spacing, drop: false
-
   # ActiveJob will serialize/deserialize the batch_entry automatically using GlobalIDs
   def perform(batch_entry)
     # Validation checking that it is okay to ingest this batch entry

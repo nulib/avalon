@@ -50,7 +50,6 @@ module Avalon
         namespace: "_#{Rails.application.class.parent_name.downcase}_cache",
         expires_in: 30.days
       }
-      ActiveJob::TrafficControl.client = Redis.new(config.cache_store[1])
     end
 
     config.action_dispatch.default_headers = { 'X-Frame-Options' => 'ALLOWALL' }

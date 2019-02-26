@@ -55,6 +55,7 @@ gem 'browse-everything', '~> 0.13.0'
 gem 'mediainfo', git: "https://github.com/avalonmediasystem/mediainfo.git", branch: 'avalon_fixes'
 gem 'rest-client'
 gem 'roo'
+gem 'roo-xls'
 gem 'rubyhorn', git: "https://github.com/avalonmediasystem/rubyhorn.git", tag: 'avalon-r6'
 
 # Data Translation & Normalization
@@ -77,7 +78,7 @@ gem 'mediaelement-track-scrubber', git: 'https://github.com/avalonmediasystem/me
 gem 'redis-rails'
 gem 'resque', '~> 1.27.0'
 gem 'resque-scheduler', '~> 4.3.0'
-gem 'activejob-traffic_control'
+gem 'retriable'
 
 # Coding Patterns
 gem 'config'
