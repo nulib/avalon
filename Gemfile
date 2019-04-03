@@ -24,7 +24,7 @@ gem 'fedora-migrate', '~> 0.5.0'
 gem 'rdf-rdfxml'
 
 # Samvera version pins
-gem 'blacklight', '=6.11.0'
+gem 'blacklight', '~> 6.11'
 gem 'rdf', '~> 2.2'
 gem 'rsolr', '~> 1.0'
 
@@ -60,7 +60,7 @@ gem 'rubyhorn', git: "https://github.com/avalonmediasystem/rubyhorn.git", tag: '
 
 # Data Translation & Normalization
 gem 'edtf'
-gem 'iconv'
+gem 'iconv', "~> 1.0.6"
 gem 'marc'
 
 # MediaElement.js & Plugins

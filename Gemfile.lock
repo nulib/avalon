@@ -823,11 +823,11 @@ GEM
     bixby (1.0.0)
       rubocop (~> 0.50, <= 0.52.1)
       rubocop-rspec (~> 1.22, <= 1.22.2)
-    blacklight (6.11.0)
+    blacklight (6.20.0)
       bootstrap-sass (~> 3.2)
       deprecation
       globalid
-      jbuilder
+      jbuilder (~> 2.7)
       kaminari (>= 0.15)
       nokogiri (~> 1.6)
       rails (>= 4.2, < 6)
@@ -1067,7 +1067,7 @@ GEM
       rails (>= 3.2.6)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
-    iconv (1.0.5)
+    iconv (1.0.8)
     ims-lti (1.1.13)
       builder
       oauth (>= 0.4.5, < 0.6)
@@ -1139,7 +1139,7 @@ GEM
     mime-types-data (3.2016.0521)
     mimemagic (0.3.2)
     mini_mime (1.0.0)
-    mini_portile2 (2.3.0)
+    mini_portile2 (2.4.0)
     minitest (5.11.3)
     mono_logger (1.1.0)
     multi_json (1.13.1)
@@ -1153,8 +1153,8 @@ GEM
     net-ssh (5.0.1)
     netrc (0.11.0)
     noid (0.9.0)
-    nokogiri (1.8.2)
-      mini_portile2 (~> 2.3.0)
+    nokogiri (1.10.2)
+      mini_portile2 (~> 2.4.0)
     nom-xml (0.6.0)
       activesupport (>= 3.2.18)
       i18n
@@ -1488,7 +1488,7 @@ DEPENDENCIES
   aws-sdk (~> 3.0)
   aws-sdk-rails!
   bixby
-  blacklight (= 6.11.0)
+  blacklight (~> 6.11)
   bootstrap-toggle-rails!
   bootstrap_form
   browse-everything (~> 0.13.0)
@@ -1521,7 +1521,7 @@ DEPENDENCIES
   honeybadger (~> 4.0)
   hooks
   hydra-head (~> 10.3.4)
-  iconv
+  iconv (~> 1.0.6)
   ims-lti (~> 1.1.13)
   jbuilder (~> 2.0)
   jquery-datatables
@@ -1583,4 +1583,4 @@ DEPENDENCIES
   zoom
 
 BUNDLED WITH
-   1.17.1
+   1.17.2
