@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Core rails
-gem 'rails', '~> 4.2.9'
+gem 'rails', '~> 4.2.11'
 gem 'sqlite3'
 
 # Assets
