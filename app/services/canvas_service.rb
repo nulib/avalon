@@ -22,9 +22,9 @@ class CanvasService
     def find_course(code)
       return nil if client.nil?
       Rails.cache.fetch("CANVAS_COURSE_#{code}") do
-        result = paged_results('api/v1/accounts/self/courses', search_term: code)
-        return nil if result.length.zero?
-        result.first
+        paged_results('api/v1/accounts/self/courses', search_term: code).find do |found_course|
+          found_course['course_code'] == code
+        end
       end
     end
 
