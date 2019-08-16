@@ -220,7 +220,7 @@ GEM
       tzinfo (~> 1.1)
     acts_as_list (0.9.15)
       activerecord (>= 3.0)
-    addressable (2.5.2)
+    addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
     airbrussh (1.3.0)
       sshkit (>= 1.6.1, != 1.7.0)
@@ -983,6 +983,9 @@ GEM
       tzinfo
     excon (0.62.0)
     execjs (2.7.0)
+    ezid-client (1.8.0)
+      hashie (~> 3.4, >= 3.4.3)
+      nokogiri
     factory_girl (4.9.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.9.0)
@@ -1034,8 +1037,9 @@ GEM
       tilt
     hamster (3.0.0)
       concurrent-ruby (~> 1.0)
-    hashdiff (0.3.7)
+    hashdiff (1.0.0)
     hashie (3.5.7)
+    honeybadger (4.5.1)
     hooks (0.4.1)
       uber (~> 0.0.14)
     htmlentities (4.3.4)
@@ -1175,6 +1179,9 @@ GEM
     omniauth-identity (1.1.1)
       bcrypt-ruby (~> 3.0)
       omniauth (~> 1.0)
+    omniauth-openam (1.1.0)
+      faraday
+      omniauth (~> 1.0)
     orm_adapter (0.5.0)
     os (0.9.6)
     parallel (1.12.1)
@@ -1194,7 +1201,7 @@ GEM
       pry (~> 0.10)
     pry-rails (0.3.6)
       pry (>= 0.10.4)
-    public_suffix (3.0.2)
+    public_suffix (3.1.1)
     puma (3.11.4)
     raabro (1.1.5)
     rack (1.6.11)
@@ -1355,7 +1362,7 @@ GEM
     rubyzip (1.2.3)
     rufus-scheduler (3.5.0)
       fugit (~> 1.1, >= 1.1.1)
-    safe_yaml (1.0.4)
+    safe_yaml (1.0.5)
     sass (3.4.22)
     sass-rails (5.0.7)
       railties (>= 4.0.0, < 6)
@@ -1449,10 +1456,10 @@ GEM
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
-    webmock (3.4.2)
+    webmock (3.6.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
-      hashdiff
+      hashdiff (>= 0.4.0, < 2.0.0)
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
@@ -1508,6 +1515,7 @@ DEPENDENCIES
   edtf
   email_spec
   equivalent-xml
+  ezid-client
   factory_girl_rails
   fakefs
   faker
@@ -1515,6 +1523,7 @@ DEPENDENCIES
   fedora-migrate (~> 0.5.0)
   google-analytics-rails (= 1.1.0)
   hashdiff
+  honeybadger (~> 4.0)
   hooks
   hydra-head (~> 10.3.4)
   iconv (~> 1.0.6)
@@ -1539,6 +1548,7 @@ DEPENDENCIES
   net-ldap
   omniauth-identity
   omniauth-lti!
+  omniauth-openam
   parallel
   pg (~> 0.21)
   poltergeist

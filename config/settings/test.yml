@@ -28,3 +28,5 @@ matterhorn:
   root: 'http://localhost:8082/'
   baseApplication: 'avalon'
   cleanup_log: 'log/cleanup_jobs.log'
+zookeeper:
+  connection_str: "localhost:9985/configs"
