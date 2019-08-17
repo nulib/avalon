@@ -89,8 +89,6 @@ workflows:
     jobs:
       - test
       - docker-cache/publish:
-          requires:
-            - test
           filters:
             branches:
               only:
