@@ -1179,9 +1179,6 @@ GEM
     omniauth-identity (1.1.1)
       bcrypt-ruby (~> 3.0)
       omniauth (~> 1.0)
-    omniauth-openam (1.1.0)
-      faraday
-      omniauth (~> 1.0)
     orm_adapter (0.5.0)
     os (0.9.6)
     parallel (1.12.1)
@@ -1515,7 +1512,6 @@ DEPENDENCIES
   edtf
   email_spec
   equivalent-xml
-  ezid-client
   factory_girl_rails
   fakefs
   faker
@@ -1523,7 +1519,6 @@ DEPENDENCIES
   fedora-migrate (~> 0.5.0)
   google-analytics-rails (= 1.1.0)
   hashdiff
-  honeybadger (~> 4.0)
   hooks
   hydra-head (~> 10.3.4)
   iconv (~> 1.0.6)
@@ -1548,7 +1543,6 @@ DEPENDENCIES
   net-ldap
   omniauth-identity
   omniauth-lti!
-  omniauth-openam
   parallel
   pg (~> 0.21)
   poltergeist
