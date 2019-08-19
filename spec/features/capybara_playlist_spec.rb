@@ -80,7 +80,7 @@ describe 'Playlist' do
     page.should have_content('This playlist currently has no playable items')
   end
 
-  it 'deletes playlist permanently from playlists page', js: true do
+  xit 'deletes playlist permanently from playlists page', js: true do
     user = FactoryGirl.create(:administrator)
     login_as user, scope: :user
     visit '/playlists'
@@ -96,7 +96,7 @@ describe 'Playlist' do
     page.should have_no_link('private_playlist')
   end
 
-  it 'is able to delete playlist from edit playlist page', js: true do
+  xit 'is able to delete playlist from edit playlist page', js: true do
     user = FactoryGirl.create(:administrator)
     login_as user, scope: :user
     visit '/playlists'

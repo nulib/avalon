@@ -1,3 +1,6 @@
+require 'hashdiff'
+HashDiff = Hashdiff unless Object.const_defined?(:HashDiff)
+
 RSpec::Matchers.define :hash_match do |expected|
   match do |actual|
     diff = HashDiff.diff(actual,expected) do |p,a,e|
