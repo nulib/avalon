@@ -22,15 +22,25 @@ module ApplicationHelper
     "#{application_name} #{t(:release_label)} #{Avalon::VERSION}"
   end
 
+  def https_link
+    link_uri = URI(yield)
+    link_uri.scheme = 'https' if link_uri.scheme == 'http'
+    link_uri.to_s
+  rescue URI::InvalidURIError
+    link
+  end
+
   def share_link_for(obj)
-    if obj.nil?
-      I18n.t('media_object.empty_share_link')
-    elsif obj.permalink.present?
-      obj.permalink
-    else
-      case obj
-      when MediaObject then media_object_url(obj)
-      when MasterFileBehavior then id_section_media_object_url(obj.media_object_id, obj.id)
+    return I18n.t('media_object.empty_share_link') if obj.nil?
+      
+    https_link do
+      if obj.permalink.present?
+        obj.permalink
+      else
+        case obj
+        when MediaObject then media_object_url(obj)
+        when MasterFileBehavior then id_section_media_object_url(obj.media_object_id, obj.id)
+        end
       end
     end
   end
