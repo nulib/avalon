@@ -528,7 +528,9 @@ describe MediaObjectsController, type: :controller do
         xhr :get, :show_stream_details, id: media_object.id, content: part.id
         json_obj = JSON.parse(response.body)
         expect(json_obj['is_video']).to eq(part.is_video?)
-        expect(json_obj['link_back_url']).to eq(Rails.application.routes.url_helpers.id_section_media_object_url(media_object, part))
+        linkback_uri = URI(json_obj['link_back_url'])
+        media_object_uri = URI(Rails.application.routes.url_helpers.id_section_media_object_url(media_object, part))
+        expect(linkback_uri.path).to eq(media_object_uri.path)
       end
 
       it "should provide a JSON stream description with permalink to the client" do
