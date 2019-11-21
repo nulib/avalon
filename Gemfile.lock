@@ -983,6 +983,9 @@ GEM
       tzinfo
     excon (0.62.0)
     execjs (2.7.0)
+    ezid-client (1.8.0)
+      hashie (~> 3.4, >= 3.4.3)
+      nokogiri
     factory_girl (4.9.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.9.0)
@@ -1036,6 +1039,7 @@ GEM
       concurrent-ruby (~> 1.0)
     hashdiff (1.0.0)
     hashie (3.5.7)
+    honeybadger (4.5.1)
     hooks (0.4.1)
       uber (~> 0.0.14)
     htmlentities (4.3.4)
