@@ -95,6 +95,7 @@ workflows:
                 - /^nu\/deploy\/.+/
           cache-key: docker-stages
           cache-stages: build run
+          image: nulib/avr
       - deploy:
           requires:
             - docker-cache/publish
