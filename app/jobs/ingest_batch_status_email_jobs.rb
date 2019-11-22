@@ -20,26 +20,30 @@ module IngestBatchStatusEmailJobs
     def perform
       # Get all unlocked items that don't have an email sent for them and see if an email can be sent
       BatchRegistries.where(completed_email_sent: false, error_email_sent: false, locked: false).each do |br|
-        # Get the entries for the batch and see if they all complete
-        complete = true
-        errors = false
-        BatchEntries.where(batch_registries_id: br.id).each do |entry|
-          complete = false unless entry.complete || entry.error
-          errors = true if entry.error
-        end
+        begin
+          # Get the entries for the batch and see if they all complete
+          complete = true
+          errors = false
+          BatchEntries.where(batch_registries_id: br.id).each do |entry|
+            complete = false unless entry.complete || entry.error
+            errors = true if entry.error
+          end
 
-        next unless complete
-        unless errors
-          BatchRegistriesMailer.batch_registration_finished_mailer(br).deliver_now
-          br.completed_email_sent = true
-          br.complete = true
+          next unless complete
+          unless errors
+            BatchRegistriesMailer.batch_registration_finished_mailer(br).deliver_now
+            br.completed_email_sent = true
+            br.complete = true
+          end
+          if errors
+            BatchRegistriesMailer.batch_registration_finished_mailer(br).deliver_now
+            br.error_email_sent = true
+            br.error = true
+          end
+          br.save
+        rescue StandardError => err
+          Rails.logger.warn("Email failed to send for Batch Registry #{br.id}: #{err.message}")
         end
-        if errors
-          BatchRegistriesMailer.batch_registration_finished_mailer(br).deliver_now
-          br.error_email_sent = true
-          br.error = true
-        end
-        br.save
       end
     end
   end
@@ -50,18 +54,22 @@ module IngestBatchStatusEmailJobs
   class StalledJob < ApplicationJob
 
     def perform
-      stall_time = 4.days
-      # Get every batch registry not marked as complete
-      BatchRegistries.where(completed_email_sent: false, error_email_sent: false).each do |br|
-        batch_stalled = false
-        batch_stalled = true if br.locked && Time.now.utc - br.updated_at > stall_time
-        unless batch_stalled
-          BatchEntries.where(batch_registries_id: br.id, error: false, complete: false).each do |be|
-            batch_stalled = true if Time.now.utc - be.updated_at > stall_time
-            break if batch_stalled
+      begin
+        stall_time = 4.days
+        # Get every batch registry not marked as complete
+        BatchRegistries.where(completed_email_sent: false, error_email_sent: false).each do |br|
+          batch_stalled = false
+          batch_stalled = true if br.locked && Time.now.utc - br.updated_at > stall_time
+          unless batch_stalled
+            BatchEntries.where(batch_registries_id: br.id, error: false, complete: false).each do |be|
+              batch_stalled = true if Time.now.utc - be.updated_at > stall_time
+              break if batch_stalled
+            end
           end
+          BatchRegistriesMailer.batch_registration_stalled_mailer(br) if batch_stalled
         end
-        BatchRegistriesMailer.batch_registration_stalled_mailer(br) if batch_stalled
+      rescue StandardError => err
+        Rails.logger.warn("Email failed to send for Batch Registry #{br.id}: #{err.message}")
       end
     end
   end
