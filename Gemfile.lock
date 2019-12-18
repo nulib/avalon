@@ -1197,7 +1197,7 @@ GEM
     public_suffix (3.1.1)
     puma (3.12.2)
     raabro (1.1.5)
-    rack (1.6.11)
+    rack (1.6.12)
     rack-protection (1.5.5)
       rack
     rack-test (0.6.3)
