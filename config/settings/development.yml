@@ -1,16 +1,40 @@
+---
 active_job:
   queue_adapter: inline
 localstack: {}
 matterhorn:
-  root: 'http://localhost:8081/'
-  baseApplication: 'avalon'
-  cleanup_log: 'log/cleanup_jobs.log'
+  root: http://matterhorn:8080/
+  baseApplication: avalon
+  cleanup_log: log/cleanup_jobs.log
+  media_path: "/masterfiles"
 redis:
   port: 6380
 streaming:
-  server: :generic
-  stream_token_ttl: 20 #minutes
-  content_path: '/srv/avalon/content'
-  rtmp_base: 'rtmp://localhost:1936/avalon'
-  http_base: 'http://localhost:8881/avalon'
-  default_quality: 'low'
+  server: :nginx
+  stream_token_ttl: 20
+  content_path: "/streamfiles"
+  rtmp_base: rtmp://streaming/avalon
+  http_base: http://streaming:8880/avalon
+  default_quality: low
+canvas:
+  api:
+    endpoint: https://canvas.northwestern.edu/
+    token: 1876~PZr1SOiOLjwkdDinwloqkYg7den7CEr06zpTraqIwiFOH1mFp7MfBYRKYcTN4k8S
+domain:
+  host: devbox.library.northwestern.edu
+  port: 3000
+  protocol: http
+dropbox:
+  path: "/masterfiles/dropbox"
+  upload_uri: file:///masterfiles/dropbox
+auth:
+  configuration:
+    nu:
+      name: Northwestern WebSSO
+      params:
+        auth_url: https://websso.it.northwestern.edu/amserver
+        cookie_name: openAMssoToken
+      provider: openam
+solrcloud: true
+zookeeper:
+  connection_str: localhost:9983/configs
