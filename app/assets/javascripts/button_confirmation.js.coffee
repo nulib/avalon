@@ -29,11 +29,15 @@ $ ->
     content: ->
       button = undefined
       if typeof $(this).attr('form') == "undefined"
-        button = '<a href="' + $(this).attr('href') + '" class="btn btn-xs btn-danger btn-confirm" data-method="delete" rel="nofollow">Yes, Delete</a>'
+        button = $('<a href="' + $(this).attr('href') + '" class="btn btn-xs btn-danger btn-confirm" rel="nofollow">Yes, Delete</a>').attr('data-method', 'delete')
       else
         button = '<input class="btn btn-xs btn-danger btn-confirm" form="' + $(this).attr('form') + '" type="submit">'
         $('#' + $(this).attr('form')).find('[name=\'_method\']').val 'delete'
-      '<p>Are you sure?</p> ' + button + ' <a href="#" class="btn btn-xs btn-primary" id="special_button_color">No, Cancel</a>'
+      $('<div></div>')
+        .append($('<p>Are you sure?</p>'))
+        .append(button)
+        .append(' ')
+        .append($('<a href="#" class="btn btn-xs btn-primary" id="special_button_color">No, Cancel</a>'))
   ).click ->
     t = this
     $('.btn-confirmation').filter(->
