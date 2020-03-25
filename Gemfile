@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 # Core rails
 gem 'rails', '~> 4.2.11'
 gem 'sqlite3'
+gem 'puma', '~> 4.1'
 
 # Assets
 gem 'coffee-rails', '~> 4.1.0'
@@ -133,7 +134,6 @@ end
 group :production do
   gem 'google-analytics-rails', '1.1.0'
   gem 'lograge'
-  gem 'puma'
 end
 
 # Install the bundle --with aws when running on Amazon Elastic Beanstalk

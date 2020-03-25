@@ -16,25 +16,13 @@ streaming:
   rtmp_base: rtmp://streaming/avalon
   http_base: http://streaming:8880/avalon
   default_quality: low
-canvas:
-  api:
-    endpoint: https://canvas.northwestern.edu/
-    token: 1876~PZr1SOiOLjwkdDinwloqkYg7den7CEr06zpTraqIwiFOH1mFp7MfBYRKYcTN4k8S
 domain:
   host: devbox.library.northwestern.edu
   port: 3000
-  protocol: http
+  protocol: https
 dropbox:
   path: "/masterfiles/dropbox"
   upload_uri: file:///masterfiles/dropbox
-auth:
-  configuration:
-    nu:
-      name: Northwestern WebSSO
-      params:
-        auth_url: https://websso.it.northwestern.edu/amserver
-        cookie_name: openAMssoToken
-      provider: openam
 solrcloud: true
 zookeeper:
   connection_str: localhost:9983/configs
