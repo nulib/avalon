@@ -16,6 +16,10 @@ streaming:
   rtmp_base: rtmp://streaming/avalon
   http_base: http://streaming:8880/avalon
   default_quality: low
+canvas:
+  api:
+    endpoint: https://canvas.northwestern.edu/
+    token: 1876~PZr1SOiOLjwkdDinwloqkYg7den7CEr06zpTraqIwiFOH1mFp7MfBYRKYcTN4k8S
 domain:
   host: devbox.library.northwestern.edu
   port: 3000
