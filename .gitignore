@@ -47,3 +47,4 @@ config/environments/*.local.yml
 config/blacklight.yml
 config/solr.yml
 config/fedora.yml
+config/ssl

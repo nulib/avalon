@@ -1154,6 +1154,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (5.0.1)
     netrc (0.11.0)
+    nio4r (2.5.2)
     noid (0.9.0)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
@@ -1179,9 +1180,9 @@ GEM
     omniauth-identity (1.1.1)
       bcrypt-ruby (~> 3.0)
       omniauth (~> 1.0)
-    omniauth-openam (1.1.0)
+    omniauth-nusso (0.1.2)
       faraday
-      omniauth (~> 1.0)
+      omniauth
     orm_adapter (0.5.0)
     os (0.9.6)
     parallel (1.12.1)
@@ -1202,7 +1203,8 @@ GEM
     pry-rails (0.3.6)
       pry (>= 0.10.4)
     public_suffix (3.1.1)
-    puma (3.11.4)
+    puma (4.3.3)
+      nio4r (~> 2.0)
     raabro (1.1.5)
     rack (1.6.11)
     rack-protection (1.5.5)
@@ -1548,13 +1550,13 @@ DEPENDENCIES
   net-ldap
   omniauth-identity
   omniauth-lti!
-  omniauth-openam
+  omniauth-nusso (>= 0.1.2)
   parallel
   pg (~> 0.21)
   poltergeist
   pry-byebug
   pry-rails
-  puma
+  puma (~> 4.1)
   rails (~> 4.2.11)
   rb-readline
   rdf (~> 2.2)
