@@ -163,6 +163,13 @@ describe Avalon::Batch::Entry do
     end
   end
 
+  describe 'terms of use' do
+    let(:entry_fields) {{ title: Faker::Lorem.sentence, date_issued: "#{Time.now}", terms_of_use: ["This is the Terms of Use"] }}
+    it 'sets terms of use' do
+      expect(entry.media_object.descMetadata.to_xml).to include('<accessCondition type="use and reproduction">This is the Terms of Use</accessCondition>')
+    end
+  end
+
   describe '#process!' do
     let(:entry_files) { [{ file: File.join(testdir, filename), offset: '00:00:00.500', label: 'Quis quo', date_digitized: '2015-10-30', skip_transcoding: false }] }
     let(:master_file) { entry.media_object.master_files.first }
