@@ -1137,7 +1137,7 @@ GEM
     mime-types-data (3.2016.0521)
     mimemagic (0.3.2)
     mini_mime (1.0.2)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.5.0)
     minitest (5.14.1)
     mono_logger (1.1.0)
     multi_json (1.13.1)
@@ -1151,8 +1151,9 @@ GEM
     net-ssh (5.0.1)
     netrc (0.11.0)
     noid (0.9.0)
-    nokogiri (1.10.9)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.11.1)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     nom-xml (0.6.0)
       activesupport (>= 3.2.18)
       i18n
@@ -1197,6 +1198,7 @@ GEM
     public_suffix (3.1.1)
     puma (3.12.6)
     raabro (1.1.5)
+    racc (1.5.2)
     rack (1.6.13)
     rack-protection (1.5.5)
       rack
