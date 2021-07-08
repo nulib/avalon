@@ -79,14 +79,14 @@ module Samvera
       user = User.find(params[:id])
       impersonate_user(user)
       # Recalculate user_session[:virtual_groups]
-      user_session[:virtual_groups] = current_user.ldap_groups
+      user_session[:virtual_groups] = current_user.virtual_groups
       redirect_to main_app.root_path
     end
 
     def stop_impersonating
       stop_impersonating_user
       # Recalculate user_session[:virtual_groups]
-      user_session[:virtual_groups] = current_user.ldap_groups
+      user_session[:virtual_groups] = current_user.virtual_groups
       redirect_to main_app.persona_users_path, notice: t('.become.over')
     end
 

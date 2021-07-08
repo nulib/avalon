@@ -25,6 +25,19 @@ module Blacklight::LocalBlacklightHelper
     blacklight_config.facet_fields.map {|facet,opts| opts[:group]}.uniq
   end
 
+  def hide_course_from_user?(value)
+    current_user.nil? || !current_user.canvas_courses.keys.include?(value)
+  end
+
+  def is_old_context_id?(value)
+    value.match?(/^[0-9a-z]{32,40}$/)
+  end
+
+  def render_facet_item(facet_field, item)
+    return nil if facet_field == 'read_access_virtual_group_ssim' && hide_course_from_user?(item.value)
+    super
+  end
+
   def url_for_document doc, options = {}
     case doc["has_model_ssim"].first
     when "MediaObject"
