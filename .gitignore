@@ -81,3 +81,6 @@ yarn-debug.log*
 # ActiveStorage
 /storage
 /tmp/storage
+
+# ActiveEncode
+/encodes

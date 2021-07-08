@@ -1,2 +1,2 @@
-development: localhost:6379
-test: localhost:6379
+development: localhost:<%= ENV['REDIS_DEV_PORT'] || 6379 %>
+test: localhost:<%= ENV['REDIS_TEST_PORT'] || 6379 %>
