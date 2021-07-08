@@ -61,7 +61,7 @@ gem 'omniauth-identity'
 gem 'omniauth-lti', git: "https://github.com/avalonmediasystem/omniauth-lti.git", tag: 'avalon-r4'
 
 # Media Access & Transcoding
-gem 'active_encode', '~> 0.7.0'
+gem 'active_encode', '~> 0.8.0'
 gem 'audio_waveform-ruby', '~> 1.0.7', require: 'audio_waveform'
 gem 'browse-everything', '~> 0.13.0'
 gem 'fastimage'

@@ -144,6 +144,14 @@ class User < ActiveRecord::Base
     User.walk_ldap_groups(User.ldap_member_of(user_key), []).sort
   end
 
+  def user_key
+    email
+  end
+
+  def virtual_groups
+    canvas_courses.respond_to?(:keys) ? ldap_groups + canvas_courses.keys : ldap_groups
+  end
+
   def self.ldap_member_of(cn)
     return [] unless defined? Avalon::GROUP_LDAP
     entry = Avalon::GROUP_LDAP.search(:base => Avalon::GROUP_LDAP_TREE, :filter => Net::LDAP::Filter.eq("cn", cn), :attributes => ["memberof"]).first
