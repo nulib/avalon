@@ -49,22 +49,36 @@ jobs:
 
       - run: cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
 
-      - run:
-          command: |
-            unset BUNDLE_APP_CONFIG
-            bundle install --with aws development test postgres --without production --jobs=4 --retry=3
-            bundle exec rake db:migrate
+      - restore_cache:
+          keys:
+            - bundle-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock"}}
+            - bundle-cache-v1-{{ arch }}-
 
       - restore_cache:
           keys:
             - yarn-cache-v1-{{ arch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-v1-{{ arch }}-
+
+      - run:
+          command: |
+            unset BUNDLE_APP_CONFIG
+            bundle config set --local path vendor/bundle
+            bundle install --with aws development test postgres --without production --jobs=4 --retry=3
 
       - run: yarn
 
       - save_cache:
+          key: bundle-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock"}}
+          paths:
+            - vendor/bundle
+            
+      - save_cache:
           key: yarn-cache-v1-{{ arch }}-{{ checksum "yarn.lock" }}
           paths:
             - .cache/yarn
+
+      - run:
+          command: bundle exec rake db:migrate
 
       - samvera/install_solr_core
 
@@ -117,10 +131,10 @@ workflows:
   build_test_report:
     jobs:
       - build:
-          ruby_ver: 2.5.5
-          name: "Ruby2-5-5"
+          name: ruby
+          ruby_ver: 2.6.7
           parallelism: 4
       - upload-coverage:
           parallelism: 4
           requires:
-             - Ruby2-5-5
+             - ruby
