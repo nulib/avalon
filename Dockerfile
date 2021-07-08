@@ -1,5 +1,5 @@
 # Base stage for building gems
-FROM        ruby:2.5.5-stretch as bundle
+FROM        ruby:2.6.7-stretch as bundle
 RUN         echo "deb http://deb.debian.org/debian stretch-backports main" >> /etc/apt/sources.list \
          && apt-get update && apt-get upgrade -y build-essential \
          && apt-get install -y --no-install-recommends \
@@ -24,7 +24,7 @@ RUN         bundle install --with aws development test postgres --without produc
 
 
 # Download binaries in parallel
-FROM        ruby:2.5.5-stretch as download
+FROM        ruby:2.6.7-stretch as download
 RUN         curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar xvz -C /usr/bin/
 RUN         curl https://chromedriver.storage.googleapis.com/2.46/chromedriver_linux64.zip -o /usr/local/bin/chromedriver \
          && chmod +x /usr/local/bin/chromedriver
@@ -35,7 +35,7 @@ RUN         mkdir -p /tmp/ffmpeg && cd /tmp/ffmpeg \
 
 
 # Base stage for building final images
-FROM        ruby:2.5.5-slim-stretch as base
+FROM        ruby:2.6.7-slim-stretch as base
 RUN         apt-get update && apt-get install -y --no-install-recommends curl gnupg2 \
          && curl -sL http://deb.nodesource.com/setup_8.x | bash - \
          && curl -O https://mediaarea.net/repo/deb/repo-mediaarea_1.0-6_all.deb && dpkg -i repo-mediaarea_1.0-6_all.deb \
