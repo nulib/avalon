@@ -87,3 +87,5 @@ yarn-debug.log*
 .*.swo
 .*.swp
 
+# ActiveEncode
+/encodes

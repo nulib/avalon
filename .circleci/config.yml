@@ -61,18 +61,29 @@ jobs:
 
       - run: cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
 
-      - run:
-          command: |
-            unset BUNDLE_APP_CONFIG
-            bundle install --with aws development test postgres --without production --jobs=4 --retry=3
-            bundle exec rake db:migrate
+      - restore_cache:
+          keys:
+            - bundle-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock"}}
+            - bundle-cache-v1-{{ arch }}-
 
       - restore_cache:
           keys:
             - yarn-cache-v1-{{ arch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-v1-{{ arch }}-
+
+      - run:
+          command: |
+            unset BUNDLE_APP_CONFIG
+            bundle config set --local path vendor/bundle
+            bundle install --with aws development test postgres --without production --jobs=4 --retry=3
 
       - run: yarn
 
+      - save_cache:
+          key: bundle-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock"}}
+          paths:
+            - vendor/bundle
+            
       - save_cache:
           key: yarn-cache-v1-{{ arch }}-{{ checksum "yarn.lock" }}
           paths:
@@ -101,6 +112,8 @@ jobs:
             zip -1 -r solr_conf.zip ./*
             curl -H "Content-type:application/octet-stream" --data-binary @solr_conf.zip "http://solr:SolrRocks@127.0.0.1:<< parameters.solr_port >>/solr/admin/configs?action=UPLOAD&name=solrconfig"
             curl "http://solr:SolrRocks@127.0.0.1:<< parameters.solr_port >>/solr/admin/collections?action=CREATE&name=hydra-test&numShards=1&collection.configName=solrconfig"
+      - run:
+          command: bundle exec rake db:migrate
 
       - run:
           command: |
