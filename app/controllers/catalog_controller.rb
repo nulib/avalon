@@ -19,7 +19,7 @@ class CatalogController < ApplicationController
 
   include Hydra::Catalog
   include Hydra::MultiplePolicyAwareAccessControlsEnforcement
-  include BlacklightHelperReloadFix
+  # include BlacklightHelperReloadFix
 
   # These before_actions apply the hydra access controls
   before_action :enforce_show_permissions, only: :show
