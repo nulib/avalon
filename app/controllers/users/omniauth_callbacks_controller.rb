@@ -56,13 +56,13 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if @user.persisted?
       flash[:success] = I18n.t "devise.omniauth_callbacks.success", :kind => auth_type
       sign_in @user, :event => :authentication
-      user_session[:virtual_groups] = @user.ldap_groups
+      canvas_courses = @user.canvas_courses
+      canvas_courses = canvas_courses.keys if canvas_courses.respond_to?(:keys)
+      user_session[:virtual_groups] = @user.ldap_groups + canvas_courses
       user_session[:full_login] = true
 
       if auth_type == 'lti'
         user_session[:lti_group] = request.env["omniauth.auth"].extra.context_id
-        user_session[:virtual_groups] += [user_session[:lti_group]]
-        user_session[:full_login] = false
       end
     end
 
