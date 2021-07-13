@@ -17,13 +17,12 @@ class SecurityService
   def rewrite_url(url, context)
     case Settings.streaming.server.to_sym
     when :aws
-      configure_signer
       context[:protocol] ||= :stream_hls
       uri = Addressable::URI.parse(url)
+      expiration = Settings.streaming.stream_token_ttl.to_f.minutes.from_now
       case context[:protocol]
       when :stream_hls
-        Addressable::URI.join(Settings.streaming.http_base,uri.path).to_s
-        #Aws::CF::Signer.sign_url(URI.join(Settings.streaming.http_base,uri.path).to_s, expires: expiration)
+        url_signer.signed_url(Addressable::URI.join(Settings.streaming.http_base,uri.path).to_s, expires: expiration)
       else
         url
       end
@@ -38,15 +37,21 @@ class SecurityService
     result = {}
     case Settings.streaming.server.to_sym
     when :aws
-      configure_signer
       domain = Addressable::URI.parse(Settings.streaming.http_base).host
-      cookie_domain = (context[:request_host].split(/\./) & domain.split(/\./)).join('.')
+      domain_segments = domain.split(/\./).reverse
+      stream_segments = context[:request_host].split(/\./).reverse
+      cookie_domain_segments = []
+      domain_segments.each.with_index do |segment, index|
+        break if stream_segments[index] != segment
+        cookie_domain_segments << segment
+      end
+      cookie_domain = cookie_domain_segments.reverse.join('.')
       resource = "http*://#{domain}/#{context[:target]}/*"
       Rails.logger.info "Creating signed policy for resource #{resource}"
-      expiration = Settings.streaming.stream_token_ttl.minutes.from_now
-      params = Aws::CF::Signer.signed_params(resource, expires: expiration, resource: resource)
-      params.each_pair do |param,value|
-        result["CloudFront-#{param}"] = {
+      expiration = Settings.streaming.stream_token_ttl.to_f.minutes.from_now
+      policy = { Statement: [ { Resource: resource, Condition: { DateLessThan: { "AWS:EpochTime": expiration.to_i } } } ] }.to_json
+      cookie_signer.signed_cookie(resource, expires: expiration, policy: policy).each_pair do |key, value|
+        result[key] = {
           value: value,
           path: "/#{context[:target]}",
           domain: cookie_domain,
@@ -58,25 +63,19 @@ class SecurityService
   end
 
   private
-
-    def configure_signer
-      require 'cloudfront-signer'
-      unless Aws::CF::Signer.is_configured?
-        Aws::CF::Signer.configure do |config|
-          key = case Settings.streaming.signing_key
-          when %r(^-----BEGIN)
-            Settings.streaming.signing_key
-          when %r(^s3://)
-            FileLocator::S3File.new(Settings.streaming.signing_key).object.get.body.read
-          when nil
-            Rails.logger.warn('No CloudFront signing key configured')
-          else
-            File.read(Settings.streaming.signing_key)
-          end
-          config.key = key
-          config.key_pair_id = Settings.streaming.signing_key_id
-        end
+    def cookie_signer
+      if @cookie_signer.nil?
+        require 'aws-sdk-cloudfront'
+        @cookie_signer = Aws::CloudFront::CookieSigner.new(key_pair_id: Settings.streaming.signing_key_id, private_key: Settings.streaming.signing_key)
       end
+      @cookie_signer
     end
 
+    def url_signer
+      if @url_signer.nil?
+        require 'aws-sdk-cloudfront'
+        @url_signer = Aws::CloudFront::UrlSigner.new(key_pair_id: Settings.streaming.signing_key_id, private_key: Settings.streaming.signing_key)
+      end
+      @url_signer
+    end
 end
