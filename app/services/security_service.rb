@@ -20,10 +20,10 @@ class SecurityService
       configure_signer
       context[:protocol] ||= :stream_hls
       uri = Addressable::URI.parse(url)
+      expiration = Settings.streaming.stream_token_ttl.to_f.minutes.from_now
       case context[:protocol]
       when :stream_hls
-        Addressable::URI.join(Settings.streaming.http_base,uri.path).to_s
-        #Aws::CF::Signer.sign_url(URI.join(Settings.streaming.http_base,uri.path).to_s, expires: expiration)
+        Aws::CF::Signer.sign_url(Addressable::URI.join(Settings.streaming.http_base,uri.path).to_s, expires: expiration)
       else
         url
       end
@@ -40,10 +40,17 @@ class SecurityService
     when :aws
       configure_signer
       domain = Addressable::URI.parse(Settings.streaming.http_base).host
-      cookie_domain = (context[:request_host].split(/\./) & domain.split(/\./)).join('.')
+      domain_segments = domain.split(/\./).reverse
+      stream_segments = context[:request_host].split(/\./).reverse
+      cookie_domain_segments = []
+      domain_segments.each.with_index do |segment, index|
+        break if stream_segments[index] != segment
+        cookie_domain_segments << segment
+      end
+      cookie_domain = cookie_domain_segments.reverse.join('.')
       resource = "http*://#{domain}/#{context[:target]}/*"
       Rails.logger.info "Creating signed policy for resource #{resource}"
-      expiration = Settings.streaming.stream_token_ttl.minutes.from_now
+      expiration = Settings.streaming.stream_token_ttl.to_f.minutes.from_now
       params = Aws::CF::Signer.signed_params(resource, expires: expiration, resource: resource)
       params.each_pair do |param,value|
         result["CloudFront-#{param}"] = {

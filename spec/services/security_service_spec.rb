@@ -52,7 +52,7 @@ Lw03eHTNQghS0A==
       end
       context 'when hls' do
         it 'changes it into an hls url' do
-          expect(subject.rewrite_url(url, context)).to eq "http://localhost:3000/streaming/id"
+          expect(subject.rewrite_url(url, context)).to start_with "http://localhost:3000/streaming/id"
         end
       end
       context 'when not hls' do
