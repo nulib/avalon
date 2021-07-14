@@ -22,24 +22,35 @@ module ApplicationHelper
     "#{application_name} #{t(:release_label)} #{Avalon::VERSION}"
   end
 
+  def force_https(uri)
+    uri.scheme = 'https' unless Rails.env.test?
+    uri
+  end
+
+  def https_link
+    link_uri = URI(yield)
+    link_uri = force_https(link_uri)
+    link_uri.to_s
+  rescue URI::InvalidURIError
+    link
+  end
+
+  def path_or_url_helper(method, only_path, *args)
+    suffix = only_path ? "path" : "url"
+    helper_method = [method, suffix].join("_").to_sym
+    self.send(helper_method, *args)
+  end
+
   def share_link_for(obj, only_path: false)
-    if obj.nil?
-      I18n.t('media_object.empty_share_link')
-    elsif obj.permalink.present?
-      obj.permalink
-    else
-      case obj
-      when MediaObject
-        if only_path
-          media_object_path(obj)
-        else
-          media_object_url(obj)
-        end
-      when MasterFileBehavior
-        if only_path
-          id_section_media_object_path(obj.media_object_id, obj.id)
-        else
-          id_section_media_object_url(obj.media_object_id, obj.id)
+    return I18n.t('media_object.empty_share_link') if obj.nil?
+
+    https_link do
+      if obj.permalink.present?
+        obj.permalink
+      else
+        case obj
+        when MediaObject then path_or_url_helper(:media_object, only_path, obj)
+        when MasterFileBehavior then path_or_url_helper(:id_section_media_object, only_path, obj.media_object_id, obj.id)
         end
       end
     end
