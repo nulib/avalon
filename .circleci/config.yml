@@ -1,140 +1,142 @@
+---
 version: 2.1
 orbs:
-  samvera: samvera/circleci-orb@0
+  aws-cli: circleci/aws-cli@2.0
+  docker: circleci/docker@1.6
 jobs:
-  build:
+  test:
+    working_directory: ~/avr
     docker:
-     # Primary container image where all steps run.
-     - image: avalonmediasystem/avalon:7.1-slim-dev-20200324
-       environment:
-        - DATABASE_URL=postgresql://postgres@localhost:5432/postgres
-        - FEDORA_URL=http://localhost:8080/fcrepo/rest
-        - FEDORA_TIMEOUT=300
-        - RAILS_ENV=test
-     # Secondary container image on common network.
-     - image: postgres:10-alpine
-       environment:
-         - POSTGRES_USER=postgres
-         - POSTGRES_DB=avalon
-         - POSTGRES_PASSWORD=password
-     - image: ualbertalib/docker-fcrepo4:4.7
-       environment:
-         CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
-     - image: solr:7-alpine
-       command: bin/solr -cloud -noprompt -f -p <<parameters.solr_port>>
-     - image: redis:alpine
-
-    parameters:
-      ruby_ver:
-        description: "Ruby version"
-        default: "2.5.5"
-        type: "string"
-      solr_port:
-        type: string
-        default: '8985'
-      parallelism:
-        type: integer
-        default: 4
-
-    working_directory: /home/app/avalon
-
-    parallelism: << parameters.parallelism >>
-
+      - image: circleci/ruby:2.6.6-node-browsers-legacy
+        environment:
+          AWS_ACCESS_KEY_ID: minio
+          AWS_SECRET_ACCESS_KEY: minio123
+          DATABASE_URL: postgresql://postgres@localhost:5432/avr_test
+          FEDORA_BASE_PATH: /test
+          FEDORA_URL: http://fedoraAdmin:fedoraAdmin@localhost:8080/rest
+          RAILS_ENV: test
+          SETTINGS__AWS__ENDPOINT: http://localhost:9000
+          SETTINGS__COMMON_INDEXER__ENDPOINT: http://localhost:9200
+          SETTINGS__ZOOKEEPER__CONNECTION_STR: "localhost:9983/configs"
+          SOLR_URL: http://localhost:8983/solr/hydra-test
+      - image: circleci/postgres:10-alpine
+      - image: samvera/fcrepo4:4.7.5
+        environment:
+          JAVA_OPTIONS: -Xmx3G
+      - image: minio/minio
+        environment:
+          MINIO_ACCESS_KEY: minio
+          MINIO_SECRET_KEY: minio123
+        command: server /home/shared
+      - image: circleci/redis:alpine
+      - image: solr:7.2-alpine
+        environment:
+          JAVA_OPTIONS: -Xmx3G
+        command: solr -f -cloud
     steps:
       - run:
-          name: Clean out existing code
-          command: rm -rf .[!.]* *
-
-      - samvera/cached_checkout
-
-      - run: cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
-
+          name: Install dependencies
+          command: |
+            sudo apt-get update -qq
+            sudo apt-get install lsof mediainfo
+            sudo ln -s /usr/bin/lsof /usr/sbin/lsof
+      - checkout
       - restore_cache:
           keys:
-            - bundle-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock"}}
-            - bundle-cache-v1-{{ arch }}-
-
+          - v1-bundle-{{ checksum "Gemfile" }}-{{ checksum "Gemfile.local" }}-{{ checksum "Gemfile.lock" }}
+          - v1-bundle-
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ arch }}-{{ checksum "yarn.lock" }}
-            - yarn-cache-v1-{{ arch }}-
-
+          - v1-npm-{{ checksum "yarn.lock" }}
+          - v1-npm-
       - run:
-          command: |
-            unset BUNDLE_APP_CONFIG
-            bundle config set --local path vendor/bundle
-            bundle install --with aws development test postgres --without production --jobs=4 --retry=3
-
-      - run: yarn
-
+          name: Install Dependencies
+          command: bundle install --jobs 20 --retry 5 --with aws:postgres --without production --path vendor/bundle
       - save_cache:
-          key: bundle-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock"}}
+          key: v1-bundle-{{ checksum "Gemfile" }}-{{ checksum "Gemfile.local" }}-{{ checksum "Gemfile.lock" }}
           paths:
-            - vendor/bundle
-            
+            - ~/avr/vendor/bundle
       - save_cache:
-          key: yarn-cache-v1-{{ arch }}-{{ checksum "yarn.lock" }}
+          key: v1-npm-{{ checksum "yarn.lock" }}
           paths:
-            - .cache/yarn
-
+            - ~/avr/node_modules
       - run:
-          command: bundle exec rake db:migrate
-
-      - samvera/install_solr_core
-
-      - run:
+          name: Run Spec Tests
           command: |
-            if [[ $(command -v cc-test-reporter) == "" ]]; then
-              curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-              chmod +x ./cc-test-reporter
+            cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
+            bundle exec rake db:setup zookeeper:upload zookeeper:create spec
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: tests
+  publish:
+    docker:
+      - image: circleci/python:3.7.1
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.6
+      - run:
+          name: Set DEPLOY_TAG from branch name
+          command: |
+            if [[ $CIRCLE_BRANCH == "master" ]]; then
+              echo "export DEPLOY_TAG=production" >> $BASH_ENV
+            else
+              echo "export DEPLOY_TAG=$(echo $CIRCLE_BRANCH | awk -F/ '{print $NF}')" >> $BASH_ENV
             fi
-      - run:
-          command: ./cc-test-reporter before-build
-
-      - samvera/parallel_rspec
-
-      - run:
-          command: ./cc-test-reporter format-coverage -t simplecov -o "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
-
-      - persist_to_workspace:
-          root: coverage
-          paths:
-            - codeclimate.*.json
-
-  upload-coverage:
-    parameters:
-      parallelism:
-        type: integer
-        default: 4
-    docker:
-      # Primary container image where all steps run.
-      - image: avalonmediasystem/avalon:6.x-dev
-
-    working_directory: /home/app/avalon
-
+      - docker/check
+      - docker/build:
+          cache_from: nulib/avr:${DEPLOY_TAG}
+          extra_build_args: --target app
+          image: nulib/avr
+          tag: ${DEPLOY_TAG}
+      - docker/push:
+          image: nulib/avr
+          tag: ${DEPLOY_TAG}
+  deploy:
+    docker: 
+      - image: circleci/python:3.7.1
     steps:
-      - attach_workspace:
-          at: /home/app/avalon
-
-      - run:
-          name: Install Code Climate Test Reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-
-      - deploy:
-          # CC_TEST_REPORTER_ID set within the circleci web interface
-          command: ./cc-test-reporter sum-coverage --output - --parts << parameters.parallelism >> codeclimate.*.json | ./cc-test-reporter upload-coverage --debug --input -
-
+    - run:
+        name: Set DEPLOY_TAG from branch name
+        command: |
+          if [[ $CIRCLE_BRANCH == "master" ]]; then
+            echo "export DEPLOY_TAG=production" >> $BASH_ENV
+          else
+            echo "export DEPLOY_TAG=$(echo $CIRCLE_BRANCH | awk -F/ '{print $NF}')" >> $BASH_ENV
+          fi
+    - run:
+        command: |
+          echo "export AWS_ACCESS_KEY_ID=\$${DEPLOY_TAG}_AWS_ACCESS_KEY_ID" >> $BASH_ENV
+          echo "export AWS_SECRET_ACCESS_KEY=\$${DEPLOY_TAG}_AWS_SECRET_ACCESS_KEY" >> $BASH_ENV
+    - aws-cli/install
+    - aws-cli/setup
+    - run:
+        name: Restart Elastic Beanstalk app server
+        environment:
+          APP_NAME: avr
+        command: |
+          APP_PREFIX=$(echo $DEPLOY_TAG | cut -b 1-1)
+          APP_FULL_NAME=stack-${APP_PREFIX}-${APP_NAME}
+          APP_VERSION=$(aws elasticbeanstalk describe-application-versions --application-name ${APP_FULL_NAME} | jq -r '.ApplicationVersions[0].VersionLabel')
+          for environ in $(aws elasticbeanstalk describe-environments --application-name ${APP_FULL_NAME} | jq -r '.Environments[].EnvironmentName'); do
+            echo -n "Redeploying ${APP_FULL_NAME}/${APP_VERSION} to ${environ}..."
+            aws elasticbeanstalk update-environment --application-name ${APP_FULL_NAME} --environment-name ${environ} --version-label=${APP_VERSION} > /dev/null
+            echo ""
+          done
 workflows:
-  version: 2
-  build_test_report:
+  ci:
     jobs:
-      - build:
-          name: ruby
-          ruby_ver: 2.6.7
-          parallelism: 4
-      - upload-coverage:
-          parallelism: 4
+      - test
+      - publish:
+          filters:
+            branches:
+              only:
+                - /^nu\/publish\/.+/
+                - /^nu\/deploy\/.+/
+      - deploy:
           requires:
-             - ruby
+            - publish
+          filters:
+            branches:
+              only:
+                - /^nu\/deploy\/.+/

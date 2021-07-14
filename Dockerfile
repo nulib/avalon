@@ -1,120 +1,107 @@
-# Base stage for building gems
-FROM        ruby:2.6.7-stretch as bundle
-RUN         echo "deb http://deb.debian.org/debian stretch-backports main" >> /etc/apt/sources.list \
-         && apt-get update && apt-get upgrade -y build-essential \
-         && apt-get install -y --no-install-recommends \
-            cmake \
-            pkg-config \
-            zip \
-            git \
-            libyaz-dev \
-         && rm -rf /var/lib/apt/lists/* \
-         && apt-get clean
+####################################
+# Build the bundle container
+FROM ruby:2.6.6-slim-stretch as ruby-deps
 
-COPY        Gemfile ./Gemfile
-COPY        Gemfile.lock ./Gemfile.lock
+ENV BUILD_DEPS="build-essential libpq-dev libsqlite3-dev libwrap0-dev libyaz4-dev tzdata locales git curl unzip shared-mime-info" \
+  DEBIAN_FRONTEND="noninteractive" \
+  RAILS_ENV="production" \
+  LANG="en_US.UTF-8"
 
-RUN         gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)" \
-         && bundle config build.nokogiri --use-system-libraries
+RUN useradd -m -U app && \
+  su -s /bin/bash -c "mkdir -p /home/app/current" app
 
+RUN apt-get update -qq && \
+  apt-get install -y $BUILD_DEPS --no-install-recommends
 
-# Build development gems
-FROM        bundle as bundle-dev
-RUN         bundle install --with aws development test postgres --without production 
+RUN \
+  # Set locale
+  dpkg-reconfigure -f noninteractive tzdata && \
+  sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+  echo 'LANG="en_US.UTF-8"'>/etc/default/locale && \
+  dpkg-reconfigure --frontend=noninteractive locales && \
+  update-locale LANG=en_US.UTF-8 && \
+  \
+  mkdir -p /tmp/stage/bin && \
+  \
+  # Install FFMPEG
+  mkdir -p /tmp/ffmpeg && \
+  cd /tmp/ffmpeg && \
+  curl https://s3.amazonaws.com/nul-repo-deploy/ffmpeg-release-64bit-static.tar.xz | tar xJ && \
+  cp `find . -type f -executable` /tmp/stage/bin/
 
+RUN gem install bundler:2.2.20
 
-# Download binaries in parallel
-FROM        ruby:2.6.7-stretch as download
-RUN         curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar xvz -C /usr/bin/
-RUN         curl https://chromedriver.storage.googleapis.com/2.46/chromedriver_linux64.zip -o /usr/local/bin/chromedriver \
-         && chmod +x /usr/local/bin/chromedriver
-RUN         curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /chrome.deb
-RUN         mkdir -p /tmp/ffmpeg && cd /tmp/ffmpeg \
-         && curl https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz | tar xJ \
-         && cp `find . -type f -executable` /usr/bin/
+USER app
+WORKDIR /home/app/current
 
+COPY --chown=app:app Gemfile* /home/app/current/
+RUN bundle install --jobs 20 --retry 5 --with aws:postgres:zoom --without development:test --path vendor/gems && \
+  rm -rf vendor/gems/ruby/*/cache/* vendor/gems/ruby/*/bundler/gems/*/.git
 
-# Base stage for building final images
-FROM        ruby:2.6.7-slim-stretch as base
-RUN         apt-get update && apt-get install -y --no-install-recommends curl gnupg2 \
-         && curl -sL http://deb.nodesource.com/setup_8.x | bash - \
-         && curl -O https://mediaarea.net/repo/deb/repo-mediaarea_1.0-6_all.deb && dpkg -i repo-mediaarea_1.0-6_all.deb \
-         && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-         && echo "deb http://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+####################################
+# Build the npm dependency container
+FROM node:12-stretch-slim as npm-deps
 
-RUN         apt-get update && apt-get install -y --no-install-recommends --allow-unauthenticated \
-            yarn \
-            nodejs \
-            lsof \
-            x264 \
-            sendmail \
-            git \
-            libxml2-dev \
-            libxslt-dev \
-            libpq-dev \
-            mediainfo \
-            openssh-client \
-            zip \
-            dumb-init \
-            libyaz-dev \
-         && ln -s /usr/bin/lsof /usr/sbin/
+RUN apt-get update -qq && \
+    apt-get install -y git
+RUN useradd -m -U app && \
+  su -s /bin/bash -c "mkdir -p /home/app/current"
+WORKDIR /home/app/current
+COPY --chown=app:app package.json yarn.lock /home/app/current/
+RUN yarn install
 
+####################################
+# Build the Application container
+FROM ruby:2.6.6-slim-stretch as app
 
-RUN         useradd -m -U app \
-         && su -s /bin/bash -c "mkdir -p /home/app/avalon" app
-WORKDIR     /home/app/avalon
+RUN useradd -m -U app && \
+  su -s /bin/bash -c "mkdir -p /home/app/current/vendor/gems" app
 
-COPY        --from=download /usr/bin/ff* /usr/bin/
+ENV RUNTIME_DEPS="git imagemagick libexif12 libexpat1 libgif7 glib-2.0 libgsf-1-114 libjpeg62-turbo libpng16-16 libpoppler-glib8 libpq5 libreoffice-core librsvg2-2 libsqlite3-0 libtiff5 libwrap0 libyaz4 locales mediainfo nodejs openjdk-8-jre-headless shared-mime-info tzdata yarn" \
+  DEBIAN_FRONTEND="noninteractive" \
+  RAILS_ENV="production" \
+  LANG="en_US.UTF-8"
 
+RUN \
+  mkdir /usr/share/man/man1 && \
+  apt-get update -qq && \
+  apt-get install -y curl gnupg2 --no-install-recommends && \
+  # Install NodeJS and Yarn package repos
+  curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+  echo "deb http://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+  # Install runtime dependencies
+  apt-get update -qq && \
+  apt-get install -y $RUNTIME_DEPS --no-install-recommends && \
+  # Clean up package cruft
+  apt-get clean -y && \
+  rm -rf /var/lib/apt/lists/* && \
+  # Install webpack
+  alias nodejs=node && \
+  yarn add webpack
 
+RUN \
+  # Set locale
+  dpkg-reconfigure -f noninteractive tzdata && \
+  sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+  echo 'LANG="en_US.UTF-8"'>/etc/default/locale && \
+  dpkg-reconfigure --frontend=noninteractive locales && \
+  update-locale LANG=en_US.UTF-8
 
-# Build devevelopment image
-FROM        base as dev
-RUN         apt-get install -y --no-install-recommends --allow-unauthenticated \
-            build-essential \
-            cmake
+RUN gem install bundler:2.2.20
 
-COPY        --from=bundle-dev /usr/local/bundle /usr/local/bundle
-COPY        --from=download /chrome.deb /
-COPY        --from=download /usr/local/bin/chromedriver /usr/local/bin/chromedriver
-COPY        --from=download /usr/bin/dockerize /usr/bin/
-ADD         docker_init.sh /
+COPY --from=ruby-deps /tmp/stage/bin/* /usr/local/bin/
+COPY --chown=app:staff --from=ruby-deps /usr/local/bundle /usr/local/bundle
+COPY --chown=app:app --from=ruby-deps /home/app/current/vendor/gems/ /home/app/current/vendor/gems/
+COPY --chown=app:app --from=npm-deps /home/app/current/node_modules/ /home/app/current/node_modules/
+COPY --chown=app:app . /home/app/current/
 
-ARG         RAILS_ENV=development
-RUN         dpkg -i /chrome.deb || apt-get install -yf
+RUN mkdir /var/run/puma && chown root:app /var/run/puma && chmod 0775 /var/run/puma
 
+USER app
+WORKDIR /home/app/current
+RUN bundle exec rake assets:precompile SECRET_KEY_BASE=$(ruby -r 'securerandom' -e 'puts SecureRandom.hex(64)')
 
-# Build production gems
-FROM        bundle as bundle-prod
-RUN         bundle install --without development test --with aws production postgres
-
-
-# Install node modules
-FROM        node:8.17.0-stretch-slim as node-modules
-RUN         apt-get update && apt-get install -y --no-install-recommends git
-COPY        package.json .
-COPY        yarn.lock .
-RUN         yarn install
-
-
-# Build production assets
-FROM        base as assets
-COPY        --from=bundle-prod --chown=app:app /usr/local/bundle /usr/local/bundle
-COPY        --chown=app:app . .
-COPY        --from=node-modules --chown=app:app /node_modules ./node_modules
-
-USER        app
-ENV         RAILS_ENV=production
-
-RUN         SECRET_KEY_BASE=$(ruby -r 'securerandom' -e 'puts SecureRandom.hex(64)') bundle exec rake webpacker:compile
-RUN         SECRET_KEY_BASE=$(ruby -r 'securerandom' -e 'puts SecureRandom.hex(64)') bundle exec rake assets:precompile
-RUN         cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
-
-
-# Build production image
-FROM        base as prod
-COPY        --from=assets --chown=app:app /home/app/avalon /home/app/avalon
-COPY        --from=bundle-prod --chown=app:app /usr/local/bundle /usr/local/bundle
-
-USER        app
-ENV         RAILS_ENV=production
+EXPOSE 3000
+CMD bin/boot_container
+HEALTHCHECK --start-period=60s CMD curl -f http://localhost:3000/
