@@ -56,6 +56,22 @@ Rails.application.configure do
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).
+  # Use default logging formatter so that PID and timestamp are not suppressed.
+  config.log_formatter = ::Logger::Formatter.new
+
+  # Enable logging to both stdout and file, in more compact format
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  else
+    config.lograge.enabled = true
+    config.lograge.custom_options = -> (event) { { time: event.time } }
+    config.lograge.ignore_actions = ['CatalogController#index']
+  end
+
+  # Use the lowest log level to ensure availability of diagnostic information
+  # when problems arise.
   config.log_level = :info
 
   # Suppress logger output for asset requests.
@@ -101,4 +117,7 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Additional production specific initializers
+  Dir["config/environments/production/*.rb"].each {|file| load file }
 end
