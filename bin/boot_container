@@ -1,0 +1,8 @@
+#!/bin/bash
+
+bundle exec rake db:migrate zookeeper:upload zookeeper:create
+if [ "$CONTAINER_ROLE" = "WORKER" ]; then
+  exec bundle exec shoryuken --config=config/shoryuken.yml --no-daemon --rails
+else
+  exec bundle exec puma -C config/puma_container.rb
+fi
