@@ -70,9 +70,8 @@ config.webpacker.check_yarn_integrity = false
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   else
     config.lograge.enabled = true
-    config.lograge.custom_options = lambda do |event|
-      {:time => event.time}
-    end
+    config.lograge.custom_options = -> (event) { { time: event.time } }
+    config.lograge.ignore_actions = ['CatalogController#index']
   end
 
   # Use the lowest log level to ensure availability of diagnostic information
@@ -109,9 +108,6 @@ config.webpacker.check_yarn_integrity = false
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-
-  config.active_job.queue_adapter     = Settings&.active_job&.queue_adapter || :sidekiq
-  require 'active_job/queue_adapters/better_active_elastic_job_adapter' if config.active_job.queue_adapter == :active_elastic_job
 
   # Additional production specific initializers
   Dir["config/environments/production/*.rb"].each {|file| load file }
