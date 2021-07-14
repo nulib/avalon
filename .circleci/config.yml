@@ -1,8 +1,10 @@
+---
 version: 2.1
 orbs:
   samvera: samvera/circleci-orb@1
 jobs:
-  build:
+  test:
+    working_directory: ~/avr
     docker:
       # Primary container image where all steps run.
       - image: avalonmediasystem/avalon:develop
@@ -63,29 +65,23 @@ jobs:
 
       - restore_cache:
           keys:
-            - bundle-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock"}}
-            - bundle-cache-v1-{{ arch }}-
-
+          - v1-bundle-{{ checksum "Gemfile" }}-{{ checksum "Gemfile.local" }}-{{ checksum "Gemfile.lock" }}
+          - v1-bundle-
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ arch }}-{{ checksum "yarn.lock" }}
-            - yarn-cache-v1-{{ arch }}-
-
+          - v1-npm-{{ checksum "yarn.lock" }}
+          - v1-npm-
       - run:
+          name: Install Dependencies
           command: |
-            unset BUNDLE_APP_CONFIG
-            bundle config set --local path vendor/bundle
-            bundle install --with aws development test postgres --without production --jobs=4 --retry=3
-
-      - run: yarn
-
+            CC=gcc-7 bundle install --jobs 20 --retry 5 --with aws:postgres --without production --path vendor/bundle
+            yarn install
       - save_cache:
-          key: bundle-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock"}}
+          key: v1-bundle-{{ checksum "Gemfile" }}-{{ checksum "Gemfile.local" }}-{{ checksum "Gemfile.lock" }}
           paths:
-            - vendor/bundle
-            
+            - ~/avr/vendor/bundle
       - save_cache:
-          key: yarn-cache-v1-{{ arch }}-{{ checksum "yarn.lock" }}
+          key: v1-npm-{{ checksum "yarn.lock" }}
           paths:
             - .cache/yarn
 
@@ -116,10 +112,27 @@ jobs:
           command: bundle exec rake db:migrate
 
       - run:
+          name: Run Spec Tests
           command: |
-            if [[ $(command -v cc-test-reporter) == "" ]]; then
-              curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-              chmod +x ./cc-test-reporter
+            cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
+            bundle exec rake db:setup zookeeper:upload zookeeper:create spec
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: tests
+  publish:
+    docker:
+      - image: circleci/python:3.7.1
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.6
+      - run:
+          name: Set DEPLOY_TAG from branch name
+          command: |
+            if [[ $CIRCLE_BRANCH == "master" ]]; then
+              echo "export DEPLOY_TAG=production" >> $BASH_ENV
+            else
+              echo "export DEPLOY_TAG=$(echo $CIRCLE_BRANCH | awk -F/ '{print $NF}')" >> $BASH_ENV
             fi
       - run:
           command: ./cc-test-reporter before-build
@@ -158,22 +171,35 @@ jobs:
     working_directory: /home/app/avalon
 
     steps:
-      - attach_workspace:
-          at: /home/app/avalon
-
-      - run:
-          name: Install Code Climate Test Reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-
-      - deploy:
-          # CC_TEST_REPORTER_ID set within the circleci web interface
-          command: ./cc-test-reporter sum-coverage --output - --parts << parameters.parallelism >> codeclimate.*.json | ./cc-test-reporter upload-coverage --debug --input -
-
+    - run:
+        name: Set DEPLOY_TAG from branch name
+        command: |
+          if [[ $CIRCLE_BRANCH == "master" ]]; then
+            echo "export DEPLOY_TAG=production" >> $BASH_ENV
+          else
+            echo "export DEPLOY_TAG=$(echo $CIRCLE_BRANCH | awk -F/ '{print $NF}')" >> $BASH_ENV
+          fi
+    - run:
+        command: |
+          echo "export AWS_ACCESS_KEY_ID=\$${DEPLOY_TAG}_AWS_ACCESS_KEY_ID" >> $BASH_ENV
+          echo "export AWS_SECRET_ACCESS_KEY=\$${DEPLOY_TAG}_AWS_SECRET_ACCESS_KEY" >> $BASH_ENV
+    - aws-cli/install
+    - aws-cli/setup
+    - run:
+        name: Restart Elastic Beanstalk app server
+        environment:
+          APP_NAME: avr
+        command: |
+          APP_PREFIX=$(echo $DEPLOY_TAG | cut -b 1-1)
+          APP_FULL_NAME=stack-${APP_PREFIX}-${APP_NAME}
+          APP_VERSION=$(aws elasticbeanstalk describe-application-versions --application-name ${APP_FULL_NAME} | jq -r '.ApplicationVersions[0].VersionLabel')
+          for environ in $(aws elasticbeanstalk describe-environments --application-name ${APP_FULL_NAME} | jq -r '.Environments[].EnvironmentName'); do
+            echo -n "Redeploying ${APP_FULL_NAME}/${APP_VERSION} to ${environ}..."
+            aws elasticbeanstalk update-environment --application-name ${APP_FULL_NAME} --environment-name ${environ} --version-label=${APP_VERSION} > /dev/null
+            echo ""
+          done
 workflows:
-  version: 2
-  build_test_report:
+  ci:
     jobs:
       - build:
           ruby_ver: '3.2'

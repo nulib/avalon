@@ -1,0 +1,14 @@
+#!/bin/bash
+
+case "$CONTAINER_ROLE" in
+  "migrate")
+    bundle exec rake db:migrate zookeeper:upload zookeeper:create
+    ;;
+  "worker")
+    bundle exec rake shoryuken:create_config
+    exec bundle exec shoryuken --config=config/shoryuken.yml --no-daemon --rails
+    ;;
+  *)
+    exec bundle exec puma -C config/puma_container.rb
+    ;;
+esac
