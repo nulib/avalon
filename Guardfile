@@ -20,7 +20,7 @@ guard 'puma' do
   watch(%r{^app|config|lib|api/.*})
 end
 
-guard 'process', name: 'sidekiq', command: 'sidekiq -C config/sidekiq.yml' do
+guard 'process', name: 'shoryuken', command: 'shoryuken -R -C config/shoryuken.yml' do
   watch('Gemfile.lock')
   watch(%r{^app|config|lib|api/.*})
 end
