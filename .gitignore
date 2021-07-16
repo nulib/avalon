@@ -84,3 +84,7 @@ yarn-debug.log*
 
 # ActiveEncode
 /encodes
+
+terraform/.terraform
+terraform/**/*.tfvars
+config/shoryuken.yml
