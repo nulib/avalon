@@ -2,6 +2,10 @@ gem 'ezid-client'
 gem 'honeybadger', '~> 4.0'
 gem 'omniauth-nusso', '>= 0.1.3'
 
+group :aws do
+  gem 'shoryuken'
+end
+
 group :development do
   gem 'guard-puma'
   gem 'guard-process'

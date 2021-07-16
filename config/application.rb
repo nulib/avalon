@@ -33,7 +33,30 @@ module Avalon
     # config.i18n.default_locale = :de
 
     config.active_job.queue_adapter = :sidekiq
-
+    if Settings.active_job
+      if Settings.active_job.queue_name_prefix
+        config.active_job.queue_name_prefix = Settings.active_job.queue_name_prefix
+      end
+  
+      if Settings.active_job.queue_name_delimiter
+        config.active_job.queue_name_delimiter = Settings.active_job.queue_name_delimiter
+      end
+  
+      if Settings.active_job.default_queue_name
+        default_queue_name = [config.active_job.queue_name_prefix, Settings.active_job.default_queue_name].join(config.active_job.queue_name_delimiter)
+        ActiveJob::Base.queue_as default_queue_name
+        ActionMailer::Base.deliver_later_queue_name = default_queue_name
+      end
+  
+      if Settings.active_job.queue_adapter
+        begin
+          require Settings.active_job.queue_adapter.to_s
+        rescue LoadError
+        end
+        config.active_job.queue_adapter = Settings.active_job.queue_adapter.to_s
+      end
+    end
+  
     config.action_dispatch.default_headers = { 'X-Frame-Options' => 'ALLOWALL' }
 
     config.middleware.insert_before 0, Rack::Cors do

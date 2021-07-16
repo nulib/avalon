@@ -21,7 +21,7 @@ The first time you prepare to run AVR on a new development system, there are a f
 After bringing up an empty development stack (`devstack up [-d] avr`):
 
 ```shell
-bundle exec rake zookeeper:upload zookeeper:create db:create db:migrate
+bundle exec rake zookeeper:upload zookeeper:create db:create db:migrate avr:create_queues
 mc mb -p dev/fcrepo dev/masterfiles dev/derivatives dev/supplementalfiles
 mc policy set download dev/derivatives
 mc policy set download dev/supplementalfiles

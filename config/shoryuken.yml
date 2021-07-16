@@ -1,0 +1,20 @@
+# <% prefix = ENV['SETTINGS__ACTIVE_JOB__QUEUE_NAME_PREFIX'] || 'avr-' %>
+---
+concurrency: 20
+queues:
+  - [<%=prefix%>batch_ingest, 1]
+  - [<%=prefix%>bulk_access_control, 1]
+  - [<%=prefix%>create_encode, 1]
+  - [<%=prefix%>default, 1]
+  - [<%=prefix%>delete_course, 1]
+  - [<%=prefix%>extract_still, 1]
+  - [<%=prefix%>ingest_finished_job, 1]
+  - [<%=prefix%>ingest_status_job, 1]
+  - [<%=prefix%>ingest, 1]
+  - [<%=prefix%>master_file_management_delete, 1]
+  - [<%=prefix%>master_file_management_move, 1]
+  - [<%=prefix%>reindex, 1]
+  - [<%=prefix%>s3_split, 1]
+  - [<%=prefix%>solr_backup, 1]
+  - [<%=prefix%>update_dependent_permalinks, 1]
+  - [<%=prefix%>waveform, 1]
