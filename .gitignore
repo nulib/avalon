@@ -84,3 +84,5 @@ yarn-debug.log*
 
 # ActiveEncode
 /encodes
+
+terraform/.terraform

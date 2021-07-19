@@ -1,0 +1,31 @@
+additional_hostnames          = ["meadow.library.northwestern.edu"]
+agentless_sso_key             = "RhqVsE5YYxAJPYvGF2bhmKlzKpx9oKqj"
+app_name                    = "avr"
+environment                   = "p"
+certificate_name              = "meadow"
+dns_zone                      = "rdc.library.northwestern.edu"
+digital_collections_bucket    = "dc.stack.rdc.library.northwestern.edu"
+digital_collections_url       = "https://dc.library.northwestern.edu/"
+ec2_instance_users            = ["adamjarling", "bmquinn", "kdid", "mbklein"]
+elasticsearch_url             = "https://search-stack-p-common-index-vnu2vzpve7lym7znnhz3os5eoq.us-east-1.es.amazonaws.com/"
+ezid_password                 = "?Sh0tJ.R.R>"
+ezid_shoulder                 = "ark:/81985/n2"
+ezid_target_base_url          = "https://dc.library.northwestern.edu/items/"
+ezid_user                     = "nu-lib"
+honeybadger_api_key           = "d1413807"
+iiif_manifest_url             = "https://iiif.stack.rdc.library.northwestern.edu/public/"
+iiif_server_url               = "https://iiif.stack.rdc.library.northwestern.edu/iiif/2/"
+geonames_username             = "nul_rdc"
+pyramid_bucket                = "stack-p-pyramid-tiffs"
+migration_binary_bucket       = "temp-meadow-fedora-migration"
+migration_manifest_bucket     = "donut-to-meadow-migration"
+vpc_id                        = "vpc-6c52b616"
+ldap_base_dn                  = "DC=library,DC=northwestern,DC=edu"
+ldap_bind_dn                  = "CN=Meadow User Manager,OU=Service Accounts,DC=library,DC=northwestern,DC=edu"
+ldap_bind_password            = "APwvcY7wa-S2X2mcm(RR8NXy7"
+ldap_port                     = "636"
+ldap_server                   = "adldap.library.northwestern.edu"
+db_size                       = 20
+tags = {
+  Project = "meadow"
+}

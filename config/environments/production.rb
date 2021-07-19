@@ -72,6 +72,7 @@ config.webpacker.check_yarn_integrity = false
     config.lograge.enabled = true
     config.lograge.custom_options = -> (event) { { time: event.time } }
     config.lograge.ignore_actions = ['CatalogController#index']
+    config.lograge.formatter = Lograge::Formatters::Json.new
   end
 
   # Use the lowest log level to ensure availability of diagnostic information
