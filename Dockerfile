@@ -19,7 +19,7 @@ ENV BUILD_DEPS="build-essential libpq-dev libsqlite3-dev libwrap0-dev libyaz4-de
   LANG="en_US.UTF-8"
 
 RUN useradd -m -U app && \
-  su -s /bin/bash -c "mkdir -p /home/app/current" app
+  su -s /bin/bash -c "mkdir -p /home/app" app
 
 ENV         RUBY_THREAD_MACHINE_STACK_SIZE 8388608
 ENV         RUBY_THREAD_VM_STACK_SIZE 8388608
@@ -33,7 +33,8 @@ RUN         bundle config set --local without 'production' \
          && bundle config set --local with 'aws development test postgres' \
          && bundle install
 
-RUN gem install bundler:2.2.20
+RUN gem update --system \
+ && chown -R app:staff /usr/local/bundle
 
 # Download binaries in parallel
 FROM        ruby:3.2-bullseye as download
@@ -47,9 +48,10 @@ RUN         curl https://chromedriver.storage.googleapis.com/index.html?path=${c
          && chmod +x /usr/local/bin/chromedriver
 RUN      apt-get -y update && apt-get install -y ffmpeg
 
-COPY --chown=app:app Gemfile* /home/app/current/
-RUN bundle install --jobs 20 --retry 5 --with aws:postgres:zoom --without development:test --path vendor/gems && \
-  rm -rf vendor/gems/ruby/*/cache/* vendor/gems/ruby/*/bundler/gems/*/.git
+COPY --chown=app:app Gemfile* /home/app/
+ENV BUNDLE_WITH='aws:postgres:zoom' BUNDLE_WITHOUT='development:test'
+RUN bundle install --jobs 20 --retry 5 \
+ && rm -rf /usr/local/bundle/cache/* /usr/local/bundle/bundler/gems/*/.git
 
 # Base stage for building final images
 FROM        ruby:3.2-slim-bullseye as base
@@ -101,14 +103,14 @@ RUN         apt-get update && apt-get install -y --no-install-recommends --allow
 
 COPY --from=ruby-deps /tmp/stage/bin/* /usr/local/bin/
 COPY --chown=app:staff --from=ruby-deps /usr/local/bundle /usr/local/bundle
-COPY --chown=app:app --from=ruby-deps /home/app/current/vendor/gems/ /home/app/current/vendor/gems/
-COPY --chown=app:app --from=npm-deps /home/app/current/node_modules/ /home/app/current/node_modules/
-COPY --chown=app:app . /home/app/current/
+COPY --chown=app:app --from=npm-deps /home/app/node_modules/ /home/app/node_modules/
+COPY --chown=app:app . /home/app/
 
 RUN mkdir /var/run/puma && chown root:app /var/run/puma && chmod 0775 /var/run/puma
 
 USER app
-WORKDIR /home/app/current
+WORKDIR /home/app
+ENV BUNDLE_WITH='aws:postgres:zoom' BUNDLE_WITHOUT='development:test'
 RUN bundle exec rake assets:precompile SECRET_KEY_BASE=$(ruby -r 'securerandom' -e 'puts SecureRandom.hex(64)')
 
 # Build production gems
