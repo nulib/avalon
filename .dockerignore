@@ -5,7 +5,10 @@
 .env
 Dockerfile
 docker-compose.yml
+encodes
+log
 node_modules
-public/packs
+public/packs*
 tmp
 vendor/bundle
+terraform
