@@ -111,21 +111,16 @@ jobs:
         command: |
           echo "export AWS_ACCESS_KEY_ID=\$${DEPLOY_TAG}_AWS_ACCESS_KEY_ID" >> $BASH_ENV
           echo "export AWS_SECRET_ACCESS_KEY=\$${DEPLOY_TAG}_AWS_SECRET_ACCESS_KEY" >> $BASH_ENV
-    - aws-cli/install
     - aws-cli/setup
     - run:
-        name: Restart Elastic Beanstalk app server
+        name: Update ECS service
         environment:
           APP_NAME: avr
-        command: |
-          APP_PREFIX=$(echo $DEPLOY_TAG | cut -b 1-1)
-          APP_FULL_NAME=stack-${APP_PREFIX}-${APP_NAME}
-          APP_VERSION=$(aws elasticbeanstalk describe-application-versions --application-name ${APP_FULL_NAME} | jq -r '.ApplicationVersions[0].VersionLabel')
-          for environ in $(aws elasticbeanstalk describe-environments --application-name ${APP_FULL_NAME} | jq -r '.Environments[].EnvironmentName'); do
-            echo -n "Redeploying ${APP_FULL_NAME}/${APP_VERSION} to ${environ}..."
-            aws elasticbeanstalk update-environment --application-name ${APP_FULL_NAME} --environment-name ${environ} --version-label=${APP_VERSION} > /dev/null
-            echo ""
-          done
+          ECS_CLUSTER: avr
+          ECS_SERVICE: avr-worker
+          ECS_TASK: avr-worker
+          ECS_CONTAINER: avr
+        command: ./.circleci/scripts/update_ecs_service.sh
 workflows:
   ci:
     jobs:

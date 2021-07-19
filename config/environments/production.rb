@@ -68,10 +68,13 @@ config.webpacker.check_yarn_integrity = false
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
-  else
+  end
+
+  if ENV["RAILS_LOG_WITH_LOGRAGE"].present?
     config.lograge.enabled = true
     config.lograge.custom_options = -> (event) { { time: event.time } }
     config.lograge.ignore_actions = ['CatalogController#index']
+    config.lograge.formatter = Lograge::Formatters::Json.new
   end
 
   # Use the lowest log level to ensure availability of diagnostic information
