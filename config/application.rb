@@ -65,6 +65,14 @@ module Avalon
       end
     end
 
+    if Settings&.active_storage&.service_configurations.present?
+      configs = Settings.active_storage.service_configurations.to_hash
+      if config.active_storage.service_configurations.kind_of?(Hash)
+        config.active_storage.service_configurations.merge!(configs)
+      else
+        config.active_storage.service_configurations = configs
+      end
+    end
     config.active_storage.service = (Settings&.active_storage&.service.presence || "local").to_sym
   end
 end

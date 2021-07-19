@@ -8,7 +8,7 @@ ENV BUILD_DEPS="build-essential libpq-dev libsqlite3-dev libwrap0-dev libyaz4-de
   LANG="en_US.UTF-8"
 
 RUN useradd -m -U app && \
-  su -s /bin/bash -c "mkdir -p /home/app/current" app
+  su -s /bin/bash -c "mkdir -p /home/app" app
 
 RUN apt-get update -qq && \
   apt-get install -y $BUILD_DEPS --no-install-recommends
@@ -29,14 +29,16 @@ RUN \
   curl https://s3.amazonaws.com/nul-repo-deploy/ffmpeg-release-64bit-static.tar.xz | tar xJ && \
   cp `find . -type f -executable` /tmp/stage/bin/
 
-RUN gem install bundler:2.2.20
+RUN gem update --system \
+ && chown -R app:staff /usr/local/bundle
 
 USER app
-WORKDIR /home/app/current
+WORKDIR /home/app
 
-COPY --chown=app:app Gemfile* /home/app/current/
-RUN bundle install --jobs 20 --retry 5 --with aws:postgres:zoom --without development:test --path vendor/gems && \
-  rm -rf vendor/gems/ruby/*/cache/* vendor/gems/ruby/*/bundler/gems/*/.git
+COPY --chown=app:app Gemfile* /home/app/
+ENV BUNDLE_WITH='aws:postgres:zoom' BUNDLE_WITHOUT='development:test'
+RUN bundle install --jobs 20 --retry 5 \
+ && rm -rf /usr/local/bundle/cache/* /usr/local/bundle/bundler/gems/*/.git
 
 ####################################
 # Build the npm dependency container
@@ -45,9 +47,9 @@ FROM node:12-stretch-slim as npm-deps
 RUN apt-get update -qq && \
     apt-get install -y git
 RUN useradd -m -U app && \
-  su -s /bin/bash -c "mkdir -p /home/app/current"
-WORKDIR /home/app/current
-COPY --chown=app:app package.json yarn.lock /home/app/current/
+  su -s /bin/bash -c "mkdir -p /home/app"
+WORKDIR /home/app
+COPY --chown=app:app package.json yarn.lock /home/app/
 RUN yarn install
 
 ####################################
@@ -55,9 +57,9 @@ RUN yarn install
 FROM ruby:2.6.6-slim-stretch as app
 
 RUN useradd -m -U app && \
-  su -s /bin/bash -c "mkdir -p /home/app/current/vendor/gems" app
+  su -s /bin/bash -c "mkdir -p /home/app/vendor/gems" app
 
-ENV RUNTIME_DEPS="git imagemagick libexif12 libexpat1 libgif7 glib-2.0 libgsf-1-114 libjpeg62-turbo libpng16-16 libpoppler-glib8 libpq5 libreoffice-core librsvg2-2 libsqlite3-0 libtiff5 libwrap0 libyaz4 locales mediainfo nodejs openjdk-8-jre-headless shared-mime-info tzdata yarn" \
+ENV RUNTIME_DEPS="git imagemagick libexif12 libexpat1 libgif7 glib-2.0 libgsf-1-114 libjpeg62-turbo libpng16-16 libpoppler-glib8 libpq5 libreoffice-core librsvg2-2 libsqlite3-0 libtiff5 libwrap0 libyaz4 locales mediainfo nodejs openjdk-8-jre-headless shared-mime-info sudo tzdata yarn" \
   DEBIAN_FRONTEND="noninteractive" \
   RAILS_ENV="production" \
   LANG="en_US.UTF-8"
@@ -88,20 +90,21 @@ RUN \
   dpkg-reconfigure --frontend=noninteractive locales && \
   update-locale LANG=en_US.UTF-8
 
-RUN gem install bundler:2.2.20
+RUN gem update --system
 
 COPY --from=ruby-deps /tmp/stage/bin/* /usr/local/bin/
 COPY --chown=app:staff --from=ruby-deps /usr/local/bundle /usr/local/bundle
-COPY --chown=app:app --from=ruby-deps /home/app/current/vendor/gems/ /home/app/current/vendor/gems/
-COPY --chown=app:app --from=npm-deps /home/app/current/node_modules/ /home/app/current/node_modules/
-COPY --chown=app:app . /home/app/current/
+COPY --chown=app:app --from=npm-deps /home/app/node_modules/ /home/app/node_modules/
+COPY --chown=app:app . /home/app/
 
 RUN mkdir /var/run/puma && chown root:app /var/run/puma && chmod 0775 /var/run/puma
 
 USER app
-WORKDIR /home/app/current
+WORKDIR /home/app
+ENV BUNDLE_WITH='aws:postgres:zoom' BUNDLE_WITHOUT='development:test'
 RUN bundle exec rake assets:precompile SECRET_KEY_BASE=$(ruby -r 'securerandom' -e 'puts SecureRandom.hex(64)')
 
 EXPOSE 3000
+ENV PATH="/home/app/bin:${PATH}"
 CMD bin/boot_container
 HEALTHCHECK --start-period=60s CMD curl -f http://localhost:3000/
