@@ -4,6 +4,10 @@ when :ffmpeg
   MasterFile.default_encoder_class = FfmpegEncode
 when :matterhorn
   Rubyhorn.init
+when :mediaconvert
+  ActiveEncode::Base.engine_adapter.role = Settings.encoding.media_convert.role
+  ActiveEncode::Base.engine_adapter.output_bucket = Settings.encoding.derivative_bucket
+  ActiveEncode::Base.engine_adapter.setup!
 when :elastic_transcoder
   require 'aws-sdk-elastictranscoder'
   require 'avalon/elastic_transcoder'
