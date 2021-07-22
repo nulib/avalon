@@ -14,12 +14,12 @@ RUN        apt-get update && apt-get upgrade -y build-essential && apt-get autor
          && apt-get clean
 
 ENV BUILD_DEPS="build-essential libpq-dev libsqlite3-dev libwrap0-dev libyaz4-dev tzdata locales git curl unzip shared-mime-info" \
-  DEBIAN_FRONTEND="noninteractive" \
-  RAILS_ENV="production" \
-  LANG="en_US.UTF-8"
+    DEBIAN_FRONTEND="noninteractive" \
+    RAILS_ENV="production" \
+    LANG="en_US.UTF-8"
 
-RUN useradd -m -U app && \
-  su -s /bin/bash -c "mkdir -p /home/app" app
+RUN useradd -m -U app \
+ && su -s /bin/bash -c "mkdir -p /home/app" app
 
 ENV         RUBY_THREAD_MACHINE_STACK_SIZE 8388608
 ENV         RUBY_THREAD_VM_STACK_SIZE 8388608
@@ -50,8 +50,9 @@ RUN      apt-get -y update && apt-get install -y ffmpeg
 
 COPY --chown=app:app Gemfile* /home/app/
 ENV BUNDLE_WITH='aws:postgres:zoom' BUNDLE_WITHOUT='development:test'
-RUN bundle install --jobs 20 --retry 5 \
- && rm -rf /usr/local/bundle/cache/* /usr/local/bundle/bundler/gems/*/.git
+RUN bundle install --jobs $(nproc) --retry 5
+RUN find /usr/local/bundle/ -name '*.gem' -or -name '*.c' -or -name '*.o' -delete
+RUN rm -rf /usr/local/bundle/**/.git
 
 # Base stage for building final images
 FROM        ruby:3.2-slim-bullseye as base
@@ -101,7 +102,6 @@ RUN         apt-get update && apt-get install -y --no-install-recommends --allow
             build-essential \
             cmake
 
-COPY --from=ruby-deps /tmp/stage/bin/* /usr/local/bin/
 COPY --chown=app:staff --from=ruby-deps /usr/local/bundle /usr/local/bundle
 COPY --chown=app:app --from=npm-deps /home/app/node_modules/ /home/app/node_modules/
 COPY --chown=app:app . /home/app/
