@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt-get update -qq
+            sudo apt-get update -qq --allow-releaseinfo-change
             sudo apt-get install gcc-7 lsof mediainfo
             sudo ln -s /usr/bin/lsof /usr/sbin/lsof
             gem install bundler:2.2.20
