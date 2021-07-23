@@ -14,7 +14,7 @@
 
 module UploadFormHelper
   def direct_upload?
-    Settings.encoding.engine_adapter.to_sym == :elastic_transcoder || Settings.minio.present?
+    [:elastic_transcoder, :media_convert].include?(Settings.encoding.engine_adapter.to_sym) || Settings.minio.present?
   end
 
   def upload_form_classes
