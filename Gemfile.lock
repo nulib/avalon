@@ -162,7 +162,7 @@ GEM
     active_annotations (0.2.2)
       json-ld
       rdf-vocab (~> 2.1.0)
-    active_encode (0.8.0)
+    active_encode (0.8.1)
       rails
       sprockets (< 4)
     active_fedora-datastreams (0.2.0)
@@ -219,6 +219,12 @@ GEM
     aws-sdk-cloudfront (1.26.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-cloudwatchevents (1.29.0)
+      aws-sdk-core (~> 3, >= 3.71.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-cloudwatchlogs (1.31.0)
+      aws-sdk-core (~> 3, >= 3.71.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-core (3.94.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
@@ -228,6 +234,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.30.0)
+      aws-sdk-core (~> 3, >= 3.71.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-mediaconvert (1.50.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-rails (3.1.0)
@@ -443,8 +452,8 @@ GEM
     fugit (1.3.9)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.3)
-    globalid (0.4.2)
-      activesupport (>= 4.2.0)
+    globalid (0.5.1)
+      activesupport (>= 5.0)
     google-analytics-rails (1.1.0)
     google-api-client (0.52.0)
       addressable (~> 2.5, >= 2.5.1)
@@ -982,7 +991,7 @@ DEPENDENCIES
   active-fedora (~> 12.1)
   active_annotations (~> 0.2.2)
   active_elastic_job!
-  active_encode (~> 0.8.0)
+  active_encode (~> 0.8.1)
   active_fedora-datastreams (~> 0.2.0)
   activejob-traffic_control
   activejob-uniqueness
@@ -994,7 +1003,10 @@ DEPENDENCIES
   avalon-workflow!
   aws-partitions
   aws-sdk-cloudfront
+  aws-sdk-cloudwatchevents
+  aws-sdk-cloudwatchlogs
   aws-sdk-elastictranscoder
+  aws-sdk-mediaconvert
   aws-sdk-rails
   aws-sdk-s3
   aws-sdk-ses

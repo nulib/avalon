@@ -15,6 +15,7 @@
 module ActiveEncodeJobs
   require 'ffmpeg_encode'
   require 'elastic_transcoder_encode'
+  require 'media_convert_encode'
   require 'pass_through_encode'
 
   class CreateEncodeJob < ActiveJob::Base
