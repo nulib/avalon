@@ -1168,7 +1168,10 @@ DEPENDENCIES
   avalon-workflow!
   aws-partitions
   aws-sdk-cloudfront
+  aws-sdk-cloudwatchevents
+  aws-sdk-cloudwatchlogs
   aws-sdk-elastictranscoder
+  aws-sdk-mediaconvert
   aws-sdk-rails
   aws-sdk-s3
   aws-sdk-ses
