@@ -48,12 +48,16 @@ class WaveformJob < ActiveJob::Base
       end
     end
 
-    def derivative_file_uri(master_file)
+    def derivative_file_uri(master_file)      
       derivatives = master_file.derivatives
 
-      # Find the lowest quality stream
+      # Find the lowest quality non-playlist stream
       ['low', 'medium', 'high'].each do |quality|
-        d = derivatives.select { |derivative| derivative.quality == quality }.first
+        d = derivatives.select do |derivative| 
+          (derivative.quality == quality) && 
+            ! derivative.absolute_location.match?(/^\.(m3u8?|mpd|pls|asx|cue)$/)
+        end.first
+
         if d.present?
           loc = FileLocator.new(d.absolute_location)
           return loc.uri if loc.exist?

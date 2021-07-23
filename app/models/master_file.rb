@@ -300,7 +300,12 @@ class MasterFile < ActiveFedora::Base
         height: output.height
       }
     end
-    update_derivatives(outputs)
+
+    managed = case Settings.encoding.manage_derivatives
+    when /^t(rue)?$/i, true, 1 then true
+    when /^f(alse)?$/i, false, 0 then false
+    end
+    update_derivatives(outputs, managed)
     run_hook :after_transcoding
   end
 
