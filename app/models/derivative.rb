@@ -115,7 +115,7 @@ class Derivative < ActiveFedora::Base
     # FIXME: Transform to stream url here? How do we distribute to the streaming server?
     derivative.location_url = output[:url]
     # For Intercom push
-    derivative.hls_url = output[:hls_url] if output[:hls_url].present?
+    derivative.hls_url = output[:hls_url] || output[:url]
 
     derivative.absolute_location = output[:url]
 
