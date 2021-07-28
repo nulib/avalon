@@ -89,7 +89,7 @@ module MasterFileBehavior
                  format: d.format }
       hls << common.merge(url: d.streaming_url(true))
     end
-    if hls.length > 1
+    if hls.length > 1 && hls.find { |d| d[:quality] == 'auto' }.nil?
       hls << { quality: 'auto',
                mimetype: hls.first[:mimetype],
                format: hls.first[:format],
