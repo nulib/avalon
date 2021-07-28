@@ -245,6 +245,8 @@ class Ability
     can :read, Timeline do |timeline|
       timeline.valid_token?(@options[:timeline_token])
     end
+
+    cannot :create, Timeline # Disable Timeline UI
   end
 
   def checkout_permissions

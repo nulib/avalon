@@ -86,6 +86,12 @@ class User < ActiveRecord::Base
     user
   end
 
+  def self.find_by_devise_authentication_keys(values)
+    conditions = Devise.authentication_keys.map { |key| "lower(#{key}) IN (:value)" }.join(' OR ')
+    values = Array(values).map { |v| v.strip.downcase }
+    User.where("deleted_at IS NULL AND (#{conditions})", { value: values }).reject
+  end
+
   def self.find_by_username_or_email(login)
     find_and_verify_by_username(login) || find_and_verify_by_email(login)
   end
@@ -142,9 +148,21 @@ class User < ActiveRecord::Base
     list.flatten.include? user_key
   end
 
+  def canvas_courses
+    @canvas_courses ||= CanvasService.courses_for_user(username)
+  end
+
   #TODO extract the ldap stuff into a mixin?
   def ldap_groups
     User.walk_ldap_groups(User.ldap_member_of(user_key), []).sort
+  end
+
+  def user_key
+    email
+  end
+
+  def virtual_groups
+    canvas_courses.respond_to?(:keys) ? ldap_groups + canvas_courses.keys : ldap_groups
   end
 
   def self.ldap_member_of(cn)

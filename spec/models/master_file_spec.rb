@@ -820,7 +820,7 @@ describe MasterFile do
     end
 
     it 'calls update_derivatives' do
-      expect(master_file).to receive(:update_derivatives).with(array_including(hash_including(label: 'quality-high')))
+      expect(master_file).to receive(:update_derivatives).with(array_including(hash_including(label: 'quality-high')), anything)
       expect(master_file).to receive(:run_hook).with(:after_transcoding)
       master_file.update_progress_on_success!(encode_succeeded)
     end

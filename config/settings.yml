@@ -51,7 +51,7 @@ app_job:
   solr_and_fedora:
     raise_on_connection_error: true
 zookeeper:
-  connection_str: "localhost:9983/configs"
+  connection_str: 'localhost:9983/configs'
 streaming:
   server: :generic
   stream_token_ttl: 20 #minutes
@@ -91,7 +91,6 @@ auth:
 #       :params:
 #         :oauth_credentials:
 #           somekey: somesecret
-# google_analytics_tracking_id: "someid"
 supplemental_files:
   proxy: false
 waveform:

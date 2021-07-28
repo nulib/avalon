@@ -19,9 +19,12 @@ class CatalogController < ApplicationController
 
   include Hydra::Catalog
   include Hydra::MultiplePolicyAwareAccessControlsEnforcement
-  include BlacklightHelperReloadFix
+  # include BlacklightHelperReloadFix
+
+  before_action :redirect_specific_collection_facets, only: :index
 
   # These before_actions apply the hydra access controls
+  before_action :block_invalid_sort_params, only: :index
   before_action :enforce_show_permissions, only: :show
   before_action :load_home_page_collections, only: :index, if: proc { helpers.current_page? root_path }
 
@@ -96,7 +99,7 @@ class CatalogController < ApplicationController
       restricted: { label: "Authenticated", fq: "has_model_ssim:MediaObject AND read_access_group_ssim:#{Hydra::AccessControls::AccessRight::PERMISSION_TEXT_VALUE_AUTHENTICATED}" },
       private: { label: "Private", fq: "has_model_ssim:MediaObject AND NOT read_access_group_ssim:#{Hydra::AccessControls::AccessRight::PERMISSION_TEXT_VALUE_PUBLIC} AND NOT read_access_group_ssim:#{Hydra::AccessControls::AccessRight::PERMISSION_TEXT_VALUE_AUTHENTICATED}" }
     }
-    config.add_facet_field 'read_access_virtual_group_ssim', label: 'External Group', limit: 5, if: Proc.new {|context, config, opts| context.current_ability.can? :create, MediaObject}, group: "workflow", helper_method: :vgroup_display
+    config.add_facet_field 'read_access_virtual_group_ssim', label: 'Course', limit: 5, if: Proc.new {|context, config, opts| context.current_ability.can? :create, MediaObject}, group: "workflow", helper_method: :vgroup_display
     config.add_facet_field 'date_digitized_ssim', label: 'Date Digitized', limit: 5, if: Proc.new {|context, config, opts| context.current_ability.can? :create, MediaObject}, group: "workflow"#, partial: 'blacklight/hierarchy/facet_hierarchy'
     config.add_facet_field 'date_ingested_ssim', label: 'Date Ingested', limit: 5, if: Proc.new {|context, config, opts| context.current_ability.can? :create, MediaObject}, group: "workflow"
     config.add_facet_field 'has_captions_bsi', label: 'Has Captions', if: Proc.new {|context, config, opts| context.current_ability.can? :create, MediaObject}, group: "workflow", helper_method: :display_has_caption_or_transcript
@@ -204,6 +207,20 @@ class CatalogController < ApplicationController
   end
 
   private
+    def redirect_specific_collection_facets
+      collection = params.fetch(:f, {}).fetch(:collection_ssim, []).first
+      return unless collection.present?
+      redirect = Redirect.find_by(id: collection)
+      redirect_to(redirect.item_target) if redirect.present?  
+    end
+
+    def block_invalid_sort_params
+      sort_val = params[:sort]
+      return unless sort_val
+      if !blacklight_config.sort_fields.has_key?(sort_val)
+        render plain: "Requested illegal sort val: #{sort_val}", status: :bad_request
+      end
+    end
 
     def load_home_page_collections
       featured_collections = Settings.home_page&.featured_collections

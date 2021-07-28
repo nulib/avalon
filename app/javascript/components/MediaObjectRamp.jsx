@@ -155,7 +155,7 @@ const Ramp = ({
             : (<React.Fragment>
               {sections_count > 0 &&
                 <React.Fragment>
-                  <MediaPlayer enableFileDownload={false} enablePlaybackRate={true} />
+                  <MediaPlayer enableFileDownload={false} enablePlaybackRate={true} withCredentials={true} />
                   <div className="ramp--rails-title">
                     {<div className="object-title" dangerouslySetInnerHTML={{ __html: title.content }} />}
                   </div>

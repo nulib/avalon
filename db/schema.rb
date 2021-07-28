@@ -205,6 +205,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_204921) do
     t.index ["user_id"], name: "index_playlists_on_user_id"
   end
 
+  create_table "redirects", id: :string, force: :cascade do |t|
+    t.string "item_target", null: false
+    t.string "embed_target"
+  end
+
   create_table "role_maps", force: :cascade do |t|
     t.string "entry"
     t.integer "parent_id"

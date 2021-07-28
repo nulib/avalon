@@ -329,7 +329,12 @@ class MasterFile < ActiveFedora::Base
         height: output.height
       }
     end
-    update_derivatives(outputs)
+
+    managed = case Settings.encoding.manage_derivatives
+    when /^t(rue)?$/i, true, 1 then true
+    when /^f(alse)?$/i, false, 0 then false
+    end
+    update_derivatives(outputs, managed)
     run_hook :after_transcoding
   end
 
@@ -573,17 +578,30 @@ class MasterFile < ActiveFedora::Base
 
     source = FileLocator.new(working_file_path&.first || file_location)
     options[:non_temp_file] = true
+    options[:master] = true
     if source.source.blank? or (source.uri.scheme == 's3' and not source.exist?)
       source = FileLocator.new(self.derivatives.where(quality_ssi: 'high').first.absolute_location)
       options[:non_temp_file] = true
     end
     response = { source: source&.location }.merge(options)
-    return response if response[:source].to_s =~ %r(^https?://)
+    response_uri = URI(response[:source])
+    return response if source.exist? && response_uri.scheme.match?(/^https?$/) && !response_uri.path.end_with?('.m3u8')
 
     unless File.exist?(response[:source])
       Rails.logger.warn("Masterfile `#{file_location}` not found. Extracting via HLS.")
-      hls_temp_file, new_offset = create_frame_source_hls_temp_file(options[:offset])
-      response = { source: hls_temp_file, offset: new_offset, non_temp_file: false }
+      begin
+        playlist_url = self.stream_details[:stream_hls].find { |d| d[:quality] == 'high' }[:url]
+        secure_url = SecurityHandler.secure_url(playlist_url, target: self.id)
+        playlist = Avalon::M3U8Reader.read(secure_url)
+        details = playlist.at(options[:offset])
+        details[:location] = SecurityHandler.secure_url(Addressable::URI.unescape(details[:location]))
+
+        # Fixes https://github.com/avalonmediasystem/avalon/issues/3474
+        target_location = File.basename(details[:location]).split('?')[0]
+        target = File.join(Dir.tmpdir, target_location)
+        File.open(target,'wb') { |f| URI.open(details[:location]) { |io| f.write(io.read) } }
+        response = { source: target, offset: details[:offset], master: false }
+      end
     end
     return response
   end

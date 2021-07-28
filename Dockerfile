@@ -1,5 +1,5 @@
 # Base stage for building gems
-FROM        ruby:3.2-bullseye as bundle
+FROM        ruby:3.2-bullseye AS bundle
 LABEL       stage=build
 LABEL       project=avalon
 RUN        apt-get update && apt-get upgrade -y build-essential && apt-get autoremove \
@@ -13,27 +13,32 @@ RUN        apt-get update && apt-get upgrade -y build-essential && apt-get autor
          && rm -rf /var/lib/apt/lists/* \
          && apt-get clean
 
-COPY        Gemfile ./Gemfile
-COPY        Gemfile.lock ./Gemfile.lock
+ENV BUILD_DEPS="build-essential libpq-dev libsqlite3-dev libwrap0-dev tzdata locales git curl unzip shared-mime-info" \
+    DEBIAN_FRONTEND="noninteractive" \
+    RAILS_ENV="production" \
+    LANG="en_US.UTF-8"
 
-RUN         gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)" \
-         && bundle config build.nokogiri --use-system-libraries
+RUN useradd -m -U app \
+ && su -s /bin/bash -c "mkdir -p /home/app" app
+RUN apt-get update -qq && apt-get install -y $BUILD_DEPS
 
-ENV         RUBY_THREAD_MACHINE_STACK_SIZE 8388608
-ENV         RUBY_THREAD_VM_STACK_SIZE 8388608
+ENV         RUBY_THREAD_MACHINE_STACK_SIZE=8388608
+ENV         RUBY_THREAD_VM_STACK_SIZE=8388608
 
 
 # Build development gems
-FROM        bundle as bundle-dev
+FROM        bundle AS bundle-dev
 LABEL       stage=build
 LABEL       project=avalon
-RUN         bundle config set --local without 'production' \
+RUN         bundle config set --local without 'production zoom' \
          && bundle config set --local with 'aws development test postgres' \
          && bundle install
 
+RUN gem update --system \
+ && chown -R app:staff /usr/local/bundle
 
 # Download binaries in parallel
-FROM        ruby:3.2-bullseye as download
+FROM        ruby:3.2-bullseye AS download
 LABEL       stage=build
 LABEL       project=avalon
 RUN         curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar xvz -C /usr/bin/
@@ -44,9 +49,14 @@ RUN         curl https://chromedriver.storage.googleapis.com/index.html?path=${c
          && chmod +x /usr/local/bin/chromedriver
 RUN      apt-get -y update && apt-get install -y ffmpeg
 
+COPY --chown=app:app Gemfile* /home/app/
+ENV BUNDLE_WITH='aws:postgres' BUNDLE_WITHOUT='development:test:zoom'
+RUN bundle install --jobs $(nproc) --retry 5
+RUN find /usr/local/bundle/ -name '*.gem' -or -name '*.c' -or -name '*.o' -delete
+RUN rm -rf /usr/local/bundle/**/.git
 
 # Base stage for building final images
-FROM        ruby:3.2-slim-bullseye as base
+FROM        ruby:3.2-slim-bullseye AS base
 LABEL       stage=build
 LABEL       project=avalon
 RUN         echo "deb     http://ftp.us.debian.org/debian/    bullseye main contrib non-free"  >  /etc/apt/sources.list.d/bullseye.list \
@@ -77,6 +87,7 @@ RUN         apt-get update && \
             zip \
             dumb-init \
             libsqlite3-dev \
+            sudo \
          && apt-get -y install mediainfo \
          && ln -s /usr/bin/lsof /usr/sbin/
 
@@ -86,34 +97,35 @@ WORKDIR     /home/app/avalon
 
 
 # Build devevelopment image
-FROM        base as dev
+FROM        base AS dev
 LABEL       stage=final
 LABEL       project=avalon
 RUN         apt-get update && apt-get install -y --no-install-recommends --allow-unauthenticated \
             build-essential \
             cmake
 
-COPY        --from=bundle-dev /usr/local/bundle /usr/local/bundle
-COPY        --from=download /chrome.deb /
-COPY        --from=download /usr/local/bin/chromedriver /usr/local/bin/chromedriver
-COPY        --from=download /usr/bin/dockerize /usr/bin/
-ADD         docker_init.sh /
+COPY --chown=app:staff --from=ruby-deps /usr/local/bundle /usr/local/bundle
+COPY --chown=app:app --from=npm-deps /home/app/node_modules/ /home/app/node_modules/
+COPY --chown=app:app . /home/app/
 
-ARG         RAILS_ENV=development
-RUN         dpkg -i /chrome.deb || apt-get install -yf
+RUN mkdir /var/run/puma && chown root:app /var/run/puma && chmod 0775 /var/run/puma
 
+USER app
+WORKDIR /home/app
+ENV BUNDLE_WITH='aws:postgres' BUNDLE_WITHOUT='development:test:zoom'
+RUN bundle exec rake assets:precompile SECRET_KEY_BASE=$(ruby -r 'securerandom' -e 'puts SecureRandom.hex(64)')
 
 # Build production gems
-FROM        bundle as bundle-prod
+FROM        bundle AS bundle-prod
 LABEL       stage=build
 LABEL       project=avalon
-RUN         bundle config set --local without 'development test' \
+COPY        Gemfile* .
+RUN         bundle config set --local without 'development test zoom' \
          && bundle config set --local with 'aws production postgres' \
          && bundle install
 
-
 # Install node modules
-FROM        node:20-bullseye-slim as node-modules
+FROM        node:20-bullseye-slim AS node-modules
 LABEL       stage=build
 LABEL       project=avalon
 RUN         apt-get update && apt-get install -y --no-install-recommends git ca-certificates
@@ -123,7 +135,7 @@ RUN         yarn install
 
 
 # Build production assets
-FROM        base as assets
+FROM        base AS assets
 LABEL       stage=build
 LABEL       project=avalon
 COPY        --from=bundle-prod --chown=app:app /usr/local/bundle /usr/local/bundle
@@ -138,11 +150,16 @@ RUN         cp config/controlled_vocabulary.yml.example config/controlled_vocabu
 
 
 # Build production image
-FROM        base as prod
+FROM        base AS prod
 LABEL       stage=final
 LABEL       project=avalon
 COPY        --from=assets --chown=app:app /home/app/avalon /home/app/avalon
 COPY        --from=bundle-prod --chown=app:app /usr/local/bundle /usr/local/bundle
+RUN         mkdir /var/run/puma && chown root:app /var/run/puma && chmod 0775 /var/run/puma
 
 USER        app
 ENV         RAILS_ENV=production
+ENV         PATH="/home/app/bin:${PATH}"
+EXPOSE      3000
+CMD         bin/boot_container
+HEALTHCHECK --start-period=60s CMD curl -f http://localhost:3000/

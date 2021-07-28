@@ -32,6 +32,7 @@ config/initializers/rubyhorn.rb
 config/secrets.yml
 #config/lti.yml
 
+public/assets
 public/media_objects
 public/streams
 public/**/*.m3u8
@@ -90,3 +91,12 @@ yarn-debug.log*
 .*.swo
 .*.swp
 
+# ActiveEncode
+/encodes
+
+terraform/**/node_modules
+terraform/package
+terraform/.terraform
+terraform/**/*.tfvars
+terraform/*.plan
+config/shoryuken.yml

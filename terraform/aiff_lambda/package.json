@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
+    "uri-js": "^4.4.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.229.1"
+  },
+  "description": "AWS Lambda function to convert AIFF files to WAV before sending them to MediaConvert.",
+  "directories": {},
+  "license": "Apache-2.0",
+  "main": "./index.js",
+  "maintainers": [
+    {
+      "name": "mbklein",
+      "email": "mbklein@gmail.com"
+    }
+  ],
+  "name": "avalon-aiff-wav",
+  "optionalDependencies": {},
+  "version": "1.0.1"
+}

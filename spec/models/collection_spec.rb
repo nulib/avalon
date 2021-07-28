@@ -32,7 +32,7 @@ describe Admin::Collection do
     context 'when manager' do
       subject{ ability}
       let(:ability){ Ability.new(user) }
-      let(:user){ User.where(Devise.authentication_keys.first => collection.managers.first).first }
+      let(:user){ User.find_by_devise_authentication_keys(collection.managers.first).first }
 
       it{ is_expected.to be_able_to(:create, Admin::Collection) }
       it{ is_expected.to be_able_to(:read, Admin::Collection) }
@@ -49,7 +49,7 @@ describe Admin::Collection do
     context 'when editor' do
       subject{ ability}
       let(:ability){ Ability.new(user) }
-      let(:user){ User.where(Devise.authentication_keys.first => collection.editors.first).first }
+      let(:user){ User.find_by_devise_authentication_keys(collection.editors.first).first }
 
       #Will need to define new action that covers just the things that an editor is allowed to edit
       it{ is_expected.to be_able_to(:read, Admin::Collection) }
@@ -67,7 +67,7 @@ describe Admin::Collection do
     context 'when depositor' do
       subject{ ability}
       let(:ability){ Ability.new(user) }
-      let(:user){ User.where(Devise.authentication_keys.first => collection.depositors.first).first }
+      let(:user){ User.find_by_devise_authentication_keys(collection.depositors.first).first }
 
       it{ is_expected.to be_able_to(:read, Admin::Collection) }
       it{ is_expected.to be_able_to(:read, collection) }

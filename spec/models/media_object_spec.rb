@@ -145,7 +145,7 @@ describe MediaObject do
 
     context 'when manager' do
       subject{ ability}
-      let(:ability){ Ability.new(User.where(Devise.authentication_keys.first => collection.managers.first).first) }
+      let(:ability){ Ability.new(User.find_by_devise_authentication_keys(collection.managers.first).first) }
 
       it{ is_expected.to be_able_to(:create, MediaObject) }
       it{ is_expected.to be_able_to(:read, media_object) }
@@ -159,7 +159,7 @@ describe MediaObject do
       end
 
       context 'and logged in through LTI' do
-        let(:ability){ Ability.new(User.where(Devise.authentication_keys.first => collection.managers.first).first, {full_login: false, virtual_groups: [Faker::Lorem.word]}) }
+        let(:ability){ Ability.new(User.find_by_devise_authentication_keys(collection.managers.first).first, {full_login: false, virtual_groups: [Faker::Lorem.word]}) }
 
         it{ is_expected.not_to be_able_to(:share, MediaObject) }
         it{ is_expected.not_to be_able_to(:update, media_object) }
@@ -169,7 +169,7 @@ describe MediaObject do
 
     context 'when editor' do
       subject{ ability}
-      let(:ability){ Ability.new(User.where(Devise.authentication_keys.first => collection.editors.first).first) }
+      let(:ability){ Ability.new(User.find_by_devise_authentication_keys(collection.editors.first).first) }
 
       it{ is_expected.to be_able_to(:create, MediaObject) }
       it{ is_expected.to be_able_to(:read, media_object) }
@@ -187,7 +187,7 @@ describe MediaObject do
 
     context 'when depositor' do
       subject{ ability }
-      let(:ability){ Ability.new(User.where(Devise.authentication_keys.first => collection.depositors.first).first) }
+      let(:ability){ Ability.new(User.find_by_devise_authentication_keys(collection.depositors.first).first) }
 
       it{ is_expected.to be_able_to(:create, MediaObject) }
       it{ is_expected.to be_able_to(:read, media_object) }

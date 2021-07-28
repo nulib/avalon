@@ -145,7 +145,7 @@ namespace :avalon do
       username = ENV['avalon_username'].dup
       groups = Avalon::RoleControls.user_roles username
 
-      User.where(Devise.authentication_keys.first => username).destroy_all
+      User.find_by_devise_authentication_keys(username).destroy_all
       groups.each do |group|
         Avalon::RoleControls.remove_user_role(username, group)
       end
@@ -274,7 +274,7 @@ namespace :avalon do
       # Save existing playlist/item/marker data for users being imported
       puts "Compiling existing avalon marker data"
       usernames = import_json.collect{|user|user['username']}
-      userids = User.where(Devise.authentication_keys.first => usernames).collect(&:id)
+      userids = User.find_by_devise_authentication_keys(usernames).collect(&:id)
       userids.each do |user_id|
         print "."
         playlist = Playlist.where(user_id: user_id, title:'Variations Bookmarks').first

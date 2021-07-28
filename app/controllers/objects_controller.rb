@@ -13,6 +13,8 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 class ObjectsController < ApplicationController
+  before_action :maybe_redirect, only: [:show]
+
   def show
     obj = fetch_object params[:id]
     if obj.blank?

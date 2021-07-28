@@ -21,6 +21,7 @@ class MasterFilesController < ApplicationController
   # include Avalon::Controller::ControllerBehavior
   include NoidValidator
 
+  before_action :maybe_redirect, only: [:show, :embed]
   before_action :authenticate_user!, :only => [:create]
   before_action :set_masterfile_proxy, except: [:create, :oembed, :attach_structure, :delete_structure, :destroy, :update, :set_structure]
   before_action :set_masterfile, only: [:attach_structure, :delete_structure, :destroy, :update, :set_structure]
@@ -262,11 +263,14 @@ class MasterFilesController < ApplicationController
       end
     else
       return head :unauthorized if cannot?(:read, @master_file)
-      @hls_streams = if quality == "auto"
-                       gather_hls_streams(@master_file)
-                     else
-                       hls_stream(@master_file, quality)
-                     end
+      stream = hls_stream(@master_file, quality).first
+      case stream
+      when nil
+        raise ActionController::RoutingError.new('Not Found') unless quality == 'auto'
+        @hls_streams = gather_hls_streams(@master_file)
+      else
+        redirect_to(stream[:url])
+      end
     end
   end
 

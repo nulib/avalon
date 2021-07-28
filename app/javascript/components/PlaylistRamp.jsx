@@ -160,7 +160,7 @@ const Ramp = ({
       startCanvasId={startCanvasId}>
       <Row className="ramp--all-components ramp--playlist">
         <Col sm={8}>
-          <MediaPlayer enableFileDownload={false} enablePlaybackRate={true} />
+          <MediaPlayer enableFileDownload={false} enablePlaybackRate={true} withCredentials={true} />
           {playlist_item_ids?.length > 0 && (
             <Card className="ramp--playlist-accordion">
               <Card.Header>
@@ -194,13 +194,18 @@ const Ramp = ({
             </Card>
           )}
         </Col>
-        <Col sm={4} className={`ramp--playlist-items-column ${IS_MOBILE ? 'mobile-view' : ''}`}>
+        <Col
+          sm={4}
+          className={`ramp--playlist-items-column ${
+            IS_MOBILE ? 'mobile-view' : ''
+          }`}
+        >
           <Row>
             <Col sm={6}>
               <AutoAdvanceToggle />
             </Col>
             <Col sm={6}>
-              {share.canShare &&
+              {share.canShare && (
                 <button
                   className="btn btn-outline text-nowrap float-right"
                   type="button"
@@ -213,7 +218,7 @@ const Ramp = ({
                   <i className="fa fa-share-alt"></i>
                   Share
                 </button>
-              }
+              )}
             </Col>
           </Row>
           <Row className="mx-0 mb-2">

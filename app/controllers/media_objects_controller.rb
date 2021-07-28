@@ -23,6 +23,7 @@ class MediaObjectsController < ApplicationController
   include NoidValidator
   include SecurityHelper
 
+  before_action :maybe_redirect, only: [:show]
   before_action :authenticate_user!, except: [:show, :set_session_quality, :show_stream_details, :manifest]
   before_action :load_resource, except: [:create, :destroy, :update_status, :set_session_quality, :tree, :deliver_content, :confirm_remove, :show_stream_details, :add_to_playlist, :intercom_collections, :manifest, :move_preview, :edit, :update, :json_update]
   load_and_authorize_resource except: [:create, :destroy, :update_status, :set_session_quality, :tree, :deliver_content, :confirm_remove, :show_stream_details, :add_to_playlist, :intercom_collections, :manifest, :move_preview, :show_progress]
@@ -150,6 +151,10 @@ class MediaObjectsController < ApplicationController
 
   # POST /media_objects
   def create
+    unless (api_params[:collection_id].present?)
+      render json: { errors: ["New media object must have a valid collection_id"] }, status: 422
+      return
+    end
     @media_object = MediaObjectsController.initialize_media_object(user_key)
     # Preset the workflow to the last workflow step to ensure validators run
     @media_object.workflow.last_completed_step = HYDRANT_STEPS.last.step
@@ -174,7 +179,6 @@ class MediaObjectsController < ApplicationController
 
       @media_object.collection = collection
     end
-
     @media_object.avalon_uploader = 'REST API'
 
     populate_from_catalog = (!!api_params[:import_bib_record] && media_object_parameters[:bibliographic_id].present?)
@@ -464,7 +468,10 @@ class MediaObjectsController < ApplicationController
     authorize! :read, @media_object
 
     stream_info_hash = secure_stream_infos(master_file_presenters, [@media_object])
-    canvas_presenters = master_file_presenters.collect { |mf| IiifCanvasPresenter.new(master_file: mf, stream_info: stream_info_hash[mf.id]) }
+    canvas_presenters = master_file_presenters.collect do |mf|
+      stream_info = secure_streams(mf.stream_details, @media_object.id)
+      IiifCanvasPresenter.new(master_file: mf, stream_info: stream_info)
+    end
     presenter = IiifManifestPresenter.new(media_object: @media_object, master_files: canvas_presenters, lending_enabled: lending_enabled?(@media_object))
 
     manifest = IIIFManifest::V3::ManifestFactory.new(presenter).to_h

@@ -17,6 +17,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 <html lang="en">
 
 <head>
+  <%= render_google_tag_manager_head %>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title><%= render_page_title %></title>
@@ -34,10 +35,10 @@ Unless required by applicable law or agreed to in writing, software distributed
   <%= javascript_pack_tag 'application' %>
   <%= yield :page_styles %>
   <%= yield :additional_head_content %>
-  <%= render "modules/google_analytics" %>
 </head>
 
 <body data-mountpoint="<%=main_app.root_path%>" <%= request.fullpath.include?('login_popup') ? 'onunload=closePopup()' : nil %> >
+  <%= render_google_tag_manager_body %>
   <div class="page-container">
     <div class="content-wrapper">
       <a id="skip-to-content" class="sr-only sr-only-focusable" href="#iiif-media-player">Skip to main content</a>

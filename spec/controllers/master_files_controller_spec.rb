@@ -258,6 +258,24 @@ describe MasterFilesController do
         expect(response.response_code).to eq(404)
       end
     end
+    
+    context "external redirects" do
+      let(:master_file) { FactoryBot.create(:master_file, :with_media_object) }
+      
+      it 'does not redirect when there is no redirect entry' do
+        expect(get(:show, params: { id: master_file.id })).to redirect_to(id_section_media_object_path(master_file.media_object.id, master_file.id))
+      end
+      
+      it 'redirects when there is a redirect entry' do
+        Redirect.create(id: 'abc1234', item_target: 'https://example.edu/1234', embed_target: 'https://example.edu/embed/https%3A%2F%2F12%2F34-manifest.json/audio')
+        expect(get(:show, params: { id: 'abc1234' })).to redirect_to('https://example.edu/1234')
+      end
+
+      it 'redirects an embed request' do
+        Redirect.create(id: 'abc1234', item_target: 'https://example.edu/1234', embed_target: 'https://example.edu/embed/https%3A%2F%2F12%2F34-manifest.json/audio')
+        expect(get(:embed, params: { id: 'abc1234' })).to redirect_to('https://example.edu/embed/https%3A%2F%2F12%2F34-manifest.json/audio')
+      end
+    end
   end
 
   describe "#embed" do
@@ -632,7 +650,7 @@ describe MasterFilesController do
       expect(response.content_type).to eq 'application/x-mpegURL; charset=utf-8'
     end
 
-    it 'returns a single quality HLS manifest' do
+    xit 'returns a single quality HLS manifest' do
       login_as :administrator
       expect(get('hls_manifest', params: { id: master_file.id, quality: 'high' })).to have_http_status(:ok)
       expect(response.content_type).to eq 'application/x-mpegURL; charset=utf-8'
