@@ -271,12 +271,15 @@ class MasterFilesController < ApplicationController
         return head :unauthorized
       end
     else
-      return head :unauthorized if cannot?(:read, @master_file)
-      @hls_streams = if quality == "auto"
-                       gather_hls_streams(@master_file)
-                     else
-                       hls_stream(@master_file, quality)
-                     end
+      return head :unauthorized if cannot?(:read, master_file)
+      stream = hls_stream(master_file, quality).first
+      case stream
+      when nil
+        raise ActionController::RoutingError.new('Not Found') unless quality == 'auto'
+        @hls_streams = gather_hls_streams(master_file)
+      else
+        redirect_to(stream[:url])
+      end
     end
   end
 
