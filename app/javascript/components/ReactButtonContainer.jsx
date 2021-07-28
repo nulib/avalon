@@ -61,7 +61,7 @@ class ReactButtonContainer extends Component {
             <Modal.Title>Edit Structure</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <ReactSME {...this.state.smeProps} structureIsSaved={this.getStructureStatus} />
+            <ReactSME {...this.state.smeProps} structureIsSaved={this.getStructureStatus} withCredentials={true} />
           </Modal.Body>
         </Modal>
       </div>
