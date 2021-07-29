@@ -126,13 +126,13 @@ $login-link-background-color: $nu-purple-30;
 $navCollapseWidth: 650px;
 
 /* Navbar */
-$navbar-default-bg: $primaryDark;
-$navbar-default-color: $white;
-$navbar-default-toggle-hover-bg: $nu-purple-60;
-$navbar-default-link-color: $white;
-$navbar-default-link-hover-color: $white;
-$navbar-default-link-hover-bg: $nu-purple-60;
-$navbar-default-link-active-color: $primaryDark;
+$navbar-default-bg: $light-grey;
+$navbar-default-color: $primary;
+$navbar-default-toggle-hover-bg: $light-grey2;
+$navbar-default-link-color: $primary;
+$navbar-default-link-hover-color: $primary;
+$navbar-default-link-hover-bg: $light-grey2;
+$navbar-default-link-active-color: $white;
 $navbar-default-link-active-bg: $nu-purple-60;
 $navbar-border-radius: 0;
 $navbar-default-toggle-icon-bar-bg: $white;
@@ -150,13 +150,13 @@ $navbar-inverse-toggle-border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1)
 $grid-gutter-width: 16px;
 
 /* Buttons */
-$btn-border-radius-base: 2px;
-$btn-default-color: $dark;
-$btn-default-bg: $white;
-$btn-default-border: $gray;
+$btn-border-radius-base: 0px;
+$btn-default-color: $white;
+$btn-default-bg: $primary;
+//$btn-default-border: $gray;
 $btn-primary-color: $white;
-$btn-primary-bg: $primaryDark;
-$btn-primary-border: $primaryDark;
+$btn-primary-bg: $primary;
+$btn-primary-border: $primary;
 $btn-success-color: $white;
 $btn-success-bg: $success;
 $btn-success-border: $success;
@@ -180,5 +180,5 @@ $pagination-disabled-color: $gray;
 $pagination-disabled-bg: $white;
 $pagination-disabled-border: $gray;
 
-$nav-tabs-active-link-hover-color: $dark;
+// $nav-tabs-active-link-hover-color: $dark;
 $input-color: $dark;

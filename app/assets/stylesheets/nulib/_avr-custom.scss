@@ -1,0 +1,25 @@
+#top-bar {
+  #left {
+    #northwestern {
+      a {
+        background: image-url('nulib/northwestern.svg') no-repeat center;
+      }
+    }
+  }
+}
+
+#search {
+  .search-form {
+    button {
+      background: image-url('nulib/search.svg') no-repeat 1em 0.4em;
+      background-size: 20px 20px;
+      border: none;
+      border-bottom: 1px solid $nu-purple-30;
+      -webkit-appearance: none;
+
+      &:focus {
+        outline: 1px dashed $white;
+      }
+    }
+  }
+}
