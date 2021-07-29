@@ -23,37 +23,57 @@
   Custom variables (Non-bootstrap)
 */
 @font-face {
-  font-family: 'MuseoSlab';
-  src: url('fonts/Museo_Slab_500-webfont.woff') format('woff');
+  font-family: 'CamptonBold';
+  src: url('fonts/CamptonBold.otf') format('otf');
 }
-$sansFontFamily: Arial, Helvetica, sans-serif;
-$museoSlab: 'MuseoSlab';
+@font-face {
+  font-family: 'AkkuratPro-Regular';
+  src: url('fonts/AkkuratPro-Regular.otf') format('otf');
+}
+$sansFontFamily: 'AkkuratPro-Regular', Georgia;
+$camptonBold: 'CamptonBold';
+
+// basic colors
+$white: #fff;
+$black: #000;
+$medium-grey: #ccc;
+$light-grey: #f0f0f0;
+$light-grey2: #e3e3e3;
+
+// northwestern purples
+$nu-purple: #4e2a84; // official NU Purple (default link color)
+$nu-purple-120: #401f68; // NU Purple 120
+$nu-purple-70: #765da0; // NU Purple 70
+$nu-purple-60: #836eaa; // NU Purple 60
+$nu-purple-30: #b6acd1; // NU Purple 30
+$nu-purple-10: #e4e0ee; // NU Purple 10
+
+// rich blacks
+$rich-black-80: #342f2e; // Rich Black 80 (default body text)
+$rich-black-50: #716c6b; // Rich Black 50
+$rich-black-20: #bbb8b8; // Rich Black 20
+$rich-black-10: #d8d6d6; // Rich Black 10
 
 // Primary colors
-$primary: #80a590;
-$primaryDark: #2a5459;
-$dark: #0a2326;
+$primary: $nu-purple;
+$primaryDark: $nu-purple-120;
+$dark: $rich-black-80;
 
 // Secondary colors
-$yellow: #ffcf08;
-$orange: #fbb040;
-$white: rgb(255, 255, 255);
-$blueGreen: #477076;
+$yellow: #ffc520;
+$green: #58b947;
+$teal: #7fcecd;
+$blue: #5091cd;
+$red: #ef553f;
 
 // Generated palate colors from http://colormind.io/ for Avalon style guide
 // Add new HEX values below to match your organization's flavor of info/success/warning/danger
-$info: #fbb040;
-$success: #429453;
-$warning: #bf841b;
-$danger: #f44336;
-
-// Colors not from the Styleguide
-$greenBG: scale-color($primary, $saturation: -40%, $lightness: 60%);
-$gray: #999;
-$lightgray: #f2f2f2;
-$red: #d9534f;
-$blue: #2a4d59;
-$lightblue: #31708f;
+$info: $blue;
+$success: $green;
+$warning: $yellow;
+$danger: $red;
+$gray: $rich-black-50;
+$lightgray: $rich-black-20;
 
 /**
   * Bootstrap variable overrides
@@ -70,13 +90,13 @@ $brand-danger: $danger;
 
 /* Fonts */
 $font-family-sans-serif: $sansFontFamily;
-$font-family-serif: $museoSlab;
+$font-family-serif: $camptonBold;
 
 /* Components */
 $padding-base-vertical: 4px;
 
 /* Headings */
-// $headings-font-family: $museoSlab;
+// $headings-font-family: $camptonBold;
 
 /* Links */
 $link-color: $primaryDark;
@@ -98,7 +118,7 @@ $state-danger-text: $danger;
 /* Header */
 $login-text-color: $gray;
 $login-link-color: $primaryDark;
-$login-link-background-color: $orange;
+$login-link-background-color: $nu-purple-30;
 
 /* Sidenav */
 
@@ -108,18 +128,18 @@ $navCollapseWidth: 650px;
 /* Navbar */
 $navbar-default-bg: $primaryDark;
 $navbar-default-color: $white;
-$navbar-default-toggle-hover-bg: $yellow;
+$navbar-default-toggle-hover-bg: $nu-purple-60;
 $navbar-default-link-color: $white;
-$navbar-default-link-hover-color: $primaryDark;
-$navbar-default-link-hover-bg: $yellow;
+$navbar-default-link-hover-color: $white;
+$navbar-default-link-hover-bg: $nu-purple-60;
 $navbar-default-link-active-color: $primaryDark;
-$navbar-default-link-active-bg: $yellow;
+$navbar-default-link-active-bg: $nu-purple-60;
 $navbar-border-radius: 0;
 $navbar-default-toggle-icon-bar-bg: $white;
 $navbar-default-toggle-border-color: $white;
 
 // Panels
-$panel-primary-text: red;
+$panel-primary-text: $red;
 
 // Inverted navbar toggle
 $navbar-inverse-toggle-hover-bg: #e6e6e6;
