@@ -3,6 +3,7 @@ locals {
     # queue name => visibility timeout in seconds
     batch_ingest                    = 3600,
     bulk_access_control             = 300,
+    create_adaptive_playlist        = 30,
     create_encode                   = 30,
     default                         = 300,
     delete_course                   = 300,
