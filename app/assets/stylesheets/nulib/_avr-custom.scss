@@ -1,3 +1,15 @@
+body {
+  font-size: 1rem;
+}
+
+.page-title-wrapper {
+  margin: 1rem 0;
+}
+
+.manage-btn:hover {
+  background-color: inherit;
+}
+
 #top-bar {
   #left {
     #northwestern {
@@ -20,6 +32,196 @@
       &:focus {
         outline: 1px dashed $white;
       }
+    }
+  }
+}
+
+footer {
+  a:hover {
+    color: $white;
+  }
+
+  .footer-logo {
+    width: 100%;
+    max-width: 390px;
+    height: 35px;
+    background: image-url('nulib/northwestern-university-horizontal.svg')
+      no-repeat;
+  }
+}
+
+.footer-content {
+  // department contact info
+  &.contact {
+    .address {
+      .icon {
+        background: image-url('nulib/pin-drop.svg') no-repeat;
+        background-size: 17px 24px;
+        height: 24px;
+        width: 17px;
+      }
+    }
+
+    .phone {
+      .icon {
+        background: image-url('nulib/mobile-phone.svg') no-repeat;
+        background-size: 14px 25px;
+        height: 25px;
+        width: 14px;
+      }
+    }
+
+    .fax {
+      .icon {
+        background: image-url('nulib/fax.svg') no-repeat;
+        background-size: 18px 18px;
+        height: 28px;
+        width: 18px;
+      }
+    }
+
+    .email {
+      .icon {
+        background: image-url('nulib/email.svg') no-repeat;
+        background-size: 18px 18px;
+        height: 18px;
+        width: 18px;
+      }
+    }
+
+    .feedback {
+      margin-bottom: 0;
+
+      .icon {
+        background: image-url('nulib/feedback.svg') no-repeat;
+        background-size: 17px 18px;
+        height: 18px;
+        width: 17px;
+      }
+    }
+  }
+
+  // connect social media icons
+  &.connect {
+    width: 200px / 1120px * 100%;
+
+    // social media icons
+    .social {
+      width: 39px;
+      height: 39px;
+      background: image-url('nulib/social-media-icons.svg');
+      background-color: #fff;
+    }
+
+    .facebook {
+      background-position: 0 0;
+
+      &:hover {
+        background-position: 0 -39px;
+      }
+    }
+
+    .twitter {
+      background-position: -39px 0;
+
+      &:hover {
+        background-position: -39px -39px;
+      }
+    }
+
+    .instagram {
+      background-position: -78px 0;
+
+      &:hover {
+        background-position: -78px -39px;
+      }
+    }
+
+    .youtube {
+      background-position: -156px 0;
+
+      &:hover {
+        background-position: -156px -39px;
+      }
+    }
+
+    .wordpress {
+      background-position: -234px 0;
+
+      &:hover {
+        background-position: -234px -39px;
+      }
+    }
+
+    .blog {
+      background-position: -468px 0;
+
+      &:hover {
+        background-position: -468px -39px;
+      }
+    }
+
+    .github {
+      background-position: -507px 0;
+
+      &:hover {
+        background-position: -507px -39px;
+      }
+    }
+  }
+}
+
+#footer-bottom {
+  ul {
+    .facebook {
+      background: image-url('nulib/facebook-white.svg') no-repeat;
+      background-size: 18px 18px;
+
+      &:hover {
+        background: image-url('nulib/facebook-color.svg') no-repeat;
+      }
+    }
+
+    .twitter {
+      background: image-url('nulib/twitter-white.svg') no-repeat;
+      background-size: 18px 18px;
+
+      &:hover {
+        background: image-url('nulib/twitter-color.svg') no-repeat;
+        background-size: 18px 17px;
+      }
+    }
+
+    .instagram {
+      background: image-url('nulib/instagram-white.svg') no-repeat;
+      background-size: 18px 18px;
+
+      &:hover {
+        background: image-url('nulib/instagram-color.svg') no-repeat;
+      }
+    }
+
+    .youtube {
+      background: image-url('nulib/youtube-white.svg') no-repeat;
+      background-size: 20px 14px;
+
+      &:hover {
+        background: image-url('nulib/youtube-color.svg') no-repeat;
+      }
+    }
+
+    .futurity {
+      background: image-url('nulib/futurity-white.svg') no-repeat;
+      background-size: 15px 18px;
+
+      &:hover {
+        background: image-url('nulib/futurity-color.svg') no-repeat;
+      }
+    }
+
+    .rss {
+      background: image-url('nulib/rss-white.svg') no-repeat;
+      background-size: 16px 16px;
     }
   }
 }
