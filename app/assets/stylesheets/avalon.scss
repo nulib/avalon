@@ -14,7 +14,7 @@
  * ---  END LICENSE_HEADER BLOCK  ---
 */
 
-@import 'branding';
+//@import 'branding';
 @import 'avalon/mixins';
 @import 'avalon/accordions';
 @import 'avalon/buttons';
@@ -120,9 +120,6 @@ div.alert-danger {
 }
 
 /* Headlines / page titles */
-.page-title {
-  font-size: 32px;
-}
 .headline {
   color: $primaryDark;
   font-size: 29.3px;
@@ -228,7 +225,6 @@ span.constraints-label {
   // bounded in gray
   pre {
     background: $white;
-    font-family: $sansFontFamily;
     font-size: $font-size-base;
     padding: 0;
     background-color: transparent;

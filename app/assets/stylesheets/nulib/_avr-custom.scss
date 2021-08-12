@@ -1,3 +1,6 @@
+@import './custom/facet-sidebar';
+@import './blacklight-overrides';
+
 body {
   font-size: 1rem;
 }
@@ -6,8 +9,14 @@ body {
   margin: 1rem 0;
 }
 
-.manage-btn:hover {
-  background-color: inherit;
+.manage-btn {
+  background-color: $rich-black-10;
+  color: $nu-purple;
+
+  &:hover,
+  &:focus {
+    background-color: $light-grey2 !important;
+  }
 }
 
 #top-bar {
@@ -34,6 +43,10 @@ body {
       }
     }
   }
+}
+
+.global-search-wrapper {
+  display: none;
 }
 
 footer {
