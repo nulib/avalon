@@ -26,6 +26,10 @@
 @import 'global/mobile-nav';
 @import 'global/info-box';
 
+// page types
+@import 'page-types/full-width-page/main';
+@import 'page-types/full-width-page/photo-feature-3-across';
+
 // load last
 @import 'base/buttons';
 

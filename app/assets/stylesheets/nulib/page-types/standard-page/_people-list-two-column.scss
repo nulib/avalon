@@ -1,0 +1,95 @@
+// people list two columns
+
+.people-columns {
+    margin-top: 2rem;
+    @include flexbox;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap; // wrap children
+    @extend %clearfix;
+
+    .people {
+        float: left;
+        width: 406px / 836px * 100%;
+        margin: 0 0 2rem 0;
+        margin-right: 24px / 836px * 100%;
+
+        &:nth-child(even) {
+            margin-right: 0;
+        }
+        
+        // append to div.people-small if there's no image 
+        &.no-image {
+
+            .people-image {
+                display: none;
+            }
+
+            .people-content {
+                width: 100%;
+            }
+        } 
+    
+        .people-image {
+            width: 120px / 406px * 100%;
+            margin-right: 15px / 406px * 100%;
+            float: left;
+        
+            &.no-image {
+                display: none;
+            }
+        }
+    
+        .people-content {
+            width: 271px / 406px * 100%;
+            float: left;
+            font-size: 15px;
+            line-height: 1.2em;
+        }
+        
+        h2,
+        h3,
+        h4 {
+            margin-bottom: 0;
+            font: 22px/1.2em $CamptonBook;
+            color: $rich-black-80;
+        }       
+        
+        p.title {
+            margin-top: 0;
+            font: 18px/1.2em $AkkuratProRegular;
+        }
+    }
+      
+    @media screen and (max-width: 70em) {    
+    
+        .people {
+            float: none;
+            width: 100%;
+            margin: 0 0 1rem 0;
+        
+            .people-image {
+                width: 120px;
+                margin-right: 15px / 900px * 100%;
+                margin-bottom: 1rem;
+            }
+        }
+    }
+    
+    @media screen and (max-width: 30em) {   
+        
+        .people {
+            
+            .people-image {
+                width: 100%;
+                margin: 0 0 .5rem 0;
+                float: none;
+            }
+            
+            .people-content {
+                float: none;
+                width: 100%
+            }
+        }
+    }
+}

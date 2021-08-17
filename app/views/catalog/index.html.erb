@@ -14,46 +14,54 @@ Unless required by applicable law or agreed to in writing, software distributed
 ---  END LICENSE_HEADER BLOCK  ---
 %>
 <% if current_page?(main_app.root_path) %>
-<div class="homepage-splash-wrapper">
-  <section class="homepage-splash-top-section">
-    <div class="homepage-splash-search">
-      <%= render :partial=>'modules/avalon_search_form' %>
-    </div>
-
-    <div class="homepage-splash-lead-copy">
-      <div class="container">
-        <p class="lead">Avalon Media System is an open source system for managing and providing access to large
-          collections of
-          digital audio and video. <i style="font-size: 16px;">(Photo: Katie Risseeuw)</i></p>
+<div class="full-width-page">
+  <section class="hero">
+      <!-- The hero image can align to left/center/right on mobile by changing the inline background-position property in .hero-image -->
+      <div class="hero-image homepage">
+          <div class="contain-1120">
+              <h1>Repository Audio + Video</h1>
+              <p>Audio and video material for research and courses</p>
+              <%= link_to 'Browse Collection', main_app.search_catalog_path(search_field: 'all_fields', utf8: '✓', q: ''), class: "button" %>
+          </div>
       </div>
-    </div>
   </section>
-
-  <% if @featured_collection.present? %>
-  <section class="homepage-splash-featured-collection">
-    <div>
-      <%= image_tag poster_collection_url(@featured_collection.id), class: "homepage-featured-collection-image" %>
-    </div>
-    <div class="homepage-splash-featured-collection-content">
-      <h3 class="serif-font">featured collection</h3>
-      <h2><%= @featured_collection.name %></h2>
-      <p><%= @featured_collection.description %></p>
-      <a href="<%= collection_url(@featured_collection.id) %>" class="btn btn-default">View Collection</a>
-    </div>
-  </section>
-  <% end %>
-
-  <% if Settings.home_page&.carousel_collections&.present? %>
-  <section class="homepage-splash-collections">
-    <div class="container">
-      <h3 class="homepage-splash-collections-title serif-font"><a href="<%= collections_url %>">view all collections</a>
-      </h3>
-    </div>
-    <div class="container-fluid">
-      <%= react_component("CollectionCarousel", { baseUrl: collections_url(format: :json, only: :carousel, limit: 10) }) %>
-    </div>
-  </section>
-  <% end %>
+  <div class="content">
+    <section>
+      <div class="section-top contain-970">
+          <h2>Featured Collections</h2>
+          <p>Some content is only available when you sign in. Sign in with your ID and passphrase.</p>
+      </div>
+      <div class="photo-feature-3-across">
+          <article class="photo-feature">
+              <a href="/catalog?f%5Bcollection_ssim%5D%5B%5D=Robert+Marcellus+Master+Class+Audio+Archives" style="border: none;">
+                  <%= image_tag("nulib/featured-collection-marcellus.jpg", alt: "Robert Marcellus") %>
+                  <div class="text-over-image">
+                      <h3>Robert Marcellus master class audio archives</h3>
+                      <div class="cta">View items</div>
+                  </div>                       
+              </a>     
+          </article>
+          <article class="photo-feature">
+              <a href="/?f%5Bcollection_ssim%5D%5B%5D=The+Dharma+Talks+of+Kongo+Langlois+Roshi" style="border: none;">
+                  <%= image_tag("nulib/featured-collection-kongo.jpg", alt: "Kongo Langlois Roshi") %>
+                  <div class="text-over-image">
+                      <h3>The Dharma Talks of Kongo Langlois Roshi</h3>
+                      <div class="cta">View items</div>
+                  </div>
+              </a>
+          </article>       
+          <article class="photo-feature">
+              <a href="/?f%5Bcollection_ssim%5D%5B%5D=Northwestern+University+Football+Films" style="border: none;">
+                  <%= image_tag("nulib/featured-collection-nu-football.jpg", alt: "Go Northwestern banner") %>
+                  <div class="text-over-image">
+                      <h3>Northwestern University football films</h3>
+                      <div class="cta">View items</div>
+                  </div>
+              </a>
+          </article> 
+      </div>
+    </section>
+  </div>
 </div>
 <% else %>
 <div id="sidebar" class="<%= sidebar_classes %>">

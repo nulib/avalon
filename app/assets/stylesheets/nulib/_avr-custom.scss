@@ -24,6 +24,11 @@ body {
   display: none;
 }
 
+.hero-image.homepage {
+  background: url('nulib/avr-splash-image-reels-cropped-muted.jpg') no-repeat
+    center / cover;
+}
+
 .homepage-splash-top-section {
   background-image: url('nulib/avr-splash-image-reels-cropped.jpg');
   background-size: cover;
