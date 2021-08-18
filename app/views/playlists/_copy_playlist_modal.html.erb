@@ -79,6 +79,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 
 <% content_for :page_scripts do %>
   <script>
+  if (currentPlayer) {
     // Enable/disable ME.js keyboard shortcuts when modal is hidden/shown
     $('#copy-playlist-modal').on('show.bs.modal', function (e) {
       currentPlayer.options.enableKeyboard = false;
@@ -86,5 +87,6 @@ Unless required by applicable law or agreed to in writing, software distributed
     $('#copy-playlist-modal').on('hidden.bs.modal', function (e) {
       currentPlayer.options.enableKeyboard = true;
     })
+  }
   </script>
 <% end %>

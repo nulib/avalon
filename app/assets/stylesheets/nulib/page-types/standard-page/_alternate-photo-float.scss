@@ -1,0 +1,119 @@
+// alternating photo float (images and text)
+
+.standard-page {
+
+    .alternate-photo-float {
+        margin-top: 2rem;
+        margin-bottom: 3rem;
+        @extend %clearfix;
+        
+        h2,
+        h3,
+        h4 {
+            font: 30px $AkkuratProRegular;
+            color: $rich-black-50;
+            border-bottom: 4px solid $medium-grey;
+            text-transform: none;
+            padding-bottom: .5rem;
+        }
+        
+        .image-left,
+        .image-right,
+        .text {
+            width: 360px / 836px * 100%; 
+            max-width: 360px;
+            margin-right: 20px / 836px * 100%; 
+            float: left;
+            position: relative;
+            max-height: 360px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+        
+        .text {    
+            width: 455px / 836px * 100%; 
+            max-width: 455px;  
+            margin-right: 20px / 836px * 100%; 
+            max-height: none;       
+            
+            &:last-child {
+                margin-right: 0;
+            }
+            
+            .quote {
+                font: 24px/1.4em $CamptonBook;
+                text-indent: 2.5rem;
+            
+                &:before {
+                    background: url("#{$open}images/icons/quote.png#{$close}") no-repeat center / 35px 24px;
+                    width: 35px;
+                    height: 24px;
+                }
+            }
+            
+            img {
+                z-index: 30;
+            }
+        }
+    }
+    
+    @media screen and (max-width: 54.6875em) {
+        
+        .alternate-photo-float {
+            @include flexbox;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            -webkit-justify-content: flex-start;
+            justify-content: flex-start;  
+            margin-bottom: 2rem;
+
+            h2,
+            h3,
+            h4 {
+                margin-top: 1rem;
+            }
+
+            .image-left,
+            .image-right,
+            .text {
+                width: 100%; 
+                float: none;
+                position: relative;
+
+                &:last-child {
+                    margin-right: auto;
+                }
+            }
+
+            .text {
+                max-width: 360px;
+            }
+
+            .image-left {
+                margin-bottom: 1rem;
+            }
+            
+            .image-right {
+                -webkit-order: -1;
+                -ms-flex-order: -1;                
+                order: -1; // flexbox moves content to top
+                margin-bottom: 1rem;
+            }
+        }
+    }
+
+    @media screen and (max-width: 30em) {    
+         
+        .alternate-photo-float {
+            
+            .text {
+                
+                .column { // multiple column option
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

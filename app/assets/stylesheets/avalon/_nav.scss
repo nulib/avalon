@@ -33,7 +33,6 @@
 }
 
 .navbar {
-  font-family: $museoSlab;
   font-size: 16px;
 
   ul {
@@ -165,7 +164,7 @@
 }
 
 .manage-btn:hover {
-  background-color: $yellow!important;
+  background-color: $yellow !important;
   color: $primaryDark;
 }
 
