@@ -1,0 +1,50 @@
+// stats callout
+
+.standard-page {
+
+    .stats-callout {
+        @include flexbox;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap; // break into multiple lines   
+        border-top: 4px solid $light-grey;
+        border-bottom: 4px solid $light-grey;
+        text-align: center;
+        padding: 1rem 0;
+    
+        > div {
+            flex-grow: 1; // grow div larger than min-width
+            max-width: 50%;
+            width: 100%;
+            padding: 1rem;
+            margin: 0 auto;
+            color: $nu-purple;
+        }
+        
+        .big {
+           font: 72px/1.2em $CamptonBold; 
+        }
+
+        .small {
+            font: 24px/1.2em $CamptonExtraLight;
+        }
+    }
+          
+    @media screen and (max-width: 54.6875em) {
+        
+        .stats-callout {
+            display: block;
+            
+            > div {
+                max-width: inherit;
+            }
+                
+            .big {
+                font: 48px $CamptonBold;
+            }
+
+            .text {
+                font: 20px $CamptonExtraLight;
+            }
+        }
+    }
+}

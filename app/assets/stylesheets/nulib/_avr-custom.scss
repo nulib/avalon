@@ -1,0 +1,50 @@
+@import './custom/facet-sidebar';
+@import './custom/nav';
+@import './blacklight-overrides';
+
+body {
+  font-size: 1rem;
+}
+
+.page-title-wrapper {
+  margin: 1rem 0;
+}
+
+.manage-btn {
+  background-color: $rich-black-10;
+  color: $nu-purple;
+
+  &:hover,
+  &:focus {
+    background-color: $light-grey2 !important;
+  }
+}
+
+.global-search-wrapper {
+  display: none;
+}
+
+.hero-image.homepage {
+  background: url('nulib/avr-splash-image-reels-cropped-muted.jpg') no-repeat
+    center / cover;
+}
+
+.homepage-splash-top-section {
+  background-image: url('nulib/avr-splash-image-reels-cropped.jpg');
+  background-size: cover;
+  background-position-x: center;
+  background-position-y: center;
+  height: 500px;
+  position: relative;
+}
+
+// Hide mobile navigation dropdown Avalon logo
+#header-navbar .navbar-brand {
+  display: none;
+}
+
+footer {
+  a:hover {
+    color: $white;
+  }
+}

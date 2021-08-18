@@ -1,0 +1,219 @@
+// standard page (with or without left navigation)
+
+.standard-page {
+    
+    section {
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+        
+        &.hero { // removes from hero
+            margin-top: 0;
+        }
+    }
+    
+    h1 + section { // fixes space between page title and first wysiwyg section
+        margin-top: 0;
+    }
+    
+    #main-content {
+        margin: 0 auto;
+        max-width: 1440px;
+    }
+    
+    #standard-wrap {
+        margin: 2rem auto 0 auto;
+        max-width: 1120px;
+        @extend %clearfix;
+    }
+    
+    // main content regions
+    #main-content { // gives content space before hitting footer
+        min-height: 300px;
+        margin-bottom: 5rem;
+    }
+    
+    .content {
+        width: 836px / 1120px * 100%;     
+        float: right;
+    }
+    
+    &.full-width { // full-width content page with no left nav
+        
+        .content {
+            width: 100%;
+            float: none;
+        }
+    }
+    
+    // for a to z type listings
+    .a-to-z {
+        list-style-type: none;
+        margin-bottom: 2rem;
+        padding: 0 0 .25rem 0;
+        border-bottom: 1px solid $rich-black-20;
+        @extend %clearfix;
+    
+        li {
+            background: none;
+            padding: 0 .5rem 0 0;
+            float: left;
+            color: $rich-black-20;
+            font: 18px/1.3em $AkkuratProBold;
+            text-transform: uppercase;
+            
+            a {
+                border-bottom: none;
+            
+                &:hover {
+                    border-bottom: 1px solid $nu-purple;
+                }
+            }
+        }
+    }
+    
+    p + h2, 
+    p + h3, 
+    p + h4, 
+    p + h5, 
+    p + h6, 
+    ul + h2, 
+    ul + h3,
+    ul + h4,
+    ul + h5,
+    ul + h6,
+    ol + h2,    
+    ol + h3,     
+    ol + h4,    
+    ol + h5,
+    ol + h6 {
+        margin-top: 3rem;
+    }
+
+    // pagination 
+    .pagination {
+        margin: 2.5em 0 2em;
+        padding: 1rem 0 0 0;
+        border-top: 1px solid $medium-grey;
+        list-style-type: none;
+
+        li {
+            display: inline-block;
+            padding: 0;
+            background-image: none;
+            font: 16px/1em $AkkuratProBold;
+            margin-right: .25rem;
+          
+            &.disabled {
+                padding: .75rem 1rem;
+                color: $rich-black-20
+            }
+        }
+
+        a {
+            border: none;
+            display: inline-block;
+            padding: .6rem .8rem;
+            text-decoration: none;
+            color: $rich-black-80;
+
+            &:hover {
+                background: $nu-purple-30;
+                color: $white;
+            }
+        }
+        
+        span {
+            border: none;
+            display: inline-block;
+            padding: .6rem .8rem;
+            text-decoration: none;
+            color: $rich-black-80;
+            
+            &.prev, &.next {
+                color: inherit;
+                padding: 0;
+            }
+
+            &.current {
+                background: $nu-purple;
+                color: $white;
+            }
+        }
+    }
+    
+    // ordered list for steps (big numbers)
+    ol.steps {
+        counter-reset: li;
+        list-style: none;
+        padding: 0;
+        margin-bottom: 2em;
+
+        li {
+            position: relative;
+            display: block;
+            padding: 0;
+            margin-bottom: 1em;
+            padding: 1em .5em 0 5em;
+            min-height: 90px;
+
+            &:before {
+                content: counter(li);
+                counter-increment: li;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                font: 72px $CamptonBold;
+                color: $nu-purple;
+                margin: 0;
+                padding: 0 .15em 0 .15em;
+                text-align: center;
+            }
+        }
+    }
+    
+    @media screen and (max-width: 71.25em) {
+        
+        #standard-wrap { // gives left/right margin for smaller screen widths
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+    }
+    
+    @media screen and (max-width: 60.625em) {    
+        
+        #page-narrow { // gives left/right margin for smaller screen widths 
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+    }
+    
+    @media screen and (max-width: 48em) {
+        
+        .content {
+            float: none;
+            width: 100%;
+        }
+        
+        .content {
+            
+            h1 {
+                font-size: 36px;
+            }
+        }
+    }
+    
+    @media screen and (max-width: 30em) {
+
+        #content {        
+            
+            h1 {
+                font-size: 32px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+        }
+    }
+}
