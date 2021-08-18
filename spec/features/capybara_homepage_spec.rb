@@ -47,11 +47,11 @@ describe 'homepage' do
   end
 end
 describe 'checks navigation to external links' do
-  it 'checks navigation to Avalon Website' do
+  xit 'checks navigation to Avalon Website' do
     visit '/'
     expect(page).to have_link('Avalon Media System Project Website', href: "http://www.avalonmediasystem.org")
   end
-  it 'checks navigation to Contact us page' do
+  xit 'checks navigation to Contact us page' do
     visit '/'
     click_link('Contact Us')
     expect(page.current_path).to eq('/comments')

@@ -1,0 +1,127 @@
+// mixins and extends
+
+// mixins
+// clearfix in media queries
+@mixin clearfix() {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+// for form fields
+@mixin borderFade($s: .3s) { 
+    -webkit-transition: $s linear border;
+    -moz-transition: $s linear border;
+    -ms-transition: $s linear border;
+    -o-transition: $s linear border;
+    transition: $s linear border;
+}
+
+// extends (don't use in media queries.  duh.)
+// clearfix
+%clearfix {
+
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+// gradient overlay (for photo features)
+%gradient-overlay {
+    
+    &:before {
+        content: " ";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.75))); 
+        background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 100%);
+        background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 100%);
+        background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 100%);
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 100%);
+    }
+}
+
+// gradient overlay-light (for hero)
+%gradient-overlay-light {
+    
+    &:before {
+        content: " ";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.45))); 
+        background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 100%);
+        background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 100%);
+        background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 100%);
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.45) 100%);
+    }
+}
+
+// down-arrow for top-navigation
+%purple-right-arrow {
+
+    &:after {
+        background: url("#{$open}images/icons/arrow-right-dkpurple.svg#{$close}") no-repeat center / 6px 10px;
+        padding-right: .8rem;
+        content: " ";
+        height: 10px;
+        width: 6px;
+        display: inline-block;
+    }
+}
+
+// right arrow (i.e. for alternate photo float)
+%white-right-arrow {
+
+    &:after {
+        background: url("#{$open}images/icons/arrow-right-white.svg#{$close}") no-repeat center / 6px 10px;
+        padding-right: .8rem;
+        content: " ";
+        height: 10px;
+        width: 6px;
+        display: inline-block;
+    }
+}
+
+// down arrow for resources
+%white-down-arrow {
+
+    &:after {
+        content: "\003E";
+        -webkit-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);            
+        transform: rotate(90deg);
+        margin-left: .4rem;
+        color: $white;
+        display: inline-block;  
+    }
+}
+
+// external link indicator (light purple)
+%external-link-light-purple {
+
+	&:after {
+        background: url("#{$open}images/icons/external-link-top-nav.png#{$close}") no-repeat center / 14px 14px;
+        padding-right: .8rem;
+        content: " ";
+        height: 14px;
+        width: 14px;
+        display: inline-block;
+	}
+}
+
+// flexbox
+@mixin flexbox() {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}

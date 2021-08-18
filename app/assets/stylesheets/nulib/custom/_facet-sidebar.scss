@@ -1,0 +1,31 @@
+.sidenav {
+  h2,
+  h3 {
+    font-weight: normal;
+  }
+
+  .top-panel-heading {
+    background-color: $rich-black-10;
+  }
+
+  .panel-title {
+    font-weight: normal;
+  }
+}
+
+// These are the filters which show outside the sidebar
+.appliedFilter {
+  .btn,
+  .facets-toggle {
+    background-color: $nu-purple-60;
+    border-color: $nu-purple-60;
+    font-size: 14px;
+  }
+
+  .constraint-value {
+    &:hover {
+      background-color: $nu-purple-60;
+      border-color: $nu-purple-60;
+    }
+  }
+}

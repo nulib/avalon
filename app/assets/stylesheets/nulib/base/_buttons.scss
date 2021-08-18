@@ -1,0 +1,60 @@
+// buttons
+
+a.button, 
+p.button a, 
+button.button {
+    background: $nu-purple;
+    border: none;
+    color: $white;
+    cursor: pointer;
+    display: inline-block;
+    font: 16px/1em $AkkuratProBold;
+    margin: 0 .5em .5em 0;
+    padding: .8em 1em .7em 1em;
+    position: relative;
+    text-transform: uppercase;
+    transition: all 0.3s ease 0s;
+    text-decoration: none;
+    text-align: center;
+    
+    &:after {
+        content: "";
+        position: absolute;
+        transition: all 0.3s ease 0s;
+        z-index: -1;
+    }
+    
+    &:hover, &:active {
+        background: $nu-purple-30;
+        border-bottom: none;
+    }
+    
+    &:focus {
+        border: 2px dashed;
+        outline: none;
+    }
+    
+    &.normal-case { // for normal case buttons anchors
+        text-transform: none;
+    }
+}
+
+// special overrides
+.feature-box a.button{
+    width: 100%;
+    text-align: center;
+    margin: auto 0 0 0;
+    position: inherit;
+}
+
+.purple-slashes a.button, 
+#map-feature a.button, 
+.standard-page .background-select a.button {
+    background: $nu-purple-10; // lightens purple over dark backgrounds
+    color: $nu-purple;
+
+    &:hover {
+        background: $nu-purple-30;
+        color: $white;
+    }
+}

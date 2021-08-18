@@ -14,15 +14,15 @@
  * ---  END LICENSE_HEADER BLOCK  ---
 */
 
-@import 'branding';
+//@import 'branding';
 @import 'avalon/mixins';
 @import 'avalon/accordions';
 @import 'avalon/buttons';
 @import 'avalon/collections';
 @import 'avalon/facets';
-@import 'avalon/footer';
+// @import 'avalon/footer'; /* Don't need it */
 @import 'avalon/form';
-@import 'avalon/header';
+// @import 'avalon/header'; /* Don't need it */
 @import 'avalon/homepage';
 @import 'avalon/modals';
 @import 'avalon/nav';
@@ -63,7 +63,6 @@ main {
 
 h1,
 h2 {
-  font-family: $museoSlab;
 }
 
 .btn-info {
@@ -99,10 +98,6 @@ div.alert-danger {
 
 .block {
   display: block;
-}
-
-.serif-font {
-  font-family: $museoSlab;
 }
 
 .info-text-gray {
@@ -167,18 +162,12 @@ div.alert-danger {
 }
 
 /* Headlines / page titles */
-.page-title {
-  font-size: 32px;
-  font-family: $museoSlab;
-}
 .headline {
   color: $primary;
   font-size: 29.3px;
-  font-family: $museoSlab;
 }
 .sub-headline {
-  color: $blueGreen;
-  font-family: $museoSlab;
+  color: $primary;
 }
 
 .mobile-hidden {
@@ -286,7 +275,6 @@ span.constraints-label {
   // bounded in gray
   pre {
     background: $white;
-    font-family: $sansFontFamily;
     font-size: $font-size-base;
     padding: 0;
     background-color: transparent;
@@ -445,13 +433,13 @@ a[data-trigger='submit'] {
 
 .appliedFilter {
   .btn {
-    background-color: $greenBG;
+    background-color: $nu-purple;
     border-color: $primary;
     font-size: $font-size-base;
   }
 
   .constraint-value:hover {
-    background-color: $greenBG;
+    background-color: $nu-purple;
     border-color: $primary;
   }
 }
@@ -831,12 +819,11 @@ h5.card-title {
       width: auto;
     }
 
-    /*
-    Override default d-flex behavior to display
-    media object edit page buttons properly
-    */
-    .d-flex {
-      gap: 5px;
+  .associated-files-wrapper {
+    input[type='text'] {
+      @extend .form-control;
+      padding: 3px 6px;
+      height: auto;
     }
   }
 
@@ -879,7 +866,7 @@ h5.card-title {
 
     input[type='button'],
     input[type='submit'] {
-      @extend .btn-sm;
+      @extend .btn-xs;
     }
 
     .btn-primary {
@@ -1088,7 +1075,7 @@ h5.card-title {
       background-color: $gray;
     }
     .running {
-      background-color: $lightblue;
+      background-color: $blue;
     }
     .progress-bar {
       text-align: left;
