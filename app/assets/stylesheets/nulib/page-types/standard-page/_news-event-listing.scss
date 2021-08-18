@@ -1,0 +1,98 @@
+// news and event listing pages
+
+.standard-page {
+
+    // for news listing page
+    .news {
+        margin: 2rem 0;
+        font-size: 15px;
+        line-height: 1.5em;
+        @extend %clearfix;
+        
+        img {
+            float: left;
+            margin: 0 1rem .5rem 0;
+        }
+
+        h2,
+        h3,
+        h4 {
+            
+            &.news-title {
+                font: 18px/1.5em $AkkuratProBold;
+                margin-bottom: .5rem;
+            }
+        }
+
+        .news-date {
+            font-family: $AkkuratProBold;
+            color: $rich-black-80;
+            margin-bottom: .25rem;
+            
+            span.source {
+                color: $rich-black-50;
+                font-family: $AkkuratProRegular;
+                
+                span {
+                    font-family: $PeriodicoBoldItalic;
+                }
+            }
+        }
+    }        
+    
+    // for news listing page
+    .event {
+        position: relative;
+        min-height: 100px;
+        margin-bottom: 2rem;
+        
+        .event-date {
+            position: absolute;
+            text-align: center;
+            top: 0;
+            width: 90px;
+            padding: .25rem;
+            background: $nu-purple;
+            font-family: $CamptonBold;
+            color: $white;
+            float: left;
+        
+            .month, year {
+                font-size: 14px;
+            }
+            
+            .day {
+                font-size: 36px;
+            }
+        }
+        
+        .event-content {
+            margin-left: 105px;
+            font-size: 15px;
+            line-height: 1.5em;
+
+            h2,
+            h3,
+            h4 {
+                font: 18px/1.5em $AkkuratProBold;
+                margin-bottom: .5rem;
+            }
+        }
+
+        .time-location {
+            color: $rich-black-80;
+            margin-bottom: .25rem;
+        }
+    }
+    
+    @media screen and (max-width: 30em) {
+     
+        .news {
+            
+            img {
+                float: none;
+                margin: 0 0 1rem 0;
+            }
+        }
+    }
+}

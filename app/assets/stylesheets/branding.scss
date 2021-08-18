@@ -22,38 +22,20 @@
 /**
   Custom variables (Non-bootstrap)
 */
-@font-face {
-  font-family: 'MuseoSlab';
-  src: url('fonts/Museo_Slab_500-webfont.woff') format('woff');
-}
-$sansFontFamily: Arial, Helvetica, sans-serif;
-$museoSlab: 'MuseoSlab';
 
 // Primary colors
-$primary: #80a590;
-$primaryDark: #2a5459;
-$dark: #0a2326;
-
-// Secondary colors
-$yellow: #ffcf08;
-$orange: #fbb040;
-$white: rgb(255, 255, 255);
-$blueGreen: #477076;
+$primary: $nu-purple;
+$primaryDark: $nu-purple-120;
+$dark: $rich-black-80;
 
 // Generated palate colors from http://colormind.io/ for Avalon style guide
 // Add new HEX values below to match your organization's flavor of info/success/warning/danger
-$info: #fbb040;
-$success: #429453;
-$warning: #bf841b;
-$danger: #f44336;
-
-// Colors not from the Styleguide
-$greenBG: scale-color($primary, $saturation: -40%, $lightness: 60%);
-$gray: #999;
-$lightgray: #f2f2f2;
-$red: #d9534f;
-$blue: #2a4d59;
-$lightblue: #31708f;
+$info: $blue;
+$success: $bright-green;
+$warning: $gold;
+$danger: $red2;
+$gray: $rich-black-50;
+$lightgray: $rich-black-20;
 
 /**
   * Bootstrap variable overrides
@@ -68,15 +50,11 @@ $brand-info: $info;
 $brand-warning: $warning;
 $brand-danger: $danger;
 
-/* Fonts */
-$font-family-sans-serif: $sansFontFamily;
-$font-family-serif: $museoSlab;
-
 /* Components */
 $padding-base-vertical: 4px;
 
 /* Headings */
-// $headings-font-family: $museoSlab;
+// $headings-font-family: $camptonBold;
 
 /* Links */
 $link-color: $primaryDark;
@@ -98,7 +76,7 @@ $state-danger-text: $danger;
 /* Header */
 $login-text-color: $gray;
 $login-link-color: $primaryDark;
-$login-link-background-color: $orange;
+$login-link-background-color: $nu-purple-30;
 
 /* Sidenav */
 
@@ -106,20 +84,20 @@ $login-link-background-color: $orange;
 $navCollapseWidth: 650px;
 
 /* Navbar */
-$navbar-default-bg: $primaryDark;
-$navbar-default-color: $white;
-$navbar-default-toggle-hover-bg: $yellow;
-$navbar-default-link-color: $white;
-$navbar-default-link-hover-color: $primaryDark;
-$navbar-default-link-hover-bg: $yellow;
-$navbar-default-link-active-color: $primaryDark;
-$navbar-default-link-active-bg: $yellow;
+$navbar-default-bg: $light-grey;
+$navbar-default-color: $primary;
+$navbar-default-toggle-hover-bg: $light-grey2;
+$navbar-default-link-color: $primary;
+$navbar-default-link-hover-color: $primary;
+$navbar-default-link-hover-bg: $light-grey2;
+$navbar-default-link-active-color: $white;
+$navbar-default-link-active-bg: $nu-purple-60;
 $navbar-border-radius: 0;
 $navbar-default-toggle-icon-bar-bg: $white;
 $navbar-default-toggle-border-color: $white;
 
 // Panels
-$panel-primary-text: red;
+$panel-primary-text: $red;
 
 // Inverted navbar toggle
 $navbar-inverse-toggle-hover-bg: #e6e6e6;
@@ -130,13 +108,13 @@ $navbar-inverse-toggle-border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1)
 $grid-gutter-width: 16px;
 
 /* Buttons */
-$btn-border-radius-base: 2px;
-$btn-default-color: $dark;
-$btn-default-bg: $white;
-$btn-default-border: $gray;
+$btn-border-radius-base: 0px;
+$btn-default-color: $white;
+$btn-default-bg: $primary;
+//$btn-default-border: $gray;
 $btn-primary-color: $white;
-$btn-primary-bg: $primaryDark;
-$btn-primary-border: $primaryDark;
+$btn-primary-bg: $primary;
+$btn-primary-border: $primary;
 $btn-success-color: $white;
 $btn-success-bg: $success;
 $btn-success-border: $success;
@@ -160,5 +138,5 @@ $pagination-disabled-color: $gray;
 $pagination-disabled-bg: $white;
 $pagination-disabled-border: $gray;
 
-$nav-tabs-active-link-hover-color: $dark;
+// $nav-tabs-active-link-hover-color: $dark;
 $input-color: $dark;
