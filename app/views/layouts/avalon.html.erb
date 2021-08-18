@@ -23,7 +23,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 
   <%= csrf_meta_tags %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <%= favicon_link_tag %>
+  <%= favicon_link_tag asset_path('images/logos/northwestern-university-n.svg') %>
   <%= stylesheet_link_tag "application", media: "all" %>
   <%= stylesheet_pack_tag 'application' %>
   <%= javascript_pack_tag 'application' %>
@@ -40,7 +40,7 @@ Unless required by applicable law or agreed to in writing, software distributed
       <% if defined?(Samvera::Persona) %>
       <%= render partial: 'modules/become_message' %>
       <% end %>
-      <%= render 'modules/header' %>
+      <%= render 'modules/header__NU' %>
       <%= render :partial => 'modules/global_navigation' %>
       <main role="main" class="<%= "homepage-main" if current_page?(main_app.root_path) %>">
 
@@ -60,7 +60,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 
       </main>
     </div>
-    <%= render 'modules/footer' %>
+    <%= render 'modules/footer__NU' %>
   </div>
 
   <!-- With this many Javascript files performance will be much better
@@ -69,6 +69,9 @@ Unless required by applicable law or agreed to in writing, software distributed
          from a CDN -->
   <%= javascript_include_tag "application" %>
   <%= yield :page_scripts %>
+  <% if Rails.env.production? %>
+    <%= analytics_init if GoogleAnalytics.valid_tracker? %>
+  <% end %>
 </body>
 
 </html>

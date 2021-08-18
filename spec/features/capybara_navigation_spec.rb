@@ -74,7 +74,7 @@ describe 'Search' do
     visit '/'
     fill_in('Search', with: 'Video', match: :first)
     click_button('global-search-submit', match: :first)
-    expect(page.current_url).to eq('http://www.example.com/catalog?utf8=%E2%9C%93&search_field=all_fields&q=Video')
+    expect(page.current_url).to eq('http://www.example.com/catalog?utf8=%E2%9C%93&q=Video')
   end
   it 'gives appropriate error when keyword returns no results' do
     visit '/'
