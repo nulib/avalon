@@ -6,6 +6,16 @@ body {
   font-size: 1rem;
 }
 
+ul.bookmarksTools {
+  a:hover {
+    background-color: $nu-purple-120 !important;
+  }
+}
+
+.document-title-heading {
+  font-family: $AkkuratProRegular !important;
+}
+
 .page-title-wrapper {
   margin: 1rem 0;
 }
@@ -38,13 +48,35 @@ body {
   position: relative;
 }
 
+// Playlists
+.playlist-view-wrapper {
+  #right-column {
+    h4 {
+      padding-top: 1rem;
+    }
+  }
+}
+
 // Hide mobile navigation dropdown Avalon logo
 #header-navbar .navbar-brand {
   display: none;
+}
+
+#timeline-button {
+  display: none !important;
+}
+
+#share-button > i {
+  color: white !important;
 }
 
 footer {
   a:hover {
     color: $white;
   }
+}
+
+// Datatables overrides
+div.dataTables_wrapper div.dataTables_length select {
+  padding: 0 5px;
 }

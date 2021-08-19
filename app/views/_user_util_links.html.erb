@@ -28,9 +28,11 @@ Unless required by applicable law or agreed to in writing, software distributed
   </li>
   <% end %>
   <% if current_ability.can? :create, Timeline %>
+  <!--
   <li class=<%= active_for_controller('timelines') %>>
     <%= link_to 'Timelines', main_app.timelines_path, id:'timelines_nav' %>
   </li>
+  -->
   <% end %>
   <% if render_bookmarks_control? %>
   <li class=<%= active_for_controller('bookmarks') %>>
