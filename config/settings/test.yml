@@ -21,3 +21,5 @@ encoding:
   engine_adapter: test
 email: 
   mailer:
+zookeeper:
+  connection_str: "localhost:9985/configs"
