@@ -1,0 +1,170 @@
+---
+name: avr
+on: [push]
+jobs:
+  test:
+    if: ${{ ! (startsWith(github.ref, 'refs/heads/nu/deploy/') || startsWith(github.ref, 'refs/heads/nu/build/')) }}
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      BUNDLE_WITH: aws:postgres
+      BUNDLE_WITHOUT: production
+      CFLAGS: -Wno-error=format-overflow
+      RACK_ENV: test
+      RAILS_ENV: test
+    services:
+      db:
+        image: nulib/postgres:10-alpine
+        env:
+          POSTGRES_USER: docker
+          POSTGRES_PASSWORD: d0ck3r
+        ports:
+          - 5434:5432
+      fcrepo:
+        image: samvera/fcrepo4:4.7.5
+        env:
+          JAVA_OPTIONS: -Xmx3G
+        ports:
+          - 8986:8080
+      minio:
+        image: bitnami/minio
+        env:
+          MINIO_ROOT_USER: minio
+          MINIO_ROOT_PASSWORD: minio123
+          MINIO_ACCESS_KEY: minio
+          MINIO_SECRET_KEY: minio123
+        ports:
+          - 9002:9000
+      redis:
+        image: circleci/redis:alpine
+        ports:
+          - 6379:6379
+      solr:
+        image: nulib/solrcloud:7.2-alpine
+        env:
+          JAVA_OPTIONS: -Xmx3G
+        ports:
+          - 8985:8983
+          - 9985:9983
+    steps:
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -qq --allow-releaseinfo-change
+          sudo apt-get install gcc-7 lsof mediainfo
+          sudo ln -s /usr/bin/lsof /usr/sbin/lsof
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          bundler-cache: true
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - name: Install JS dependencies
+        run: yarn install
+      - name: Setup
+        run: |
+          echo "Uploading solr collection config to $(bundle exec rails runner 'puts Settings.zookeeper.connection_str')"
+          bundle exec rake db:setup zookeeper:upload zookeeper:create
+          cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
+      - name: Run Spec Tests
+        run: bundle exec rspec -cf doc spec
+  publish:
+    if: ${{ (!github.event.pull_request) && (startsWith(github.ref, 'refs/heads/nu/deploy/') || startsWith(github.ref, 'refs/heads/nu/build/')) }}
+    runs-on: ubuntu-latest
+    env:
+      AWS_SDK_LOAD_CONFIG: 1
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set DEPLOY_ENV from Branch Name
+        run: |
+          if [[ $BRANCH == 'refs/heads/master' ]]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_ENV=$(echo $BRANCH | awk -F/ '{print $NF}')" >> $GITHUB_ENV
+          fi
+        env:
+          BRANCH: ${{ github.ref }}
+      - name: Configure AWS
+        run: .github/scripts/configure_aws.sh
+        env:
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          SECRETS: ${{ toJSON(secrets) }}
+      - run: echo "Building nulib/avr:${DEPLOY_ENV}"
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-buildx-action@v1
+      - uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKER_LOGIN }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push image to Amazon ECR
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$DEPLOY_ENV .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$DEPLOY_ENV
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: avr
+  deploy:
+    needs: publish
+    if: ${{ ! startsWith(github.ref, 'refs/heads/nu/build/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Set DEPLOY_ENV from Branch Name
+        run: |
+          if [[ $BRANCH == 'refs/heads/master' ]]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_ENV=$(echo $BRANCH | awk -F/ '{print $NF}')" >> $GITHUB_ENV
+          fi
+        env:
+          BRANCH: ${{ github.ref }}
+      - name: Configure AWS
+        run: .github/scripts/configure_aws.sh
+        env:
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          SECRETS: ${{ toJSON(secrets) }}
+      - name: Update ECS Service
+        run: .github/scripts/update_ecs_service.sh
+        env:
+          ECS_CLUSTER: avr
+          ECS_CONTAINER: avr
+          ECS_SERVICE: avr-worker
+          ECS_TASK: avr-worker
+      - name: Notify Honeybadger
+        run: .github/scripts/honeybadger_deploy_notification.sh
+        env:
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_API_KEY }}
+          HONEYBADGER_REVISION: ${{ github.sha }}
+  tflint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout source code
+
+    - uses: actions/cache@v2
+      name: Cache plugin dir
+      with:
+        path: ~/.tflint.d/plugins
+        key: tflint-${{ hashFiles('.tflint.hcl') }}
+
+    - uses: terraform-linters/setup-tflint@v1
+      name: Setup tflint
+
+    - name: Show version
+      run: tflint --version
+
+    - name: Check Terraform Manifests
+      run: |
+        terraform init -backend=false -input=false
+        tflint --init
+        tflint -f compact
+      working-directory: ./terraform
