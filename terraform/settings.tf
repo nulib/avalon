@@ -1,5 +1,5 @@
 locals {
-  settings_prefix = "/${var.app_name}/Settings"
+  settings_prefix = "/${local.secrets.app_name}/Settings"
 }
 
 resource "aws_ssm_parameter" "auth-configuration-nu-name" {
@@ -124,21 +124,21 @@ resource "aws_ssm_parameter" "email-mailer" {
 resource "aws_ssm_parameter" "email-comments" {
   type    = "String"
   name    = "${local.settings_prefix}/email/comments"
-  value   = var.email_comments
+  value   = local.secrets.email_comments
   tags    = local.tags
 }
 
 resource "aws_ssm_parameter" "email-notification" {
   type    = "String"
   name    = "${local.settings_prefix}/email/notification"
-  value   = var.email_notification
+  value   = local.secrets.email_notification
   tags    = local.tags
 }
 
 resource "aws_ssm_parameter" "email-support" {
   type    = "String"
   name    = "${local.settings_prefix}/email/support"
-  value   = var.email_support
+  value   = local.secrets.email_support
   tags    = local.tags
 }
 
@@ -180,7 +180,7 @@ resource "aws_ssm_parameter" "encoding-mediaconvert-role" {
 resource "aws_ssm_parameter" "initial_user" {
   type    = "String"
   name    = "${local.settings_prefix}/initial_user"
-  value   = var.initial_user
+  value   = local.secrets.initial_user
   tags    = local.tags
 }
 
@@ -229,7 +229,7 @@ resource "aws_ssm_parameter" "solrcloud" {
 resource "aws_ssm_parameter" "streaming-http_base" {
   type    = "String"
   name    = "${local.settings_prefix}/streaming/http_base"
-  value   = "https://${coalesce(var.streaming_hostname, aws_route53_record.avr_streaming_cloudfront.fqdn)}/"
+  value   = "https://${coalesce(local.secrets.streaming_hostname, aws_route53_record.avr_streaming_cloudfront.fqdn)}/"
   tags    = local.tags
 }
 

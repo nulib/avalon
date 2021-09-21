@@ -3,7 +3,7 @@ name: avr
 on: [push]
 jobs:
   test:
-    if: ${{ github.event.pull_request }}
+    if: ${{ ! (startsWith(github.ref, 'refs/heads/nu/deploy/') || startsWith(github.ref, 'refs/heads/nu/build/')) }}
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: minio

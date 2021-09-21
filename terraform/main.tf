@@ -4,14 +4,12 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = var.aws_region
-}
+provider "aws" { }
 
 locals {
   namespace             = module.core.outputs.stack.namespace
-  tags                  = merge(module.core.outputs.stack.tags, var.tags)
-  domain_host           = "${var.app_name}.${module.core.outputs.vpc.public_dns_zone.name}"
+  tags                  = merge(module.core.outputs.stack.tags, local.secrets.tags)
+  domain_host           = "${local.secrets.app_name}.${module.core.outputs.vpc.public_dns_zone.name}"
   zookeeper_endpoint    = "${element(module.solrcloud.outputs.zookeeper.servers, 0)}/configs"
 }
 
@@ -139,7 +137,7 @@ data "aws_iam_policy_document" "this_bucket_access" {
 }
 
 resource "aws_security_group" "avr" {
-  name        = var.app_name
+  name        = local.secrets.app_name
   description = "The AVR Application"
   vpc_id      = module.core.outputs.vpc.id
 
@@ -164,7 +162,7 @@ resource "aws_security_group_rule" "allow_alb_access" {
 
 resource "aws_route53_record" "app_hostname" {
   zone_id = module.core.outputs.vpc.public_dns_zone.id
-  name    = var.app_name
+  name    = local.secrets.app_name
   type    = "A"
 
   alias {
@@ -175,7 +173,7 @@ resource "aws_route53_record" "app_hostname" {
 }
 
 resource "aws_iam_role" "transcode_role" {
-  name = "${var.app_name}-transcode-role"
+  name = "${local.secrets.app_name}-transcode-role"
   tags = local.tags
 
   assume_role_policy = jsonencode({
@@ -193,7 +191,7 @@ resource "aws_iam_role" "transcode_role" {
   })
 
   inline_policy {
-    name = "${var.app_name}-transcode-policy"
+    name = "${local.secrets.app_name}-transcode-policy"
 
     policy = jsonencode({
       Version = "2012-10-17"
@@ -244,19 +242,19 @@ data "aws_iam_policy_document" "pass_transcode_role" {
 }
 
 resource "aws_iam_policy" "allow_transcode" {
-  name   = "${var.app_name}-mediaconvert-access"
+  name   = "${local.secrets.app_name}-mediaconvert-access"
   policy = data.aws_iam_policy_document.pass_transcode_role.json
   tags   = local.tags
 }
 
 resource "aws_media_convert_queue" "transcode_queue" {
-  name   = var.app_name
+  name   = local.secrets.app_name
   status = "ACTIVE"
   tags   = local.tags
 }
 
 resource "aws_cloudfront_origin_access_identity" "avr_streaming_access_identity" {
-  comment = var.app_name
+  comment = local.secrets.app_name
 }
 
 data "aws_iam_policy_document" "avr_streaming_bucket_policy" {
@@ -289,17 +287,17 @@ resource "aws_s3_bucket_policy" "allow_cloudfront_streaming_access" {
 }
 
 resource "aws_cloudfront_public_key" "avr_stream_public_key" {
-  name        = "${var.app_name}-signing-key"
-  encoded_key = var.cloudfront_public_key
+  name        = "${local.secrets.app_name}-signing-key"
+  encoded_key = local.secrets.cloudfront_public_key
 }
 
 resource "aws_cloudfront_key_group" "avr_stream_signing_key_group" {
   items = [aws_cloudfront_public_key.avr_stream_public_key.id]
-  name  = "${var.app_name}-signing-keys"
+  name  = "${local.secrets.app_name}-signing-keys"
 }
 
 resource "aws_cloudfront_function" "avr_streaming_cors" {
-  name = "${var.app_name}-cors-streaming-headers"
+  name = "${local.secrets.app_name}-cors-streaming-headers"
   runtime = "cloudfront-js-1.0"
   publish = true
   code = file("${path.module}/js/cors_streaming_headers.js")
@@ -315,7 +313,7 @@ resource "aws_cloudfront_distribution" "avr_streaming" {
 
   origin {
     domain_name = aws_s3_bucket.avr_streaming.bucket_domain_name
-    origin_id   = "${local.namespace}-${var.app_name}-origin-hls"
+    origin_id   = "${local.namespace}-${local.secrets.app_name}-origin-hls"
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.avr_streaming_access_identity.cloudfront_access_identity_path
@@ -325,7 +323,7 @@ resource "aws_cloudfront_distribution" "avr_streaming" {
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "${local.namespace}-${var.app_name}-origin-hls"
+    target_origin_id       = "${local.namespace}-${local.secrets.app_name}-origin-hls"
     viewer_protocol_policy = "allow-all"
 
     forwarded_values {

@@ -1,10 +1,10 @@
 resource "aws_ecs_cluster" "avr" {
-  name = var.app_name
+  name = local.secrets.app_name
   tags = local.tags
 }
 
 data "aws_acm_certificate" "avr_cert" {
-  domain = "${var.certificate_name}.${trimsuffix(module.core.outputs.vpc.public_dns_zone.name, ".")}"
+  domain = "${local.secrets.certificate_name}.${trimsuffix(module.core.outputs.vpc.public_dns_zone.name, ".")}"
 }
 
 data "aws_caller_identity" "current" {}
@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "avr_role_permissions" {
       "sqs:SendMessageBatch",
       "sqs:SetQueueAttributes"
     ]
-    resources = ["arn:aws:sqs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:*"]
+    resources = ["arn:aws:sqs:${local.aws_region}:${data.aws_caller_identity.current.account_id}:*"]
   }
 
   statement {
@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "avr_role_permissions" {
     actions = [
       "ssm:Get*"
     ]
-    resources = ["arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/avr/*"]
+    resources = ["arn:aws:ssm:${local.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/avr/*"]
   }
 
   statement {
@@ -94,7 +94,7 @@ data "aws_iam_policy_document" "avr_role_permissions" {
 }
 
 resource "aws_security_group" "avr_load_balancer" {
-  name          = "${var.app_name}-lb"
+  name          = "${local.secrets.app_name}-lb"
   description   = "avr Load Balancer Security Group"
   vpc_id        = module.core.outputs.vpc.id
   tags          = local.tags
@@ -128,13 +128,13 @@ data "aws_iam_policy" "ecs_exec_command" {
 }
 
 resource "aws_iam_role" "avr_role" {
-  name               = "${var.app_name}-task-role"
+  name               = "${local.secrets.app_name}-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_role.json
   tags               = local.tags
 }
 
 resource "aws_iam_policy" "avr_role_policy" {
-  name   = "${var.app_name}-policy"
+  name   = "${local.secrets.app_name}-policy"
   policy = data.aws_iam_policy_document.avr_role_permissions.json
   tags   = local.tags
 }
@@ -166,7 +166,7 @@ resource "aws_iam_role_policy_attachment" "avr_transcode_passrole" {
 }
 
 resource "aws_cloudwatch_log_group" "avr_logs" {
-  name = "/ecs/${var.app_name}"
+  name = "/ecs/${local.secrets.app_name}"
   tags = local.tags
 }
 resource "aws_lb_target_group" "avr_target" {
@@ -184,7 +184,7 @@ resource "aws_lb_target_group" "avr_target" {
 }
 
 resource "aws_lb" "avr_load_balancer" {
-  name               = "${var.app_name}-lb"
+  name               = "${local.secrets.app_name}-lb"
   internal           = false
   load_balancer_type = "application"
 
