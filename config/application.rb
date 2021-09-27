@@ -45,6 +45,8 @@ module Avalon
     
     config.active_job.queue_name_prefix = Settings&.active_job&.queue_name_prefix
     config.active_job.queue_name_delimiter = Settings&.active_job&.queue_name_delimiter || (config.active_job.queue_name_prefix.present? ? '-' : nil)
+
+    # ActiveJob::Base gets configured with the queue prefix; ActionMailer::Base without
     default_queue_name = [
       config.active_job.queue_name_prefix, 
       Settings&.active_job&.default_queue_name || 'default'
