@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "crypto-js": "latest",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.229.1"
+  },
+  "description": "AWS Lambda function to notify Avalon of new batch ingest manifests.",
+  "directories": {},
+  "license": "Apache-2.0",
+  "main": "./index.js",
+  "maintainers": [
+    {
+      "name": "mbklein",
+      "email": "mbklein@gmail.com"
+    }
+  ],
+  "name": "avalon-batch-ingest",
+  "optionalDependencies": {},
+  "version": "1.0.0"
+}
