@@ -91,6 +91,15 @@ data "aws_iam_policy_document" "avr_role_permissions" {
     ]
     resources = ["*"]
   }
+
+  statement {
+    sid = "email"
+    effect = "Allow"
+    actions = [
+      "ses:Send*"
+    ]
+    resources = ["*"]
+  }
 }
 
 resource "aws_security_group" "avr_load_balancer" {
