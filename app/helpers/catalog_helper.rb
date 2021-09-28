@@ -15,6 +15,10 @@
 module CatalogHelper
   include Blacklight::CatalogHelperBehavior
 
+  def home_page?
+    current_page?(main_app.root_path) and not has_search_parameters?
+  end
+
   def current_sort_field
     actualSort = @response.sort if (@response and @response.sort.present?)
     actualSort ||= params[:sort]
