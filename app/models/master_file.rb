@@ -564,7 +564,8 @@ class MasterFile < ActiveFedora::Base
       options[:master] = false
     end
     response = { source: source&.location }.merge(options)
-    return response if response[:source].to_s =~ %r(^https?://)
+    response_uri = URI(response[:source])
+    return response if source.exist? && response_uri.scheme.match?(/^https?$/) && !response_uri.path.end_with?('.m3u8')
 
     unless File.exists?(response[:source])
       Rails.logger.warn("Masterfile `#{file_location}` not found. Extracting via HLS.")
@@ -573,6 +574,7 @@ class MasterFile < ActiveFedora::Base
         secure_url = SecurityHandler.secure_url(playlist_url, target: self.id)
         playlist = Avalon::M3U8Reader.read(secure_url)
         details = playlist.at(options[:offset])
+        details[:location] = SecurityHandler.secure_url(details[:location])
 
         # Fixes https://github.com/avalonmediasystem/avalon/issues/3474
         target_location = File.basename(details[:location]).split('?')[0]
