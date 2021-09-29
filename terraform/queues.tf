@@ -17,7 +17,7 @@ locals {
     s3_split                        = 600,
     solr_backup                     = 30,
     update_dependent_permalinks     = 300,
-    waveform                        = 300
+    waveform                        = 900
   }
 }
 
