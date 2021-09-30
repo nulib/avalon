@@ -244,7 +244,7 @@ class MasterFilesController < ApplicationController
 
   def update
     master_file = MasterFile.find(params[:id])
-    authorize! :update, master_file, message: "You do not have sufficient privileges to edit files"
+    authorize! :edit, master_file, message: "You do not have sufficient privileges to edit files"
 
     master_file.title = master_file_params[:title] if master_file_params[:title].present?
     master_file.date_digitized = DateTime.parse(master_file_params[:date_digitized]).to_time.utc.iso8601 if master_file_params[:date_digitized].present?
@@ -381,9 +381,9 @@ class MasterFilesController < ApplicationController
   def move
     master_file = MasterFile.find(params[:id])
     current_media_object = master_file.media_object
-    authorize! :update, current_media_object
+    authorize! :edit, current_media_object
     target_media_object = MediaObject.find(params[:target])
-    authorize! :update, target_media_object
+    authorize! :edit, target_media_object
 
     master_file.media_object = target_media_object
     master_file.save!
