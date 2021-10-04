@@ -1,5 +1,6 @@
 gem 'aws-sdk-cloudwatchevents'
 gem 'aws-sdk-cloudwatchlogs'
+gem 'aws-sdk-lambda'
 gem 'aws-sdk-mediaconvert'
 gem 'aws-sdk-ssm'
 gem 'ezid-client'
