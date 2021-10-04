@@ -219,6 +219,9 @@ GEM
     aws-sdk-kms (1.87.0)
       aws-sdk-core (~> 3, >= 3.199.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-lambda (1.123.0)
+      aws-sdk-core (~> 3, >= 3.199.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-mediaconvert (1.133.0)
       aws-sdk-core (~> 3, >= 3.199.0)
       aws-sigv4 (~> 1.1)
@@ -1180,6 +1183,7 @@ DEPENDENCIES
   aws-sdk-cloudwatchevents
   aws-sdk-cloudwatchlogs
   aws-sdk-elastictranscoder
+  aws-sdk-lambda
   aws-sdk-mediaconvert
   aws-sdk-rails
   aws-sdk-s3
