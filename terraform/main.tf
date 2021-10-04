@@ -381,6 +381,23 @@ resource "aws_cloudfront_distribution" "avr_streaming" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+data "aws_iam_policy" "basic_lambda_execution" {
+  name = "AWSLambdaBasicExecutionRole"
+}
+
 resource "aws_route53_record" "avr_streaming_cloudfront" {
   zone_id = module.core.outputs.vpc.public_dns_zone.id
   name    = "httpstream"

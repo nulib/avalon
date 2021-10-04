@@ -164,6 +164,13 @@ resource "aws_ssm_parameter" "email-support" {
   tags    = local.tags
 }
 
+resource "aws_ssm_parameter" "encoding-aiff_lambda" {
+  type    = "String"
+  name    = "${local.settings_prefix}/encoding/aiff_lambda"
+  value   = aws_lambda_function.aiff_lambda.arn
+  tags    = local.tags
+}
+
 resource "aws_ssm_parameter" "encoding-derivative_bucket" {
   type    = "String"
   name    = "${local.settings_prefix}/encoding/derivative_bucket"
