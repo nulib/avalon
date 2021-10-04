@@ -1,31 +1,14 @@
 locals {
-  source_sha = sha1(join("", [for f in fileset(path.module, "batch_lambda/{index.js,package.json,package-lock.json}"): sha1(file(f))]))
-}
-
-data "aws_iam_policy_document" "lambda_assume_role" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}
-
-data "aws_iam_policy" "basic_lambda_execution" {
-  name = "AWSLambdaBasicExecutionRole"
+  batch_source_sha = sha1(join("", [for f in fileset(path.module, "batch_lambda/{index.js,package.json,package-lock.json}"): sha1(file(f))]))
 }
 
 resource "null_resource" "batch_lambda_node_modules" {
   triggers = {
-    source = local.source_sha
+    source = local.batch_source_sha
   }
 
   provisioner "local-exec" {
-    command     = "npm install --no-bin-links"
+    command     = "npm install --production --no-bin-links && npm prune --production"
     working_dir = "${path.module}/batch_lambda"
   }
 }
@@ -34,7 +17,7 @@ data "archive_file" "batch_lambda" {
   depends_on    = [null_resource.batch_lambda_node_modules]
   type          = "zip"
   source_dir    = "${path.module}/batch_lambda"
-  output_path   = "${path.module}/package/${local.source_sha}.zip"
+  output_path   = "${path.module}/package/${local.batch_source_sha}.zip"
 }
 
 data "aws_iam_policy_document" "batch_lambda_policy" {
@@ -62,7 +45,7 @@ resource "aws_iam_role_policy_attachment" "batch_lambda_role_policy" {
   policy_arn    = aws_iam_policy.batch_lambda_policy.arn
 }
 
-resource "aws_iam_role_policy_attachment" "basic_lambda_execution_policy" {
+resource "aws_iam_role_policy_attachment" "batch_lambda_execution_policy" {
   role          = aws_iam_role.batch_lambda_role.name
   policy_arn    = data.aws_iam_policy.basic_lambda_execution.arn
 }

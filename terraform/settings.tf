@@ -1,12 +1,12 @@
 locals {
-  settings_prefix = "/${local.secrets.app_name}/Settings"
+  settings_prefix = "/${var.app_name}/Settings"
 }
 
 resource "aws_ssm_parameter" "auth-configuration-analytics_tracker" {
-  count   = local.secrets.analytics_tracker == "" ? 0 : 1
+  count   = var.analytics_tracker == "" ? 0 : 1
   type    = "String"
   name    = "${local.settings_prefix}/analytics_tracker"
-  value   = local.secrets.analytics_tracker
+  value   = var.analytics_tracker
   tags    = local.tags
 }
 
@@ -27,7 +27,7 @@ resource "aws_ssm_parameter" "auth-configuration-nu-params-base_url" {
 resource "aws_ssm_parameter" "auth-configuration-nu-params-consumer_key" {
   type    = "SecureString"
   name    = "${local.settings_prefix}/auth/configuration/nu/params/consumer_key"
-  value   = local.secrets.agentless_sso_key
+  value   = var.agentless_sso_key
   tags    = local.tags
 }
 
@@ -97,14 +97,14 @@ resource "aws_ssm_parameter" "canvas-api-endpoint" {
 resource "aws_ssm_parameter" "canvas-api-token" {
   type    = "SecureString"
   name    = "${local.settings_prefix}/canvas/api/token"
-  value   = local.secrets.canvas_api_token
+  value   = var.canvas_api_token
   tags    = local.tags
 }
 
 resource "aws_ssm_parameter" "domain-host" {
   type    = "String"
   name    = "${local.settings_prefix}/domain/host"
-  value   = local.secrets.domain_host
+  value   = local.domain_host
   tags    = local.tags
 }
 
@@ -146,21 +146,28 @@ resource "aws_ssm_parameter" "email-mailer" {
 resource "aws_ssm_parameter" "email-comments" {
   type    = "String"
   name    = "${local.settings_prefix}/email/comments"
-  value   = local.secrets.email_comments
+  value   = var.email_comments
   tags    = local.tags
 }
 
 resource "aws_ssm_parameter" "email-notification" {
   type    = "String"
   name    = "${local.settings_prefix}/email/notification"
-  value   = local.secrets.email_notification
+  value   = var.email_notification
   tags    = local.tags
 }
 
 resource "aws_ssm_parameter" "email-support" {
   type    = "String"
   name    = "${local.settings_prefix}/email/support"
-  value   = local.secrets.email_support
+  value   = var.email_support
+  tags    = local.tags
+}
+
+resource "aws_ssm_parameter" "encoding-aiff_lambda" {
+  type    = "String"
+  name    = "${local.settings_prefix}/encoding/aiff_lambda"
+  value   = aws_lambda_function.aiff_lambda.arn
   tags    = local.tags
 }
 
@@ -209,7 +216,7 @@ resource "aws_ssm_parameter" "encoding-mediaconvert-role" {
 resource "aws_ssm_parameter" "initial_user" {
   type    = "String"
   name    = "${local.settings_prefix}/initial_user"
-  value   = local.secrets.initial_user
+  value   = var.initial_user
   tags    = local.tags
 }
 
@@ -258,7 +265,7 @@ resource "aws_ssm_parameter" "solrcloud" {
 resource "aws_ssm_parameter" "streaming-http_base" {
   type    = "String"
   name    = "${local.settings_prefix}/streaming/http_base"
-  value   = "https://${coalesce(local.secrets.streaming_hostname, aws_route53_record.avr_streaming_cloudfront.fqdn)}/"
+  value   = "https://${coalesce(var.streaming_hostname, aws_route53_record.avr_streaming_cloudfront.fqdn)}/"
   tags    = local.tags
 }
 
