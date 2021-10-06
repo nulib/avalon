@@ -15,12 +15,16 @@
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
-guard 'puma' do
-  watch('Gemfile.lock')
-  watch(%r{^app|config|lib|api/.*})
+group :webapp do
+  guard 'puma' do
+    watch('Gemfile.lock')
+    watch(%r{^app|config|lib|api/.*})
+  end
 end
 
-guard 'process', name: 'shoryuken', command: 'shoryuken -R -C config/shoryuken.yml' do
-  watch('Gemfile.lock')
-  watch(%r{^app|config|lib|api/.*})
+group :worker do
+  guard 'process', name: 'shoryuken', command: 'shoryuken -R -C config/shoryuken.yml' do
+    watch('Gemfile.lock')
+    watch(%r{^app|config|lib|api/.*})
+  end
 end
