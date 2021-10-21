@@ -22,6 +22,7 @@ class CatalogController < ApplicationController
   # include BlacklightHelperReloadFix
 
   # These before_actions apply the hydra access controls
+  before_action :block_invalid_sort_params, only: :index
   before_action :enforce_show_permissions, only: :show
   before_action :load_home_page_collections, only: :index, if: proc { helpers.current_page? root_path }
 
@@ -187,6 +188,12 @@ class CatalogController < ApplicationController
   end
 
   private
+
+    def block_invalid_sort_params
+      return unless params[:sort]
+      return if blacklight_config.sort_fields.key?(params[:sort])
+      render plain: "Requested illegal sort val: #{params[:sort]}", status: :bad_request
+    end
 
     def load_home_page_collections
       featured_collections = Settings.home_page&.featured_collections
