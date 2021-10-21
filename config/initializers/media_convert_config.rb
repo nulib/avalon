@@ -5,9 +5,9 @@ Settings.encoding.media_convert.configuration = {
     'avalon' => {
       media_type: :video,
       outputs: [
-        {preset: "System-Avc_16x9_1080p_29_97fps_8500kbps", modifier: "-1080"},
-        {preset: "System-Avc_16x9_720p_29_97fps_5000kbps", modifier: "-720"},
-        {preset: "System-Avc_16x9_540p_29_97fps_3500kbps", modifier: "-540"}
+        {preset: "avr-video-high", modifier: "-1080"},
+        {preset: "avr-video-medium", modifier: "-720"},
+        {preset: "avr-video-low", modifier: "-540"}
       ]
     },
     'fullaudio' => {
