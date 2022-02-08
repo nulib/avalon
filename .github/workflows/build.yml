@@ -80,11 +80,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set DEPLOY_ENV from Branch Name
         run: |
-          if [[ $BRANCH == 'refs/heads/master' ]]; then
-            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
-          else
-            echo "DEPLOY_ENV=$(echo $BRANCH | awk -F/ '{print $NF}')" >> $GITHUB_ENV
-          fi
+          echo "DEPLOY_ENV=$(echo $BRANCH | awk -F/ '{print $NF}')" >> $GITHUB_ENV
         env:
           BRANCH: ${{ github.ref }}
       - name: Configure AWS
