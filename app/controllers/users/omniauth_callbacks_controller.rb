@@ -39,7 +39,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def action_missing(sym, *args, &block)
-    logger.debug "Attempting to find user with #{sym.to_s} strategy"
+    logger.info "Attempting to find user with #{sym.to_s} strategy"
     find_user(sym.to_s)
   end
 
@@ -51,8 +51,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     auth_type.downcase!
     find_method = "find_for_#{auth_type}".to_sym
     find_method = :find_for_generic unless User.respond_to?(find_method)
-    logger.debug "#{auth_type} :: #{current_user.inspect}"
-    @user = User.send(find_method,request.env["omniauth.auth"], current_user)
+    omniauth_struct = request.env["omniauth.auth"]
+    logger.info "#{auth_type} :: #{current_user.inspect} :: #{omniauth_struct.inspect}"
+    @user = User.send(find_method, omniauth_struct, current_user)
     if @user.persisted?
       flash[:success] = I18n.t "devise.omniauth_callbacks.success", :kind => auth_type
       sign_in @user, :event => :authentication
@@ -60,7 +61,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user_session[:full_login] = true
 
       if auth_type == 'lti'
-        user_session[:lti_group] = request.env["omniauth.auth"].extra.context_id
+        user_session[:lti_group] = omniauth_struct.extra.context_id
       end
     end
 
