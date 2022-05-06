@@ -53,7 +53,7 @@ resource "aws_lambda_function" "aiff_lambda" {
   handler       = "index.handler"
   runtime       = "nodejs14.x"
   memory_size   = 256
-  timeout       = 30
+  timeout       = 300
   layers        = [data.aws_lambda_layer_version.ffmpeg.arn]
   publish       = true
   tags          = local.tags

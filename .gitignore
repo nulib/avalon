@@ -89,4 +89,5 @@ terraform/**/node_modules
 terraform/package
 terraform/.terraform
 terraform/**/*.tfvars
+terraform/*.plan
 config/shoryuken.yml
