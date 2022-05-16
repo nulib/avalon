@@ -41,24 +41,43 @@ data "aws_acm_certificate" "streaming_cert" {
 
 resource "aws_s3_bucket" "avr_masterfiles" {
   bucket = "${local.namespace}-avr-masterfiles"
-  acl    = "private"
   tags   = local.tags
-
-
-  cors_rule {
-    allowed_origins = ["*"]
-    allowed_methods = ["GET", "PUT", "POST"]
-  }
 
   lifecycle {
     ignore_changes = [bucket]
   }  
 }
 
+resource "aws_s3_bucket_acl" "avr_masterfiles" {
+  bucket = aws_s3_bucket.avr_masterfiles.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_cors_configuration" "avr_masterfiles" {
+  bucket = aws_s3_bucket.avr_masterfiles.id
+
+  cors_rule {
+    allowed_origins = ["*"]
+    allowed_methods = ["GET", "PUT", "POST"]
+  }
+}
+
 resource "aws_s3_bucket" "avr_streaming" {
   bucket = "${local.namespace}-avr-derivatives"
-  acl  = "private"
   tags = local.tags
+
+  lifecycle {
+    ignore_changes = [bucket]
+  }  
+}
+
+resource "aws_s3_bucket_acl" "avr_streaming" {
+  bucket = aws_s3_bucket.avr_streaming.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_cors_configuration" "avr_streaming" {
+  bucket = aws_s3_bucket.avr_streaming.id
 
   cors_rule {
     allowed_origins = ["*.northwestern.edu"]
@@ -66,15 +85,10 @@ resource "aws_s3_bucket" "avr_streaming" {
     max_age_seconds = "3000"
     allowed_headers = ["Authorization", "Access-Control-Allow-Origin"]
   }
-
-  lifecycle {
-    ignore_changes = [bucket]
-  }  
 }
 
 resource "aws_s3_bucket" "avr_preservation" {
   bucket = "${local.namespace}-avr-preservation"
-  acl  = "private"
   tags = local.tags
 
   lifecycle {
@@ -82,14 +96,23 @@ resource "aws_s3_bucket" "avr_preservation" {
   }  
 }
 
+resource "aws_s3_bucket_acl" "avr_preservation" {
+  bucket = aws_s3_bucket.avr_preservation.id
+  acl    = "private"
+}
+
 resource "aws_s3_bucket" "avr_active_storage" {
   bucket = "${local.namespace}-avr-active-storage"
-  acl    = "private"
   tags   = local.tags
 
   lifecycle {
     ignore_changes = [bucket]
   }  
+}
+
+resource "aws_s3_bucket_acl" "avr_active_storage" {
+  bucket = aws_s3_bucket.avr_active_storage.id
+  acl    = "private"
 }
 
 data "aws_iam_policy_document" "this_bucket_access" {
