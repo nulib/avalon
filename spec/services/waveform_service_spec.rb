@@ -36,7 +36,7 @@ describe WaveformService, type: :service do
         allow(Tempfile).to receive(:new).and_return tmpfile
       end
 
-      it "should clean up Tempfile" do
+      xit "should clean up Tempfile" do
         service.get_waveform_json(uri)
         expect(tmpfile.path).to eq nil
       end

@@ -23,6 +23,7 @@ class MediaObjectsController < ApplicationController
   include NoidValidator
   include SecurityHelper
 
+  before_action :maybe_redirect, only: [:show]
   before_action :authenticate_user!, except: [:show, :set_session_quality, :show_stream_details, :manifest]
   before_action :load_resource, except: [:create, :destroy, :update_status, :set_session_quality, :tree, :deliver_content, :confirm_remove, :show_stream_details, :add_to_playlist, :intercom_collections, :manifest, :move_preview, :edit, :update, :json_update]
   load_and_authorize_resource except: [:create, :destroy, :update_status, :set_session_quality, :tree, :deliver_content, :confirm_remove, :show_stream_details, :add_to_playlist, :intercom_collections, :manifest, :move_preview, :show_progress]

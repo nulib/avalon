@@ -48,11 +48,9 @@ class ApplicationController < ActionController::Base
 
   def rewrite_v4_ids
     params.permit!
-    query_result = ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:id]}"}, rows: 1, fl: 'id')
-
-    raise ActiveFedora::ObjectNotFoundError if query_result.empty?
-
-    new_id = query_result.first['id']
+    id_record = ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:id]}"}, rows: 1, fl: 'id').first
+    return if id_record.nil?
+    new_id = id_record['id']
     new_content_id = params[:content] ? ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:content]}"}, rows: 1, fl: 'id').first['id'] : nil
     redirect_to(url_for(params.merge(id: new_id, content: new_content_id)))
   end
@@ -220,7 +218,19 @@ class ApplicationController < ActionController::Base
     obj || GlobalID::Locator.locate(id)
   end
 
+  def maybe_redirect
+    return unless params[:id].present?
+    redirect = Redirect.find_by(id: params[:id])
+    return unless redirect.present?
+
+    redirect_target = embed_request? ? redirect.embed_target : redirect.item_target
+    redirect_to(redirect_target)
+  end
+
   private
+    def embed_request?
+      request.url =~ %r{master_files/.+/embed}
+    end
 
     def remove_zero_width_chars
       # params is a ActionController::Parameters

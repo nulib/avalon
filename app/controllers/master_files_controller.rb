@@ -20,6 +20,7 @@ class MasterFilesController < ApplicationController
   # include Avalon::Controller::ControllerBehavior
   include NoidValidator
 
+  before_action :maybe_redirect, only: [:show, :embed]
   before_action :authenticate_user!, :only => [:create]
   before_action :set_masterfile_proxy, except: [:create, :oembed, :attach_structure, :delete_structure, :destroy, :update, :set_structure]
   before_action :set_masterfile, only: [:attach_structure, :delete_structure, :destroy, :update, :set_structure]
