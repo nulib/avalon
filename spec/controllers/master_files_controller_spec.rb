@@ -225,6 +225,19 @@ describe MasterFilesController do
         expect(get(:show, params: { id: fedora3_pid })).to redirect_to(master_file_url(master_file.id))
       end
     end
+
+    context "external redirects" do
+      let(:master_file) { FactoryBot.create(:master_file, :with_media_object) }
+      
+      it 'does not redirect when there is no redirect entry' do
+        expect(get(:show, params: { id: master_file.id })).to redirect_to(id_section_media_object_path(master_file.media_object.id, master_file.id))
+      end
+      
+      it 'redirects when there is a redirect entry' do
+        Redirect.create(id: 'abc1234', target: 'https://example.edu/1234')
+        expect(get(:show, params: { id: 'abc1234' })).to redirect_to('https://example.edu/1234')
+      end
+    end
   end
 
   describe "#embed" do
