@@ -39,6 +39,21 @@ describe CatalogController do
         expect(response).to render_template('catalog/index')
         expect(assigns(:document_list).count).to eql(0)
       end
+      context "external redirects" do
+        let!(:collection) {FactoryBot.create(:collection)}
+        let!(:media_object) {FactoryBot.create(:published_media_object, collection: collection)}
+  
+        it 'does not redirect when there is no redirect entry' do
+          get :index, params: { f: { collection_ssim: [collection.name] } }
+          expect(response).not_to have_http_status(302)
+        end
+    
+        it 'redirects when there is a redirect entry' do
+          Redirect.create(id: collection.name, item_target: 'https://example.edu/1234', embed_target: nil)
+          get :index, params: { f: { collection_ssim: [collection.name] } }
+          expect(response).to redirect_to('https://example.edu/1234')
+        end
+      end
     end
     describe "as an authenticated user" do
       before do
