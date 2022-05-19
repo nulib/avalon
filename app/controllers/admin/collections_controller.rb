@@ -88,7 +88,7 @@ class Admin::CollectionsController < ApplicationController
   def create
     @collection = Admin::Collection.create(collection_params.merge(managers: [current_user.user_key]))
     if @collection.persisted?
-      User.where(Devise.authentication_keys.first => [Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
+      User.find_by_devise_authentication_keys([Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
         NotificationsMailer.new_collection(
           creator_id: current_user.id,
           collection_id: @collection.id,
@@ -144,7 +144,7 @@ class Admin::CollectionsController < ApplicationController
     saved = @collection.save
     if saved
       if name_changed
-        User.where(Devise.authentication_keys.first => [Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
+        User.find_by_devise_authentication_keys([Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
           NotificationsMailer.update_collection(
             updater_id: current_user.id,
             collection_id: @collection.id,

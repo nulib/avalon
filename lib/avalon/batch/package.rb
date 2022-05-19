@@ -36,7 +36,7 @@ module Avalon
 
       def user
         @user ||=
-          User.where(Devise.authentication_keys.first => @manifest.email).first ||
+          User.find_by_devise_authentication_keys(@manifest.email).first ||
           User.where(username: @manifest.email).first ||
           User.where(email: @manifest.email).first
         @user

@@ -730,6 +730,21 @@ describe MediaObjectsController, type: :controller do
       end
 
     end
+
+    context "external redirects" do
+      let!(:media_object) {FactoryBot.create(:published_media_object, visibility: 'public')}
+
+      it 'does not redirect when there is no redirect entry' do
+        get :show, params: { id: media_object.id, format: 'json' }
+        expect(response).not_to have_http_status(302)
+      end
+  
+      it 'redirects when there is a redirect entry' do
+        Redirect.create(id: 'abc1234', item_target: 'https://example.edu/1234', embed_target: nil)
+        expect(get(:show, params: { id: 'abc1234' })).to redirect_to('https://example.edu/1234')
+      end
+    end
+    
     context "Test lease access control" do
       let!(:media_object) { FactoryBot.create(:published_media_object, visibility: 'private') }
       let!(:user) { FactoryBot.create(:user) }

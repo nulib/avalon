@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_14_154529) do
+ActiveRecord::Schema.define(version: 2022_05_18_181640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -187,6 +187,11 @@ ActiveRecord::Schema.define(version: 2020_04_14_154529) do
     t.string "access_token"
     t.string "tags"
     t.index ["user_id"], name: "index_playlists_on_user_id"
+  end
+
+  create_table "redirects", id: :string, force: :cascade do |t|
+    t.string "item_target", null: false
+    t.string "embed_target"
   end
 
   create_table "role_maps", force: :cascade do |t|
