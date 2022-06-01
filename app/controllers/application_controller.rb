@@ -213,6 +213,12 @@ class ApplicationController < ActionController::Base
     obj || GlobalID::Locator.locate(id)
   end
 
+  def maybe_redirect
+    return unless params[:id].present?
+    redirect = Redirect.find_by(id: params[:id])
+    redirect_to(redirect.target) if redirect.present?
+  end
+
   private
 
     def remove_zero_width_chars
