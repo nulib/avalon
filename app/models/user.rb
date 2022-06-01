@@ -83,6 +83,12 @@ class User < ActiveRecord::Base
     user
   end
 
+  def self.find_by_devise_authentication_keys(values)
+    conditions = Devise.authentication_keys.map { |key| "lower(#{key}) IN (:value)" }.join(' OR ')
+    values = Array(values).map { |v| v.strip.downcase }
+    User.where("deleted_at IS NULL AND (#{conditions})", { value: values }).reject
+  end
+
   def self.find_by_username_or_email(login)
     find_and_verify_by_username(login) || find_and_verify_by_email(login)
   end
