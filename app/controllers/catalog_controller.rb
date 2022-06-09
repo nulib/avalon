@@ -21,6 +21,8 @@ class CatalogController < ApplicationController
   include Hydra::MultiplePolicyAwareAccessControlsEnforcement
   # include BlacklightHelperReloadFix
 
+  before_action :redirect_specific_collection_facets, only: :index
+
   # These before_actions apply the hydra access controls
   before_action :block_invalid_sort_params, only: :index
   before_action :enforce_show_permissions, only: :show
@@ -188,6 +190,12 @@ class CatalogController < ApplicationController
   end
 
   private
+    def redirect_specific_collection_facets
+      collection = params.fetch(:f, {}).fetch(:collection_ssim, []).first
+      return unless collection.present?
+      redirect = Redirect.find_by(id: collection)
+      redirect_to(redirect.target) if redirect.present?  
+    end
 
     def block_invalid_sort_params
       return unless params[:sort]
