@@ -218,10 +218,16 @@ class ApplicationController < ActionController::Base
   def maybe_redirect
     return unless params[:id].present?
     redirect = Redirect.find_by(id: params[:id])
-    redirect_to(redirect.target) if redirect.present?
+    return unless redirect.present?
+
+    redirect_target = embed_request? ? redirect.embed_target : redirect.item_target
+    redirect_to(redirect_target)
   end
 
   private
+    def embed_request?
+      request.url =~ %r{master_files/.+/embed}
+    end
 
     def remove_zero_width_chars
       # params is a ActionController::Parameters

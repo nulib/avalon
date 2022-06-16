@@ -234,8 +234,13 @@ describe MasterFilesController do
       end
       
       it 'redirects when there is a redirect entry' do
-        Redirect.create(id: 'abc1234', target: 'https://example.edu/1234')
+        Redirect.create(id: 'abc1234', item_target: 'https://example.edu/1234', embed_target: 'https://example.edu/embed/https%3A%2F%2F12%2F34-manifest.json/audio')
         expect(get(:show, params: { id: 'abc1234' })).to redirect_to('https://example.edu/1234')
+      end
+
+      it 'redirects an embed request' do
+        Redirect.create(id: 'abc1234', item_target: 'https://example.edu/1234', embed_target: 'https://example.edu/embed/https%3A%2F%2F12%2F34-manifest.json/audio')
+        expect(get(:embed, params: { id: 'abc1234' })).to redirect_to('https://example.edu/embed/https%3A%2F%2F12%2F34-manifest.json/audio')
       end
     end
   end

@@ -194,7 +194,7 @@ class CatalogController < ApplicationController
       collection = params.fetch(:f, {}).fetch(:collection_ssim, []).first
       return unless collection.present?
       redirect = Redirect.find_by(id: collection)
-      redirect_to(redirect.target) if redirect.present?  
+      redirect_to(redirect.item_target) if redirect.present?  
     end
 
     def block_invalid_sort_params

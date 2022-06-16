@@ -190,7 +190,8 @@ ActiveRecord::Schema.define(version: 2022_05_18_181640) do
   end
 
   create_table "redirects", id: :string, force: :cascade do |t|
-    t.string "target", null: false
+    t.string "item_target", null: false
+    t.string "embed_target"
   end
 
   create_table "role_maps", force: :cascade do |t|

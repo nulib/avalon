@@ -740,7 +740,7 @@ describe MediaObjectsController, type: :controller do
       end
   
       it 'redirects when there is a redirect entry' do
-        Redirect.create(id: 'abc1234', target: 'https://example.edu/1234')
+        Redirect.create(id: 'abc1234', item_target: 'https://example.edu/1234', embed_target: nil)
         expect(get(:show, params: { id: 'abc1234' })).to redirect_to('https://example.edu/1234')
       end
     end

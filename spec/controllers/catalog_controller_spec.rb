@@ -49,7 +49,7 @@ describe CatalogController do
         end
     
         it 'redirects when there is a redirect entry' do
-          Redirect.create(id: collection.name, target: 'https://example.edu/1234')
+          Redirect.create(id: collection.name, item_target: 'https://example.edu/1234', embed_target: nil)
           get :index, params: { f: { collection_ssim: [collection.name] } }
           expect(response).to redirect_to('https://example.edu/1234')
         end
