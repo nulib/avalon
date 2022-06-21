@@ -6,9 +6,12 @@ terraform {
 
 provider "aws" { }
 
+data "aws_region" "current" { }
+
 locals {
+  aws_region            = data.aws_region.current.name
   namespace             = module.core.outputs.stack.namespace
-  tags                  = merge(module.core.outputs.stack.tags, local.secrets.tags)
+  tags                  = merge(module.core.outputs.stack.tags, var.tags)
   zookeeper_endpoint    = "${element(module.solrcloud.outputs.zookeeper.servers, 0)}/configs"
 }
 
@@ -33,7 +36,7 @@ module "solrcloud" {
 }
 
 data "aws_acm_certificate" "streaming_cert" {
-  domain = local.secrets.streaming_certificate_domain
+  domain = local.streaming_certificate_domain
 }
 
 resource "aws_s3_bucket" "avr_masterfiles" {
@@ -136,7 +139,7 @@ data "aws_iam_policy_document" "this_bucket_access" {
 }
 
 resource "aws_security_group" "avr" {
-  name        = local.secrets.app_name
+  name        = var.app_name
   description = "The AVR Application"
   vpc_id      = module.core.outputs.vpc.id
 
@@ -161,7 +164,7 @@ resource "aws_security_group_rule" "allow_alb_access" {
 
 resource "aws_route53_record" "app_hostname" {
   zone_id = module.core.outputs.vpc.public_dns_zone.id
-  name    = local.secrets.app_name
+  name    = var.app_name
   type    = "A"
 
   alias {
@@ -172,7 +175,7 @@ resource "aws_route53_record" "app_hostname" {
 }
 
 resource "aws_iam_role" "transcode_role" {
-  name = "${local.secrets.app_name}-transcode-role"
+  name = "${var.app_name}-transcode-role"
   tags = local.tags
 
   assume_role_policy = jsonencode({
@@ -190,7 +193,7 @@ resource "aws_iam_role" "transcode_role" {
   })
 
   inline_policy {
-    name = "${local.secrets.app_name}-transcode-policy"
+    name = "${var.app_name}-transcode-policy"
 
     policy = jsonencode({
       Version = "2012-10-17"
@@ -241,13 +244,13 @@ data "aws_iam_policy_document" "pass_transcode_role" {
 }
 
 resource "aws_iam_policy" "allow_transcode" {
-  name   = "${local.secrets.app_name}-mediaconvert-access"
+  name   = "${var.app_name}-mediaconvert-access"
   policy = data.aws_iam_policy_document.pass_transcode_role.json
   tags   = local.tags
 }
 
 resource "aws_media_convert_queue" "transcode_queue" {
-  name   = local.secrets.app_name
+  name   = var.app_name
   status = "ACTIVE"
   tags   = local.tags
 }
@@ -259,7 +262,7 @@ resource "aws_cloudwatch_log_group" "mediaconvert_state_change_log" {
 }
 
 resource "aws_cloudwatch_event_rule" "mediaconvert_state_change" {
-  name        = "${local.secrets.app_name}-mediaconvert-state-change"
+  name        = "${var.app_name}-mediaconvert-state-change"
   description = "Send MediaConvert state changes to Meadow"
   tags        = local.tags
 
@@ -279,7 +282,7 @@ resource "aws_cloudwatch_event_target" "mediaconvert_state_change_cloudwatch_log
 }
 
 resource "aws_cloudfront_origin_access_identity" "avr_streaming_access_identity" {
-  comment = local.secrets.app_name
+  comment = var.app_name
 }
 
 data "aws_iam_policy_document" "avr_streaming_bucket_policy" {
@@ -312,17 +315,17 @@ resource "aws_s3_bucket_policy" "allow_cloudfront_streaming_access" {
 }
 
 resource "aws_cloudfront_public_key" "avr_stream_public_key" {
-  name        = "${local.secrets.app_name}-signing-key"
-  encoded_key = local.secrets.cloudfront_public_key
+  name        = "${var.app_name}-signing-key"
+  encoded_key = var.cloudfront_public_key
 }
 
 resource "aws_cloudfront_key_group" "avr_stream_signing_key_group" {
   items = [aws_cloudfront_public_key.avr_stream_public_key.id]
-  name  = "${local.secrets.app_name}-signing-keys"
+  name  = "${var.app_name}-signing-keys"
 }
 
 resource "aws_cloudfront_function" "avr_streaming_cors" {
-  name = "${local.secrets.app_name}-cors-streaming-headers"
+  name = "${var.app_name}-cors-streaming-headers"
   runtime = "cloudfront-js-1.0"
   publish = true
   code = file("${path.module}/js/cors_streaming_headers.js")
@@ -332,13 +335,13 @@ resource "aws_cloudfront_distribution" "avr_streaming" {
   enabled          = true
   is_ipv6_enabled  = true
   retain_on_delete = true
-  aliases          = compact(concat([local.secrets.streaming_hostname], ["httpstream.${module.core.outputs.vpc.public_dns_zone.name}"]))
+  aliases          = compact(concat([var.streaming_hostname], ["httpstream.${module.core.outputs.vpc.public_dns_zone.name}"]))
   price_class      = "PriceClass_100"
   tags             = local.tags
 
   origin {
     domain_name = aws_s3_bucket.avr_streaming.bucket_domain_name
-    origin_id   = "${local.namespace}-${local.secrets.app_name}-origin-hls"
+    origin_id   = "${local.namespace}-${var.app_name}-origin-hls"
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.avr_streaming_access_identity.cloudfront_access_identity_path
@@ -348,7 +351,7 @@ resource "aws_cloudfront_distribution" "avr_streaming" {
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "${local.namespace}-${local.secrets.app_name}-origin-hls"
+    target_origin_id       = "${local.namespace}-${var.app_name}-origin-hls"
     viewer_protocol_policy = "allow-all"
 
     forwarded_values {

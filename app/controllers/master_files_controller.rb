@@ -19,6 +19,7 @@ include SecurityHelper
 class MasterFilesController < ApplicationController
   # include Avalon::Controller::ControllerBehavior
 
+  before_action :maybe_redirect, only: [:show, :embed]
   before_action :authenticate_user!, :only => [:create]
   before_action :ensure_readable_filedata, :only => [:create]
   skip_before_action :verify_authenticity_token, only: [:set_structure, :delete_structure]
