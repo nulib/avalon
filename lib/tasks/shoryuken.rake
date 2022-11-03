@@ -2,6 +2,8 @@
 # we need to make allowances for the fact that ActiveJob queue names will
 # already have their prefixes while ActionMailer queue names will not
 
+require 'aws-sdk-sqs'
+
 namespace :shoryuken do
   desc "Create shoryuken config file"
   task create_config: :environment do

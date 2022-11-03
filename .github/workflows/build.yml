@@ -20,7 +20,7 @@ jobs:
           POSTGRES_USER: docker
           POSTGRES_PASSWORD: d0ck3r
         ports:
-          - 5434:5432
+          - 5432:5432
       fcrepo:
         image: samvera/fcrepo4:4.7.5
         env:

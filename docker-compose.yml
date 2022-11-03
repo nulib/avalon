@@ -1,36 +1,43 @@
+---
 version: '3.4'
-
 volumes:
-  database:
   fedora:
+  db:
+  goaws:
+  minio:
   solr:
-  npms:
-  data:
-
-networks:
-  internal:
-  external:
-
 services:
   db: &db-avalon
     image: postgres:14-alpine
+    restart: unless-stopped
+    read_only: true
     volumes:
-      - database:/data
+    - type: volume
+      source: db
+      target: /data
+    - type: volume
+      target: /tmp
+    - type: volume
+      target: /var/log
+    - type: volume
+      target: /var/run
     environment:
-      - PGDATA=/data
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=avalon
-      - POSTGRES_PASSWORD=password
-    networks:
-      internal:
-  db-test:
-    <<: *db-avalon
-    volumes: []
-
-  fedora: &fedora
-    image: avalonmediasystem/fedora:4.7.5
-    depends_on:
-      - db
+    - PGDATA=/data
+    - POSTGRES_USER=docker
+    - POSTGRES_PASSWORD=d0ck3r
+    ports:
+    - 5433:5432
+    - 5434:5432
+    command: postgres -c max_connections=300
+    healthcheck:
+      test: "CMD echo 'SELECT 1' | PGPASSWORD=d0ck3r psql --host 127.0.0.1 --username docker --dbname docker --quiet --no-align --tuples-only"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  fedora:
+    image: samvera/fcrepo4:4.7.5
+    restart: unless-stopped
+    read_only: true
     volumes:
       - fedora:/data
     environment:
@@ -173,17 +180,37 @@ services:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
     volumes:
-      - data:/data
+    - type: volume
+      source: minio
+      target: /data
+    - type: volume
+      target: /root/.minio
+    - type: bind
+      source: $HOME/.dev_cert/dev.rdc.cert.pem
+      target: /root/.minio/certs/public.crt
+    - type: bind
+      source: $HOME/.dev_cert/dev.rdc.key.pem
+      target: /root/.minio/certs/private.key
+    - type: volume
+      target: /tmp
+    - type: volume
+      target: /var/log
+    - type: volume
+      target: /var/run
     ports:
       - 9000:9000
       - 9090:9090
     networks:
-      internal:
-      external:
+      default:
+        aliases:
+          - ${DEV_PREFIX}.dev.rdc.library.northwestern.edu
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test:
+      - CMD
+      - curl
+      - https://${DEV_PREFIX}.dev.rdc.library.northwestern.edu:9001/minio/health/live
       interval: 30s
-      timeout: 20s
+      timeout: 5s
       retries: 3
 
   createbuckets:
@@ -209,5 +236,51 @@ services:
     entrypoint: cypress run -C spec/cypress/cypress.json
     working_dir: /e2e
     volumes:
-      - ./:/e2e
-      - npms:/e2e/node_modules
+    - type: volume
+      target: /tmp
+    - type: volume
+      target: /var/log
+    - type: volume
+      target: /var/run
+    ports:
+    - 6380:6379
+    healthcheck:
+      test:
+      - CMD
+      - redis-cli
+      - ping
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  solr:
+    image: solr:8-slim
+    restart: unless-stopped
+    read_only: true
+    volumes:
+    - type: volume
+      source: solr
+      target: /opt/solr/server/solr
+    - type: volume
+      target: /opt/solr/server
+    - type: volume
+      target: /tmp
+    - type: volume
+      target: /var/log
+    - type: volume
+      target: /var/run
+    ports:
+    - 8983:8983
+    - 8985:8983
+    - 9983:9983
+    - 9985:9983
+    command: solr -f -cloud
+    healthcheck:
+      test:
+      - CMD
+      - wget
+      - "-O"
+      - "/dev/null"
+      - http://localhost:8983/solr/
+      interval: 30s
+      timeout: 5s
+      retries: 3

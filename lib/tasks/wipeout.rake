@@ -12,6 +12,8 @@
 #   specific language governing permissions and limitations under the License.
 # ---  END LICENSE_HEADER BLOCK  ---
 
+require 'active_fedora/cleaner'
+
 def wipeout_fedora
   ActiveFedora::Cleaner.clean!
 end
