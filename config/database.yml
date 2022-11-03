@@ -1,20 +1,19 @@
 default: &default
   adapter: postgresql
-  host: localhost
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
   encoding: unicode
   pool: 5
-  username: docker
-  password: d0ck3r
+  username: <%= ENV.fetch("DB_USER") { "docker" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { "d0ck3r" } %>
 
 development:
   <<: *default
-  port: 5433
-  database: avr_dev
+  database: avr-development
 
 test:
   <<: *default
-  port: 5434
-  database: avr_test
+  database: avr-test
 
 production:
   adapter: sqlite3
