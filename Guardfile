@@ -23,7 +23,7 @@ group :webapp do
 end
 
 group :worker do
-  guard 'process', name: 'shoryuken', command: 'shoryuken -R -C config/shoryuken.yml' do
+  guard 'process', name: 'sidekiq', command: 'sidekiq' do
     watch('Gemfile.lock')
     watch(%r{^app|config|lib|api/.*})
   end
