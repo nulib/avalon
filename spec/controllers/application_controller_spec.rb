@@ -102,11 +102,6 @@ describe ApplicationController do
       expect(response).to render_template("layouts/avalon")
     end
 
-    it 'renders google analytics partial' do
-      get :show, params: { id: 'abc1234' }
-      expect(response).to render_template("modules/_google_analytics")
-    end
-
     it 'defines an after invite hook' do
       expect(controller.after_invite_path_for(nil)).to eq('/persona/users')
     end

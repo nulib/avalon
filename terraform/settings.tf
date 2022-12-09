@@ -2,6 +2,14 @@ locals {
   settings_prefix = "/${var.app_name}/Settings"
 }
 
+resource "aws_ssm_parameter" "auth-configuration-analytics_container_id" {
+  count   = var.analytics_container_id == "" ? 0 : 1
+  type    = "String"
+  name    = "${local.settings_prefix}/analytics_container_id"
+  value   = var.analytics_container_id
+  tags    = local.tags
+}
+
 resource "aws_ssm_parameter" "auth-configuration-analytics_tracker" {
   count   = var.analytics_tracker == "" ? 0 : 1
   type    = "String"

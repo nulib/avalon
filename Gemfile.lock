@@ -432,7 +432,6 @@ GEM
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    google-analytics-rails (1.1.0)
     google-apis-core (0.15.0)
       addressable (~> 2.5, >= 2.5.1)
       googleauth (~> 1.9)
@@ -1225,7 +1224,6 @@ DEPENDENCIES
   fastimage
   fcrepo_wrapper
   font-awesome-rails
-  google-analytics-rails (= 1.1.0)
   guard-process
   guard-puma
   hashdiff (>= 1.0)
