@@ -147,7 +147,6 @@ group :test do
 end
 
 group :production do
-  gem 'google-analytics-rails', '1.1.0'
   gem 'lograge'
   gem 'okcomputer'
   gem 'puma'
