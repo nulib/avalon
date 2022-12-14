@@ -20,6 +20,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <%= render_google_tag_manager_head %>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title><%= render_page_title %></title>
@@ -30,10 +31,10 @@ Unless required by applicable law or agreed to in writing, software distributed
     <%= stylesheet_link_tag "application", media: "all" %>
     <%= yield :page_styles %>
     <%= yield :additional_head_content %>
-    <%= render "modules/google_analytics" %>
   </head>
 
   <body>
+    <%= render_google_tag_manager_body %>
     <%= yield %>
     <%= javascript_include_tag "application" %>
     <%= yield :page_scripts %>

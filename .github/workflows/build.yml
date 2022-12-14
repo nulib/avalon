@@ -51,7 +51,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update -qq --allow-releaseinfo-change
-          sudo apt-get install gcc-7 lsof mediainfo
+          sudo apt-get install gcc-9 lsof mediainfo
           sudo ln -s /usr/bin/lsof /usr/sbin/lsof
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
@@ -92,7 +92,7 @@ jobs:
       - uses: docker/setup-buildx-action@v1
         with:
           install: true
-      - uses: docker/login-action@v1 
+      - uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -143,25 +143,25 @@ jobs:
   tflint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      name: Checkout source code
+      - uses: actions/checkout@v2
+        name: Checkout source code
 
-    - uses: actions/cache@v2
-      name: Cache plugin dir
-      with:
-        path: ~/.tflint.d/plugins
-        key: tflint-${{ hashFiles('.tflint.hcl') }}
+      - uses: actions/cache@v2
+        name: Cache plugin dir
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles('.tflint.hcl') }}
 
-    - uses: terraform-linters/setup-tflint@v1
-      name: Setup tflint
-      with:
-        tflint_version: v0.30.0
-    - name: Show version
-      run: tflint --version
+      - uses: terraform-linters/setup-tflint@v1
+        name: Setup tflint
+        with:
+          tflint_version: v0.30.0
+      - name: Show version
+        run: tflint --version
 
-    - name: Check Terraform Manifests
-      run: |
-        terraform init -backend=false -input=false
-        tflint --init
-        tflint -f compact
-      working-directory: ./terraform
+      - name: Check Terraform Manifests
+        run: |
+          terraform init -backend=false -input=false
+          tflint --init
+          tflint -f compact
+        working-directory: ./terraform

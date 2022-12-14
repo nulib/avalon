@@ -13,6 +13,11 @@ variable "agentless_sso_key" {
   type    = string
 }
 
+variable "analytics_container_id" {
+  type    = string
+  default = ""
+}
+
 variable "analytics_tracker" {
   type    = string
   default = ""
