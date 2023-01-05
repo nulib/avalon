@@ -10,7 +10,7 @@ begin
       redis.config("SET", "replica-read-only", "no")
     end
   end
-rescue Redis::CannotConnectError
+rescue Redis::CannotConnectError, Redis::CommandError
   # Don't worry about it
 end
 
@@ -20,5 +20,3 @@ config.cache_store = :redis_store, {
   db: 0,
   namespace: 'avalon'
 }
-
-
