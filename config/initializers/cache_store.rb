@@ -9,6 +9,8 @@ Redis.new(host: Settings.redis.host, port: Settings.redis.port).tap do |redis|
   if value == "yes"
     redis.config("SET", "replica-read-only", "no")
   end
+rescue Redis::CannotConnectError, Redis::CommandError
+  # Don't worry about it
 end
 
 config.cache_store = :redis_store, {
@@ -17,5 +19,3 @@ config.cache_store = :redis_store, {
   db: redis_db,
   namespace: 'avalon'
 }
-
-
