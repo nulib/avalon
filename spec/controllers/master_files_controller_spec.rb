@@ -264,10 +264,6 @@ describe MasterFilesController do
       expect(get(:embed, params: { id: master_file.id })).to render_template(layout: 'embed')
     end
 
-    it "renders the Google Analytics partial" do
-      expect(get(:embed, params: { id: master_file.id })).to render_template('modules/_google_analytics')
-    end
-
     context 'with fedora 3 pid' do
       let!(:master_file) { FactoryBot.create(:master_file, identifier: [fedora3_pid]) }
       let(:fedora3_pid) { 'avalon:1234' }
