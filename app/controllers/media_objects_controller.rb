@@ -151,6 +151,10 @@ class MediaObjectsController < ApplicationController
 
   # POST /media_objects
   def create
+    unless (api_params[:collection_id].present?)
+      render json: { errors: ["New media object must have a valid collection_id"] }, status: 422
+      return
+    end
     @media_object = MediaObjectsController.initialize_media_object(user_key)
     # Preset the workflow to the last workflow step to ensure validators run
     @media_object.workflow.last_completed_step = HYDRANT_STEPS.last.step
@@ -175,7 +179,6 @@ class MediaObjectsController < ApplicationController
 
       @media_object.collection = collection
     end
-
     @media_object.avalon_uploader = 'REST API'
 
     populate_from_catalog = (!!api_params[:import_bib_record] && media_object_parameters[:bibliographic_id].present?)
