@@ -238,7 +238,7 @@ resource "aws_ssm_parameter" "master_file_management-path" {
 resource "aws_ssm_parameter" "master_file_management-strategy" {
   type    = "String"
   name    = "${local.settings_prefix}/master_file_management/strategy"
-  value   = "move"
+  value   = "delete"
   tags    = local.tags
 }
 
