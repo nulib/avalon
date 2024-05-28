@@ -41,40 +41,73 @@ data "aws_acm_certificate" "streaming_cert" {
 
 resource "aws_s3_bucket" "avr_masterfiles" {
   bucket = "${local.namespace}-avr-masterfiles"
-  acl    = "private"
   tags   = local.tags
 
-
-  cors_rule {
-    allowed_origins = ["*"]
-    allowed_methods = ["GET", "PUT", "POST"]
-  }
 
   lifecycle {
     ignore_changes = [bucket]
   }  
 }
 
+resource "aws_s3_bucket_acl" "avr_masterfiles" {
+  bucket = aws_s3_bucket.avr_masterfiles.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "avr_masterfiles" {
+  bucket = aws_s3_bucket.avr_masterfiles.id
+  rule {
+    bucket_key_enabled = false
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_cors_configuration" "avr_masterfiles" {
+  bucket = aws_s3_bucket.avr_masterfiles.id
+  cors_rule {
+    allowed_origins = ["*"]
+    allowed_methods = ["GET", "PUT", "POST"]    
+  }
+}
+
 resource "aws_s3_bucket" "avr_streaming" {
   bucket = "${local.namespace}-avr-derivatives"
-  acl  = "private"
   tags = local.tags
 
+  lifecycle {
+    ignore_changes = [bucket]
+  }  
+}
+
+resource "aws_s3_bucket_acl" "avr_streaming" {
+  bucket = aws_s3_bucket.avr_streaming.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_cors_configuration" "avr_streaming" {
+  bucket = aws_s3_bucket.avr_streaming.id
   cors_rule {
     allowed_origins = ["*.northwestern.edu"]
     allowed_methods = ["GET"]
     max_age_seconds = "3000"
     allowed_headers = ["Authorization", "Access-Control-Allow-Origin"]
   }
+}
 
-  lifecycle {
-    ignore_changes = [bucket]
-  }  
+resource "aws_s3_bucket_server_side_encryption_configuration" "avr_streaming" {
+  bucket = aws_s3_bucket.avr_streaming.id
+  rule {
+    bucket_key_enabled = false
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
 }
 
 resource "aws_s3_bucket" "avr_preservation" {
   bucket = "${local.namespace}-avr-preservation"
-  acl  = "private"
   tags = local.tags
 
   lifecycle {
@@ -82,14 +115,92 @@ resource "aws_s3_bucket" "avr_preservation" {
   }  
 }
 
+resource "aws_s3_bucket_acl" "avr_preservation" {
+  bucket = aws_s3_bucket.avr_preservation.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "avr_preservation" {
+  bucket = aws_s3_bucket.avr_preservation.id
+  rule {
+    bucket_key_enabled = false
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "avr_preservation" {
+  bucket = aws_s3_bucket.avr_preservation.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_intelligent_tiering_configuration" "avr_preservation_production" {
+  bucket = aws_s3_bucket.avr_preservation.id
+  name   = "intelligent-archive"
+
+  tiering {
+    access_tier = "DEEP_ARCHIVE_ACCESS"
+    days        = 180
+  }
+}
+
+# Production Preservation Bucket
+resource "aws_s3_bucket_lifecycle_configuration" "avr_preservation_production" {
+  bucket = aws_s3_bucket.avr_preservation.id
+
+  rule {
+    id = "intelligent-tiering"
+
+    status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
+
+    transition {
+      days          = 0
+      storage_class = "INTELLIGENT_TIERING"
+    }
+  }
+
+  rule {
+    id     = "retain-on-delete"
+    status = "Enabled"
+
+    noncurrent_version_expiration {
+      noncurrent_days = 180
+    }
+    expiration {
+      expired_object_delete_marker = true
+    }
+  }
+}
+
 resource "aws_s3_bucket" "avr_active_storage" {
   bucket = "${local.namespace}-avr-active-storage"
-  acl    = "private"
   tags   = local.tags
 
   lifecycle {
     ignore_changes = [bucket]
   }  
+}
+
+resource "aws_s3_bucket_acl" "avr_active_storage" {
+  bucket = aws_s3_bucket.avr_active_storage.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "avr_active_storage" {
+  bucket = aws_s3_bucket.avr_active_storage.id
+  rule {
+    bucket_key_enabled = false
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
 }
 
 data "aws_iam_policy_document" "this_bucket_access" {
