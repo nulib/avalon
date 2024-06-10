@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_event_rule" "database_maintenance" {
   name                  = "${var.app_name}-db-maintenance"
   description           = "Clean and vacuum AVR searches and sessions tables"
-  schedule_expression   = "cron(0 8 ? * 7 *)"
+  schedule_expression   = "cron(0 8 ? * * *)"
 }
 
 resource "aws_cloudwatch_event_target" "database_maintenance" {
@@ -21,6 +21,7 @@ resource "aws_cloudwatch_event_target" "database_maintenance" {
       "sessions",
       "searches"
     ]
+    max_age = "1 DAY"
   })
 }
 
