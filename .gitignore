@@ -32,6 +32,7 @@ config/initializers/rubyhorn.rb
 config/secrets.yml
 #config/lti.yml
 
+public/assets
 public/media_objects
 public/streams
 public/**/*.m3u8

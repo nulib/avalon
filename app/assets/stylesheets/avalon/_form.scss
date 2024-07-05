@@ -1,12 +1,12 @@
-/* 
- * Copyright 2011-2024, The Trustees of Indiana University and Northwestern
+/*
+ * Copyright 2011-2020, The Trustees of Indiana University and Northwestern
  *   University.  Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
- * 
+ *
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed
  *   under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
  *   CONDITIONS OF ANY KIND, either express or implied. See the License for the
@@ -14,21 +14,23 @@
  * ---  END LICENSE_HEADER BLOCK  ---
 */
 
-// Copied in from bootstrap-sass
-$border-radius-base: 4px !default;
+$border-radius-base:        4px !default;
 
 // Form-group input fields
 .form-group .input-group {
+  width: 100%;
 
   .form-control {
     border-radius: 0;
 
     &:first-child {
-      @extend .rounded-left;
+      border-top-left-radius: $border-radius-base;
+      border-bottom-left-radius: $border-radius-base;
     }
 
     &:last-child {
-      @extend .rounded-right;
+      border-top-right-radius: $border-radius-base;
+      border-bottom-right-radius: $border-radius-base;
     }
   }
 
@@ -41,32 +43,18 @@ $border-radius-base: 4px !default;
   }
 }
 
-.form-group.invalid-feedback {
-  display: block;
-  font-size: 100%;
-}
-
-.form-text .close {
-  cursor: pointer;
-}
-
 .form-group .input-group.typed-textarea {
-  .input-group-prepend:first-of-type {
-    width: 96%;
+  .input-group-btn:first-of-type {
+    width: 100%;
 
-    select {
+    button {
       width: 100%;
       text-align: left;
-      padding: 0.375rem 0.75rem;
-      background-color: $white;
-      border-radius: 0;
-      border-top-left-radius: 0.25rem;
+      border-bottom-left-radius: 0;
     }
-
   }
 
-  .input-group-prepend:last-of-type,
-  .input-group-append:last-of-type {
+  .input-group-btn:last-of-type {
     button {
       border-bottom-right-radius: 0;
     }
@@ -99,64 +87,16 @@ label {
 }
 
 .fileinput-submit {
-  background-color: $blue  !important;
-  border-color: $blue  !important;
+  background-color: $blue !important;
+  border-color: $blue !important;
 
   &:hover {
     background-color: darken($blue, 15%) !important;
   }
 
-  color: $white  !important;
+  color: $white !important;
 }
 
 .upload-file-wrapper {
   padding: 5px 5px 0 5px !important;
-}
-
-#new_comment {
-  .form-label {
-    font-weight: bold;
-  }
-}
-
-#resource-description {
-  .input-group {
-    flex-wrap: nowrap;
-  }
-}
-
-/* Add to playlist form on item-view page */
-#add-to-playlist-form-group {
-  .form-check {
-    padding-bottom: 0.1rem;
-  }
-
-  .form-check-label {
-    cursor: pointer;
-
-    .disabled-option {
-      cursor: not-allowed;
-      color: $gray;
-    }
-  }
-
-  #playlist_item_end, #playlist_item_start {
-    border-radius: 0.25rem;
-    border: 1px solid $gray;
-    padding: 0 0.5rem;
-  }
-
-  #playlist_item_end:invalid:focus,
-  #playlist_item_start:invalid:focus {
-    color: $danger;
-    box-shadow: 0 0 10px $danger;
-    border: 1px solid $danger;
-  }
-
-  #playlist_item_end:valid:focus,
-  #playlist_item_start:valid:focus {
-    color: $dark;
-    box-shadow: none;
-    border: 1px solid $gray;
-  }
 }

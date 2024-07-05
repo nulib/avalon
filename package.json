@@ -56,5 +56,6 @@
   "scripts": {
     "start-collection-index": "webpack-dev-server --mode development --config config/webpack/collection_index.js --host 0.0.0.0",
     "start-collection-view": "webpack-dev-server --mode development --config config/webpack/collection_view.js --host 0.0.0.0"
-  }
+  },
+  "packageManager": "yarn@1.2.2"
 }

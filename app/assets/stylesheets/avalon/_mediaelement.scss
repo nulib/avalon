@@ -14,32 +14,24 @@
  * ---  END LICENSE_HEADER BLOCK  ---
 */
 
-.loading-spinner {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-  position: absolute;
-  z-index: 10;
-  left: 0;
-  right: 0;
-  margin: auto;
+.mejs-overlay-loading {
+  border-radius: 50% !important;
 }
-.loading-spinner:after {
-  content: ' ';
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border-radius: 50%;
-  border: 6px solid $primary;
-  border-color: $primary transparent $primary transparent;
-  animation: loading-spinner 1.2s linear infinite;
+
+.me-cannotplay {
+  @extend .alert;
+  @extend .alert-danger;
+  text-align: center;
+  visibility: visible !important;
 }
-@keyframes loading-spinner {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+
+.mejs-time-clip {
+  background: linear-gradient(#ddd, #ddd);
+  opacity: 0.3;
+  height: 14px !important;
+  top: -3px !important;
+}
+
+.mejs__container {
+  z-index: 1000;
 }

@@ -1,12 +1,12 @@
-/* 
- * Copyright 2011-2024, The Trustees of Indiana University and Northwestern
+/*
+ * Copyright 2011-2020, The Trustees of Indiana University and Northwestern
  *   University.  Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
- * 
+ *
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed
  *   under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
  *   CONDITIONS OF ANY KIND, either express or implied. See the License for the
@@ -28,14 +28,6 @@ $primary: $nu-purple;
 $primaryDark: $nu-purple-120;
 $dark: $rich-black-80;
 
-// Colors not from the Styleguide
-$greenBG: scale-color($secondary, $saturation: -40%, $lightness: 60%);
-$gray: #999;
-$lightgray: #f2f2f2;
-$red: #d9534f;
-$blue: #2a4d59;
-$lightblue: #31708f;
-
 // Generated palate colors from http://colormind.io/ for Avalon style guide
 // Add new HEX values below to match your organization's flavor of info/success/warning/danger
 $info: $blue;
@@ -52,7 +44,7 @@ $lightgray: $rich-black-20;
   * https://github.com/twbs/bootstrap-sass/blob/master/assets/stylesheets/bootstrap/_variables.scss */
 
 /* Branding colors */
-$brand-primary: $primary;
+$brand-primary: $primaryDark;
 $brand-success: $success;
 $brand-info: $info;
 $brand-warning: $warning;
@@ -65,13 +57,13 @@ $padding-base-vertical: 4px;
 // $headings-font-family: $camptonBold;
 
 /* Links */
-$link-color: $primary;
-$link-hover-color: $secondary;
+$link-color: $primaryDark;
+$link-hover-color: $primary;
 
 /* Alerts */
-$alert-bg-level: 0;
-$alert-border-level: 1;
-$alert-color-level: -10;
+$alert-success-bg: $success;
+$alert-success-text: $white;
+$alert-success-border: $success;
 
 /* General states (success, info, warning, danger) */
 $state-warning-bg: $warning;
@@ -116,9 +108,6 @@ $navbar-inverse-toggle-border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1)
 $grid-gutter-width: 16px;
 
 /* Buttons */
-$btn-outline-color: $dark;
-$btn-outline-border-color: $gray;
-$btn-outline-bg-color: $white;
 $btn-border-radius-base: 0px;
 $btn-default-color: $white;
 $btn-default-bg: $primary;
@@ -134,23 +123,20 @@ $btn-info-bg: $info;
 $btn-info-border: $info;
 $btn-danger-color: $white;
 $btn-light-bg: $lightgray;
-$btn-xs-font-size: 0.85rem;
-$btn-xs-height: 1.65rem;
-$btn-xs-padding: 0.15rem 0.5rem;
 
 /* Pagination */
 $pagination-color: $link-color;
 $pagination-bg: $white;
-$pagination-border-color: $gray;
+$pagination-border: $gray;
 $pagination-hover-color: $link-hover-color;
 $pagination-hover-bg: $lightgray;
-$pagination-hover-border-color: $gray;
+$pagination-hover-border: $gray;
 $pagination-active-color: $gray;
 $pagination-active-bg: $lightgray;
-$pagination-active-border-color: $gray;
+$pagination-active-border: $gray;
 $pagination-disabled-color: $gray;
 $pagination-disabled-bg: $white;
-$pagination-disabled-border-color: $gray;
+$pagination-disabled-border: $gray;
 
 // $nav-tabs-active-link-hover-color: $dark;
 $input-color: $dark;

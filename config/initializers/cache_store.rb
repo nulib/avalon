@@ -16,6 +16,5 @@ end
 config.cache_store = :redis_store, {
   host: redis_host,
   port: redis_port,
-  db: redis_db,
-  namespace: 'avalon'
+  db: redis_db
 }
