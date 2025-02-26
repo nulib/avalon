@@ -10,6 +10,11 @@ ENV BUILD_DEPS="build-essential libpq-dev libsqlite3-dev libwrap0-dev libyaz4-de
 RUN useradd -m -U app \
  && su -s /bin/bash -c "mkdir -p /home/app" app
 
+RUN sed -i '/stretch-updates/d' /etc/apt/sources.list && \
+   sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list && \
+   sed -i 's|http://security.debian.org|http://archive.debian.org|g' /etc/apt/sources.list && \
+   echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
+
 RUN apt-get update -qq \
  && apt-get install -y $BUILD_DEPS --no-install-recommends
 
@@ -20,21 +25,26 @@ RUN dpkg-reconfigure -f noninteractive tzdata \
  && dpkg-reconfigure --frontend=noninteractive locales \
  && update-locale LANG=en_US.UTF-8
 
-RUN gem update --system \
- && chown -R app:staff /usr/local/bundle
+RUN chown -R app:staff /usr/local/bundle
 
 USER app
 WORKDIR /home/app
 
 COPY --chown=app:app Gemfile* /home/app/
 ENV BUNDLE_WITH='aws:postgres:zoom' BUNDLE_WITHOUT='development:test'
-RUN bundle install --jobs $(nproc) --retry 5
+RUN gem install bundler --version 2.3.26 && \
+    bundle install --jobs $(nproc) --retry 5
 RUN find /usr/local/bundle/ -name '*.gem' -or -name '*.c' -or -name '*.o' -delete
 RUN rm -rf /usr/local/bundle/**/.git
 
 ####################################
 # Build the npm dependency container
 FROM node:12-stretch-slim as npm-deps
+
+RUN sed -i '/stretch-updates/d' /etc/apt/sources.list && \
+   sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list && \
+   sed -i 's|http://security.debian.org|http://archive.debian.org|g' /etc/apt/sources.list && \
+   echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
 
 RUN apt-get update -qq \
  && apt-get install -y git
@@ -47,6 +57,9 @@ RUN yarn install
 ####################################
 # Precompile assets
 FROM nulib/avr-runtime as assets
+
+RUN gem install bundler --version 2.3.26 && \
+    chown -R app:staff /usr/local/bundle
 
 COPY --chown=app:staff --from=ruby-deps /usr/local/bundle /usr/local/bundle
 COPY --chown=app:app --from=npm-deps /home/app/node_modules/ /home/app/node_modules/
@@ -62,6 +75,9 @@ RUN bundle exec rake assets:precompile SECRET_KEY_BASE=$(ruby -r 'securerandom' 
 ####################################
 # Build app image
 FROM nulib/avr-runtime as app
+
+RUN gem install bundler --version 2.3.26 && \
+    chown -R app:staff /usr/local/bundle
 
 COPY --chown=app:staff --from=ruby-deps /usr/local/bundle /usr/local/bundle
 COPY --chown=app:app --from=npm-deps /home/app/node_modules/ /home/app/node_modules/
