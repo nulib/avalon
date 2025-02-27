@@ -92,5 +92,6 @@ COPY --from=assets /home/app/public/ /home/app/public/
 
 EXPOSE 3000
 ENV PATH="/home/app/bin:${PATH}"
+ENV SETTINGS__FFMPEG__PATH="/usr/local/bin/ffmpeg"
 CMD bin/boot_container
 HEALTHCHECK --start-period=60s CMD curl -f http://localhost:3000/

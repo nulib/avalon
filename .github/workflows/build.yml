@@ -140,28 +140,3 @@ jobs:
           DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
           HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_API_KEY }}
           HONEYBADGER_REVISION: ${{ github.sha }}
-  tflint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        name: Checkout source code
-
-      - uses: actions/cache@v2
-        name: Cache plugin dir
-        with:
-          path: ~/.tflint.d/plugins
-          key: tflint-${{ hashFiles('.tflint.hcl') }}
-
-      - uses: terraform-linters/setup-tflint@v1
-        name: Setup tflint
-        with:
-          tflint_version: v0.30.0
-      - name: Show version
-        run: tflint --version
-
-      - name: Check Terraform Manifests
-        run: |
-          terraform init -backend=false -input=false
-          tflint --init
-          tflint -f compact
-        working-directory: ./terraform

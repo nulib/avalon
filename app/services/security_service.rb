@@ -22,7 +22,7 @@ class SecurityService
       expiration = Settings.streaming.stream_token_ttl.to_f.minutes.from_now
       case context[:protocol]
       when :stream_hls
-        streaming_url = URI.encode(Addressable::URI.join(Settings.streaming.http_base,uri.path).to_s)
+        streaming_url = URI.encode(Addressable::URI.join(Settings.streaming.http_base,URI.decode(uri.path)).to_s)
         url_signer.signed_url(streaming_url, expires: expiration)
       else
         url
