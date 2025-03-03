@@ -54,4 +54,16 @@
 @import 'nestable';
 @import 'avalon';
 
-@import "datatables";
+@import 'datatables';
+
+/*
+ *
+ * Northwestern University Avalon
+ * -------------------------------------------------------------
+ * Custom branding for Avalon to override Avalon, Blacklight,
+ * and Bootstrap styling. This should be included at the bottom
+ * of the app/assets/stylesheets/application.scss file
+ *
+ */
+
+@import 'northwestern';

@@ -1,0 +1,13 @@
+article.document {
+  padding: 1em 0 !important;
+
+  .documentHeader {
+    margin-bottom: 1em;
+  }
+
+  h3.index_title {
+    font-family: $displayBold;
+    font-weight: 700 !important;
+    font-size: 1.125em;
+  }
+}
