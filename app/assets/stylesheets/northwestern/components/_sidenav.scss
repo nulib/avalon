@@ -1,0 +1,30 @@
+.sidenav {
+  margin: 0 0 1.618em;
+
+  .top-panel-heading {
+    background-color: transparent;
+    padding: 0 0 0.618em;
+  }
+
+  h2 {
+    font-family: $displayLight !important;
+    font-weight: 300;
+    font-size: 1.618em;
+  }
+}
+
+.card {
+  &.facet-limit-active {
+    border-color: $green20 !important;
+
+    .card-header {
+      background-color: $green20 !important;
+      border-radius: 0;
+      font-family: $sansBold;
+    }
+  }
+
+  button {
+    padding: 0.618em 1em;
+  }
+}

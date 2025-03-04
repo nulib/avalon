@@ -1,0 +1,35 @@
+.navbar {
+  background-color: $brand-primary;
+  font-family: $sans;
+
+  .navbar-nav .nav-item {
+    &.active {
+      .nav-link {
+        background-color: $purple120;
+        border-color: $purple120;
+        color: $white;
+      }
+    }
+
+    .nav-link {
+      color: $purple10;
+
+      &:hover,
+      &:focus {
+        background-color: $purple120;
+        border-color: $purple120;
+        color: $white;
+      }
+    }
+  }
+}
+
+// custom manage button updates
+
+.manage-btn {
+  @extend .btn-primary;
+}
+
+.manage-dropdown-menu {
+  background-color: $purple !important;
+}

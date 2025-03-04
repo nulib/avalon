@@ -1,0 +1,186 @@
+body {
+  font: $sansRegular;
+  color: $black80;
+  background: $white;
+}
+
+a,
+a:visited {
+  color: $purple;
+  text-decoration: none;
+
+  &:hover {
+    color: $purple;
+    text-decoration: underline;
+    text-decoration-thickness: min(2px, max(1px, 2px));
+    text-underline-offset: 3px;
+    text-decoration-color: $purple10;
+  }
+}
+
+.text-muted {
+  color: $black50;
+}
+
+.pagination {
+  .page-item {
+    a.page-link {
+      color: $purple !important;
+      border-color: $black10 !important;
+    }
+
+    &.active {
+      .page-link {
+        background-color: $purple !important;
+        color: $white !important;
+        font-family: $sansBold;
+        border-color: $purple !important;
+      }
+    }
+
+    &.disabled {
+      .page-link {
+        color: $black20 !important;
+        border-color: $black10 !important;
+      }
+    }
+  }
+}
+
+h1,
+.page-title {
+  font-family: $displayExtraLight;
+  font-size: 2.618em;
+  margin: 1rem 0 1.618rem;
+}
+
+h2 {
+  font-family: $displayExtraLight;
+  font-size: 1.618em;
+  margin: 1rem 0 1.618rem;
+}
+
+h3.sub-headline {
+  font-family: $displayBold;
+  font-size: 1.618em;
+  margin: 1rem 0 1.236rem;
+  color: $purple;
+}
+
+.collection-unit-wrapper {
+  border-top: 2px solid $gray6 !important;
+  margin-top: 1.618em;
+}
+
+.separator {
+  border-bottom: 2px solid $gray6 !important;
+}
+
+.collection-list-unit-headline {
+  font-family: $displayBold;
+  font-size: 1.618em !important;
+  margin: 1em 0;
+  color: $purple;
+}
+
+.card.collection-card {
+  .card-body {
+    padding-top: 1rem;
+
+    h4 {
+      font-size: 1.125em !important;
+      font-family: $sansBold;
+    }
+  }
+}
+
+div.alert {
+  margin: 0 1em;
+
+  &.alert-danger {
+    background-color: $red10 !important;
+    border-color: $red !important;
+    color: $black80 !important;
+
+    a {
+      font-family: $sansBold;
+      color: $black80 !important;
+      text-decoration: underline;
+      text-decoration-thickness: min(2px, max(1px, 2px));
+      text-underline-offset: 3px;
+      text-decoration-color: $black10;
+
+      &:hover {
+        color: $black80;
+        text-decoration: underline;
+        text-decoration-thickness: min(2px, max(1px, 2px));
+        text-underline-offset: 3px;
+        text-decoration-color: $black20;
+      }
+    }
+  }
+}
+
+.breadcrumb {
+  background-color: $gray6;
+}
+
+.badge {
+  font-family: $sansBold;
+  font-weight: 400;
+}
+
+.homepage-splash-lead-copy {
+  background-color: rgba($purple120, 0.9);
+  font-family: $displayBold;
+}
+
+#footer.homepage-footer {
+  background: $purple;
+}
+
+body [class*='ramp--'] {
+  font-family: $sansRegular;
+}
+
+.ramp--all-components {
+  .ramp--rails-title h2 {
+    font-family: $displayBold !important;
+    font-size: 1.618rem;
+    color: $black;
+    margin-top: 1.618rem;
+  }
+
+  .nav.nav-tabs .nav-item[aria-selected='true']::after {
+    background-color: $purple60 !important;
+  }
+}
+
+.ramp--itemview {
+  margin: 1.618em 0;
+
+  ul.ramp--structured-nav__list .ramp--structured-nav__section {
+    &[class*='ramp--'] {
+      &.active {
+        font-family: $sansBold !important;
+      }
+    }
+
+    button:hover {
+      background-color: $purple10 !important;
+    }
+  }
+}
+
+.ramp--metadata-display {
+  .ramp--metadata-display-content {
+    dt {
+      font-weight: 400 !important;
+      font-family: $sansBold;
+    }
+
+    a {
+      color: $purple !important;
+    }
+  }
+}

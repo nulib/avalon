@@ -1,0 +1,72 @@
+.btn {
+  border-radius: 0;
+}
+
+.btn-primary {
+  background-color: $purple;
+  border-color: $purple;
+  color: $purple10 !important;
+
+  &:hover,
+  &:focus {
+    background-color: $purple120 !important;
+    border-color: $purple120 !important;
+    color: $white !important;
+  }
+}
+
+.btn-link {
+  color: $purple;
+  text-decoration: none;
+
+  &:hover {
+    color: $purple;
+    text-decoration: underline;
+    text-decoration-thickness: min(2px, max(1px, 2px));
+    text-underline-offset: 3px;
+    text-decoration-color: $purple10;
+  }
+}
+
+.btn-outline,
+.btn-outline-primary,
+.btn-outline-secondary {
+  background-color: $gray6;
+  border-color: $black10;
+  color: $black80;
+
+  &:hover,
+  &:focus {
+    color: $black80;
+    border-color: $black20;
+  }
+
+  i,
+  svg {
+    color: $purple !important;
+  }
+}
+
+.btn-group {
+  &.btn-group-toggle {
+    .btn {
+      &.sort-btn.active {
+        background: $purple !important;
+        border-color: $purple !important;
+        color: $purple10 !important;
+      }
+
+      background: transparent !important;
+      border-color: $black10 !important;
+      color: $black80 !important;
+
+      border-radius: 0;
+    }
+  }
+}
+
+#content {
+  .btn-outline-secondary {
+    @extend .btn-outline-secondary;
+  }
+}
