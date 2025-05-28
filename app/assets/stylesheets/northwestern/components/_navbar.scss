@@ -1,25 +1,56 @@
 .navbar {
-  background-color: $brand-primary;
+  background-color: $gray6 !important;
   font-family: $sans;
 
   .navbar-nav .nav-item {
     &.active {
       .nav-link {
-        background-color: $purple120;
-        border-color: $purple120;
-        color: $white;
+        color: $purple120;
+        background-color: transparent !important;
       }
     }
 
     .nav-link {
-      color: $purple10;
+      color: $purple;
+      background-color: transparent !important;
 
       &:hover,
       &:focus {
-        background-color: $purple120;
-        border-color: $purple120;
-        color: $white;
+        color: $purple120;
+        background-color: transparent !important;
       }
+    }
+  }
+
+  .navbar-logo {
+    width: 170px;
+    height: 21px;
+    display: inline-block;
+    background: url('images/logos/northwestern.svg') no-repeat center;
+  }
+}
+
+button.navbar-toggler {
+  background: $purple120 !important;
+}
+
+@media screen and (max-width: 71.25em) {
+  .navbar .navbar-header {
+    background: $purple !important;
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 1rem;
+    }
+
+    .navbar-brand {
+      width: 170px;
+      height: 21px;
+      display: inline-block;
+      background-color: transparent !important;
+      background: url('images/logos/northwestern.svg') no-repeat center;
     }
   }
 }
@@ -32,4 +63,8 @@
 
 .manage-dropdown-menu {
   background-color: $purple !important;
+}
+
+#header-navbar {
+  margin: 0 !important;
 }
