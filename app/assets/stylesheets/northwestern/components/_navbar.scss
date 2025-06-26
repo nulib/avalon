@@ -31,7 +31,6 @@
 }
 
 button.navbar-toggler {
-  background: $purple120 !important;
 }
 
 @media screen and (max-width: 71.25em) {
@@ -58,11 +57,28 @@ button.navbar-toggler {
 // custom manage button updates
 
 .manage-btn {
-  @extend .btn-primary;
+  // @extend .btn-primary;
+  color: $purple !important;
+  background: transparent;
+
+  &:hover,
+  &:focus {
+    background: transparent !important;
+    color: $purple120 !important;
+  }
 }
 
-.manage-dropdown-menu {
-  background-color: $purple !important;
+ul.manage-dropdown-menu {
+  background-color: $gray6 !important;
+
+  li {
+    a {
+      color: $purple !important;
+      font-family: $sansRegular;
+      font-size: 16px;
+      padding: 0.5rem 1rem;
+    }
+  }
 }
 
 #header-navbar {
