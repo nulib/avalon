@@ -3,14 +3,6 @@ main {
   font-family: $sansRegular;
 }
 
-main .container-md {
-  display: flex;
-
-  @media screen and (max-width: 71.25em) {
-    flex-wrap: wrap;
-  }
-}
-
 .hide-label,
 .hide-text {
   position: absolute;
