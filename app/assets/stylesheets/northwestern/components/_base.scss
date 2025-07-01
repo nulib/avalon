@@ -184,3 +184,7 @@ body [class*='ramp--'] {
     }
   }
 }
+
+div.form-group:has(> #link-object-manifest) {
+  display: none;
+}
