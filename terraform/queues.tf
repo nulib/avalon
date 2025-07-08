@@ -1,6 +1,8 @@
 locals {
   queues = {
     # queue name => visibility timeout in seconds
+    active_storage_analysis         = 60,
+    active_storage_purge            = 60,
     batch_ingest                    = 3600,
     bulk_access_control             = 300,
     create_adaptive_playlist        = 30,
@@ -24,7 +26,8 @@ locals {
 
 resource "aws_sqs_queue" "avr_dead_letter_queue" {
   name     = "${var.app_name}-dead_letter_queue"
-  }
+}
+
 resource "aws_sqs_queue" "active_job_queue" {
   for_each                      = local.queues
   name                          = "${var.app_name}-${each.key}"
