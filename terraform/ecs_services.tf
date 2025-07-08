@@ -2,6 +2,7 @@ locals {
 
   container_config = {
     active_storage_bucket   = aws_s3_bucket.avr_active_storage.bucket
+    additional_hosts        = var.additional_hosts
     app_name                = var.app_name
     aws_region              = local.aws_region
     database_url            = "postgresql://${var.app_name}:${module.db_schema.password}@${module.data_services.outputs.postgres.address}:${module.data_services.outputs.postgres.port}/${var.app_name}"

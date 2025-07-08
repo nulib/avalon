@@ -4,6 +4,11 @@ locals {
   streaming_certificate_domain = var.streaming_certificate_domain == "" ? "*.${trimsuffix(module.core.outputs.vpc.public_dns_zone.name, ".")}" : var.streaming_certificate_domain
 }
 
+variable "additional_hosts" {
+  type    = string
+  default = ""
+}
+
 variable "agentless_sso_key" {
   type = string
 }

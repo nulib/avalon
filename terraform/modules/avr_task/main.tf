@@ -24,6 +24,7 @@ resource "aws_ecs_task_definition" "this_task_definition" {
         { name = "LTI_AUTH_KEY",             value = var.container_config.lti_auth_key },
         { name = "LTI_AUTH_SECRET",          value = var.container_config.lti_auth_secret },
         { name = "RACK_ENV",                 value = "production" },
+        { name = "RAILS_ADDITIONAL_HOSTS",   value = var.container_config.additional_hosts },
         { name = "RAILS_LOG_TO_STDOUT",      value = "true"},
         { name = "RAILS_LOG_WITH_LOGRAGE",   value = "true"},
         { name = "RAILS_SERVE_STATIC_FILES", value = "true"},
