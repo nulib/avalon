@@ -44,12 +44,12 @@ module MasterFileBehavior
       flash << common.merge(url: d.streaming_url(false))
       hls << common.merge(url: d.streaming_url(true))
     end
-    if hls.length > 1
-      hls << { quality: 'auto',
-               mimetype: hls.first[:mimetype],
-               format: hls.first[:format],
-               url: hls_manifest_master_file_url(id: id, quality: 'auto') }
-    end
+    # if hls.length > 1
+    #   hls << { quality: 'auto',
+    #            mimetype: hls.first[:mimetype],
+    #            format: hls.first[:format],
+    #            url: hls_manifest_master_file_url(id: id, quality: 'auto') }
+    # end
 
     # Sorts the streams in order of quality, note: Hash order only works in Ruby 1.9 or later
     flash = sort_streams flash
