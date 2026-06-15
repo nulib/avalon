@@ -1,4 +1,4 @@
-# Copyright 2011-2025, The Trustees of Indiana University and Northwestern
+# Copyright 2011-2026, The Trustees of Indiana University and Northwestern
 #   University.  Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #
@@ -226,7 +226,7 @@ unless options[:skip_identification]
     end
   else
     require 'httpx'
-    http = HTTPX.plugin(:stream)
+    http = HTTPX.plugin(:stream).plugin(:basic_auth).basic_auth(ActiveFedora.fedora_config.credentials[:user], ActiveFedora.fedora_config.credentials[:password])
     http = http.with(headers: {"prefer" => "return=representation; include=\"http://www.w3.org/ns/ldp#PreferContainment\"; omit=\"http://www.w3.org/ns/ldp#PreferMembership\"", "accept" => "application/n-triples, */*;q=0.5"})
 
     unless options[:skip_root_node]
