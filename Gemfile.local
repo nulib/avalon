@@ -1,0 +1,17 @@
+gem 'aws-sdk-cloudwatchevents'
+gem 'aws-sdk-cloudwatchlogs'
+gem 'aws-sdk-lambda'
+gem 'aws-sdk-mediaconvert'
+gem 'aws-sdk-ssm'
+gem 'ezid-client'
+gem 'honeybadger', '~> 4.0'
+gem 'omniauth-nusso', git: 'https://github.com/nulib/omniauth-nusso', tag: 'v0.2.0'
+
+group :aws do
+  gem 'shoryuken'
+end
+
+group :development do
+  gem 'guard-puma'
+  gem 'guard-process'
+end
