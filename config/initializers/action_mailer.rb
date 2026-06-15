@@ -7,7 +7,6 @@ ActiveSupport.on_load(:action_mailer) do
   when :aws_sdk
     require 'aws-sdk-rails'
     require 'aws-actionmailer-ses'
-
     ActionMailer::Base.delivery_method = :ses_v2
     ActionMailer::Base.ses_v2_settings = Settings.email.config.to_h
   when :smtp

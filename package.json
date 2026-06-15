@@ -14,6 +14,7 @@
     "@github/auto-complete-element": "^3.8.0",
     "@popperjs/core": "^2.11.8",
     "@samvera/ramp": "^5.1.0",
+    "@swc/core": "^1.3.0",
     "babel-loader": "^10.0.0",
     "babel-plugin-dynamic-import-node": "^2.3.3",
     "babel-plugin-macros": "^3.1.0",
@@ -22,12 +23,12 @@
     "compression-webpack-plugin": "^12.0.0",
     "core-js": "3",
     "cropperjs": "^1.5.5",
-    "css-loader": "^6.8.1",
+    "css-loader": "^7.0.0",
     "css-minimizer-webpack-plugin": "^8.0.0",
     "hls.js": "https://github.com/avalonmediasystem/hls.js#stricter_ts_probing",
     "html-webpack-plugin": "^5.3.2",
     "js-datepicker": "^5.18.4",
-    "mini-css-extract-plugin": "^2.7.6",
+    "mini-css-extract-plugin": "^2.0.0",
     "moment": "^2.29.4",
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
@@ -35,27 +36,31 @@
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.1.0",
-    "react-on-rails": "^14.2.1",
+    "react-on-rails": "^16.6.0",
     "react-structural-metadata-editor": "https://github.com/avalonmediasystem/react-structural-metadata-editor#avalon-8.2",
     "sass": "^1.93.2",
-    "sass-loader": "^13.3.2",
+    "sass-loader": "^16.0.0",
+    "shakapacker": "10.1.0",
     "sortablejs": "^1.15.3",
     "stream-browserify": "^3.0.0",
-    "style-loader": "^3.3.3",
-    "terser-webpack-plugin": "^5.3.17",
+    "style-loader": "^4.0.0",
+    "swc-loader": "^0.2.0",
+    "terser-webpack-plugin": "^5.3.1",
     "tom-select": "^2.4.3",
     "url-search-params-polyfill": "^7.0.1",
     "util": "^0.12.5",
     "video.js": "^8.10.0",
-    "webpack": "^5.101.3",
-    "webpack-assets-manifest": "^6.5.0",
-    "webpack-cli": "^6.0.1",
-    "webpack-merge": "^5.9.0"
+    "webpack": "^5.101.0",
+    "webpack-assets-manifest": "^6.0.0",
+    "webpack-cli": "^6.0.0",
+    "webpack-merge": "^6.0.0",
+    "webpack-subresource-integrity": "^5.1.0"
   },
   "devDependencies": {
     "@bahmutov/cy-grep": "^3.0.4",
     "cypress": "^15.14.1",
-    "cypress-file-upload": "^5.0"
+    "cypress-file-upload": "^5.0",
+    "webpack-dev-server": "^5.2.2"
   },
   "resolutions": {
     "glob-parent": "^6.0.2",
@@ -76,5 +81,8 @@
   "packageManager": "yarn@1.22.19",
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "name": "app",
+  "private": true,
+  "version": "0.1.0"
 }

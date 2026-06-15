@@ -9,4 +9,3 @@ config.cache_store = :redis_cache_store, {
   url: redis_url,
   namespace: 'avalon'
 }
-
