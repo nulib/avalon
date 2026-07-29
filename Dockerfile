@@ -17,6 +17,17 @@ RUN        apt-get update && apt-get upgrade -y build-essential && apt-get autor
 COPY        Gemfile ./Gemfile
 COPY        Gemfile.lock ./Gemfile.lock
 
+# ---- AVR delta 1 of 2 ---------------------------------------------------
+# AVR's own gems are declared in Gemfile.local, which upstream's Gemfile evals
+# if the file exists. It has to be present before `bundle install` runs in the
+# bundle-dev and bundle-prod stages, or bundler resolves a Gemfile that doesn't
+# mention them and never checks out the git-sourced ones. That failure is not
+# visible here -- `bundle install` succeeds -- it surfaces later in the assets
+# stage, where `COPY . .` finally brings Gemfile.local in and `bundle exec`
+# dies with "omniauth-nusso ... is not yet checked out".
+COPY        Gemfile.local ./Gemfile.local
+# ---- end AVR delta 1 of 2 ----------------------------------------------
+
 RUN         gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)" \
          && bundle config build.nokogiri --use-system-libraries
 
@@ -154,6 +165,23 @@ LABEL       project=avalon
 COPY        --from=assets --chown=app:app /home/app/avalon /home/app/avalon
 COPY        --from=bundle-prod --chown=app:app /usr/local/bundle /usr/local/bundle
 
+# ---- AVR delta 2 of 2 ---------------------------------------------------
+# Apart from delta 1 of 2 in the bundle stage, everything above this line is
+# upstream Avalon's Dockerfile, unmodified. Keep it that way: on upgrade, take
+# upstream's file wholesale and re-apply only these two blocks.
+# See docs/AVR_UPGRADE.md.
+#
+# config/puma_container.rb writes its pidfile here.
+RUN         mkdir -p /var/run/puma && chown root:app /var/run/puma && chmod 0775 /var/run/puma
+
 USER        app
 ENV         RAILS_ENV=production
 ENV         NODE_ENV=production
+
+# Upstream's image has no CMD; it's driven by docker-compose. AVR runs on
+# ECS, where one image serves the web, worker, and migrate roles, selected
+# by $CONTAINER_ROLE (set per task definition in terraform/modules/avr_task).
+EXPOSE      3000
+CMD         ["bin/boot_container"]
+HEALTHCHECK --start-period=60s CMD curl -f http://localhost:3000/ || exit 1
+# ---- end AVR delta 2 of 2 ----------------------------------------------
