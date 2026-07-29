@@ -1,4 +1,19 @@
 # Avalon Media System
+
+> **This is AVR**, Northwestern University Libraries' deployment of Avalon Media
+> System. It is a fork, but it is maintained as a linear stack of patches on top
+> of an upstream release tag rather than as a divergent branch. **Read these
+> before changing anything:**
+>
+> | | |
+> | --- | --- |
+> | [docs/AVR_UPGRADE.md](docs/AVR_UPGRADE.md) | How to turn a new Avalon release into an AVR release. Start here. |
+> | [docs/AVR_CUSTOMIZATIONS.md](docs/AVR_CUSTOMIZATIONS.md) | Every way AVR differs from upstream, why, and the known gaps. |
+> | [docs/AVR_DEVELOPMENT.md](docs/AVR_DEVELOPMENT.md) | Running AVR in development. Supersedes the Docker instructions below. |
+>
+> The rest of this README is upstream Avalon's and is left as-is so it keeps
+> merging cleanly.
+
 [![Build Status](https://travis-ci.org/avalonmediasystem/avalon.svg?branch=develop)](https://travis-ci.org/avalonmediasystem/avalon)
 [![Coverage Status](https://coveralls.io/repos/avalonmediasystem/avalon/badge.svg?branch=master&service=github)](https://coveralls.io/github/avalonmediasystem/avalon?branch=master)
 
