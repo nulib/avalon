@@ -56,13 +56,19 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if @user.persisted?
       flash[:success] = I18n.t "devise.omniauth_callbacks.success", :kind => auth_type
       sign_in @user, :event => :authentication
-      user_session[:virtual_groups] = @user.ldap_groups
+      # AVR: LDAP groups + the user's current Canvas courses.
+      user_session[:virtual_groups] = @user.virtual_groups
       user_session[:full_login] = true
 
       if auth_type == 'lti'
         user_session[:lti_group] = request.env["omniauth.auth"].extra.context_id
-        user_session[:virtual_groups] += [user_session[:lti_group]]
-        user_session[:full_login] = false
+        # AVR: upstream adds the launch's context_id as a virtual group here and
+        # marks the session as a partial login, which Ability downgrades to
+        # read-only. Neither applies to AVR: an LTI launch at Northwestern is
+        # backed by a real NetID, and course access already comes from
+        # User#virtual_groups, which covers every enrollment rather than just
+        # the course the launch came from. :lti_group is still set -- the nav
+        # bar and the LTI landing redirect use it to scope the user's view.
       end
     end
 
