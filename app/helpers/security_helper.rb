@@ -16,7 +16,7 @@ module SecurityHelper
   include CdlHelper
 
   def add_stream_cookies(stream_info)
-    SecurityHandler.secure_cookies(target: stream_info[:id], request_host: request.server_name).each_pair do |name, value|
+    SecurityHandler.secure_cookies(target: stream_info[:target], request_host: request.server_name).each_pair do |name, value|
       cookies[name] = value
     end
   end
@@ -56,10 +56,10 @@ module SecurityHelper
 
   # Optional token kwarg used if passed in
   def add_stream_url(stream_info, token: nil)
-    add_stream_cookies(id: stream_info[:id])
+    add_stream_cookies(id: stream_info[:id], target: stream_info[:target])
     [:stream_hls].each do |protocol|
       stream_info[protocol].each do |quality|
-        quality[:url] = SecurityHandler.secure_url(quality[:url], session: session, target: stream_info[:id], protocol: protocol, token: token)
+        quality[:url] = SecurityHandler.secure_url(quality[:url], session: session, target: stream_info[:target], protocol: protocol, token: token)
       end
     end
   end

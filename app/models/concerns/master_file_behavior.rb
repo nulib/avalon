@@ -70,9 +70,21 @@ module MasterFileBehavior
       caption_paths
     end
 
+    if self&.encode_record&.create_options
+      begin
+        create_options = JSON.parse(self.encode_record.create_options)
+        target = create_options["output_prefix"].strip("/") || self.id
+      rescue JSON::ParserError
+        target = self.id
+      end
+    else
+      target = self.id
+    end
+
     # Returns the hash
     return({
       id: self.id,
+      target: target,
       label: structure_title,
       is_video: is_video?,
       poster_image: poster_path,

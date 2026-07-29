@@ -599,7 +599,8 @@ class MasterFile < ActiveFedora::Base
       options[:non_temp_file] = true
     end
     response = { source: source&.location }.merge(options)
-    return response if response[:source].to_s =~ %r(^https?://)
+    response_uri = URI(response[:source])
+    return response if source.exist? && response_uri.scheme.match?(/^https?$/) && !response_uri.path.end_with?('.m3u8')
 
     unless File.exist?(response[:source])
       Rails.logger.warn("Masterfile `#{file_location}` not found. Extracting via HLS.")
@@ -612,13 +613,15 @@ class MasterFile < ActiveFedora::Base
   def create_frame_source_hls_temp_file(offset)
     playlist_url = self.hls_streams.find { |d| d[:quality] == 'high' || d[:quality] == 'medium' || d[:quality] == 'low' }[:url]
     secure_url = SecurityHandler.secure_url(playlist_url, target: self.id)
+    Rails.logger.info(secure_url)
     playlist = Avalon::M3U8Reader.read(secure_url)
     details = playlist.at(offset)
 
     # Fixes https://github.com/avalonmediasystem/avalon/issues/3474
     target_location = File.basename(details[:location]).split('?')[0]
     target = File.join(Dir.tmpdir, target_location)
-    File.open(target,'wb') { |f| URI.open(details[:location], "Referer" => Rails.application.routes.url_helpers.root_url) { |io| f.write(io.read) } }
+    secure_url = SecurityHandler.secure_url(details[:location], target: self.id)
+    File.open(target,'wb') { |f| URI.open(secure_url, "Referer" => Rails.application.routes.url_helpers.root_url) { |io| f.write(io.read) } }
     return target, details[:offset]
   end
 
