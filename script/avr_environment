@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+container_config=$(aws ecs describe-task-definition --task-definition avr-webapp | jq '[.taskDefinition.containerDefinitions[0].environment[] | {name: .name, value: .value}]')
+parameter_config=$(aws ssm get-parameters-by-path --path /avr/Settings/ --recursive --with-decryption | jq '[.Parameters[] | . as $item | ($item.Name | split("/") as $a | $a[($a | index("Settings")):] | join("__") | ascii_upcase) as $key | { name: $key, value: $item.Value }]')
+
+jq -rn --argjson cc "$container_config" --argjson pc "$parameter_config" '($cc+$pc) | sort_by(.name)[] | "export \(.name)=\"\(.value)\""' | sed 's/shoryuken/inline/' | sed '/SSM_PARAM_PATH/d'

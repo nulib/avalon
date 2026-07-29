@@ -11,7 +11,11 @@ Config.setup do |config|
   # config.overwrite_arrays = true
 
   # Load environment variables from the `ENV` object and override any settings defined in files.
-  config.use_env = true
+  # AVR: off in test. Developers run against a live AWS environment with a
+  # large set of SETTINGS__* variables exported (see .envrc), and letting those
+  # bleed into the test environment makes specs pass or fail depending on whose
+  # shell they run in.
+  config.use_env = !Rails.env.test?
 
   # Define ENV variable prefix deciding which variables to load into config.
   config.env_prefix = 'SETTINGS'
