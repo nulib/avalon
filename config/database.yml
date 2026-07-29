@@ -1,17 +1,24 @@
-# SQLite version 3.x
-#   gem install sqlite3
+# AVR runs on PostgreSQL everywhere.
 #
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
+# Deployed environments get a DATABASE_URL (from terraform, via the ECS task
+# definition), which Rails applies on top of whatever is here -- so the
+# production block below is nominal and the settings that matter are the ones
+# for development and test.
 #
+# Upstream Avalon ships a SQLite config for all three environments. Keeping the
+# structure identical to upstream's makes the delta easy to re-apply.
 default: &default
-  adapter: sqlite3
-  pool: 10
-  timeout: 10000
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
+  username: <%= ENV.fetch("DB_USER") { "docker" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { "d0ck3r" } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
 
 development:
   <<: *default
-  database: db/development.sqlite3
+  database: avr-development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -19,9 +26,9 @@ development:
 test:
   <<: *default
   pool: 20
-  database: db/test.sqlite3
+  database: avr-test
 
 production:
   <<: *default
   pool: 20
-  database: db/production.sqlite3
+  database: avr

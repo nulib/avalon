@@ -107,3 +107,7 @@ config/shoryuken.yml
 # AVR: Gemfile.local is upstream's "local, uncommitted gems" escape hatch, but
 # AVR's extra gems are part of the product and have to ship. Un-ignore it.
 !Gemfile.local
+
+# AVR: sprockets output, and ActiveEncode working files
+public/assets
+/encodes
