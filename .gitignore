@@ -93,3 +93,10 @@ yarn-debug.log*
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# AVR: Terraform (see terraform/README.md)
+terraform/**/node_modules
+terraform/package
+terraform/.terraform
+terraform/**/*.tfvars
+terraform/*.plan

@@ -24,4 +24,5 @@ if server_options
   # See https://blog.saeloun.com/2019/10/31/rails-6-adds-guard-against-dns-rebinding-attacks.html
   Rails.application.config.hosts << server_options[:host]
   Rails.application.config.hosts << ENV['RAILS_ADDITIONAL_HOSTS'] if ENV['RAILS_ADDITIONAL_HOSTS'].present?
+  Rails.application.config.hosts << IPAddr.new(ENV['RAILS_ADDITIONAL_IPS']) if ENV['RAILS_ADDITIONAL_IPS'].present?
 end
