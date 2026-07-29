@@ -67,7 +67,10 @@ class ApplicationController < ActionController::Base
     params.permit!
     query_result = ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:id]}"}, rows: 1, fl: 'id')
 
-    raise ActiveFedora::ObjectNotFoundError if query_result.empty?
+    # Fall through to the normal (non-v4) id lookup rather than 404ing here, so
+    # that other before_actions -- e.g. the AVR legacy redirect filter -- still
+    # get a chance to handle the request.
+    return if query_result.empty?
 
     new_id = query_result.first['id']
     new_content_id = params[:content] ? ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:content]}"}, rows: 1, fl: 'id').first['id'] : nil
