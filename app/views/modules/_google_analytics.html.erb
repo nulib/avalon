@@ -13,12 +13,13 @@ Unless required by applicable law or agreed to in writing, software distributed
   specific language governing permissions and limitations under the License.
 ---  END LICENSE_HEADER BLOCK  ---
 %>
-<% if Settings.google_analytics_tracking_id.present? %>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=<%= Settings.google_analytics_tracking_id %>"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '<%= Settings.google_analytics_tracking_id %>');
-  </script>
-<% end %>
+<%#
+  AVR: Northwestern's web analytics run through a Google Tag Manager container
+  rather than a bare GA4 property, so the container snippet replaces upstream's
+  gtag loader. Configured by Settings.analytics_container_id (a GTM-XXXXXXX id).
+
+  This overrides upstream's partial rather than editing the two layouts, which
+  already render it inside <head>. Those layouts change most releases; this
+  file doesn't.
+%>
+<%= render_google_tag_manager %>
