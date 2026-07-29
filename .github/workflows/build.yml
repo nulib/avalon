@@ -1,0 +1,170 @@
+---
+# AVR build/test/deploy pipeline. Replaces upstream Avalon's .circleci/config.yml.
+#
+# Branch conventions:
+#   nu/deploy/<env>  -> build image, push to ECR as :<env>, redeploy ECS services
+#   nu/build/<env>   -> build and push the image only, no deploy
+#   anything else    -> run the test suite
+#
+# The service container versions below must track upstream Avalon's
+# .circleci/config.yml. When you rebase AVR onto a new Avalon release, diff
+# that file and update `services:` to match -- Avalon's Solr configset and
+# Fedora client are both version-sensitive. See docs/AVR_UPGRADE.md.
+name: Build and Deploy
+on: [push]
+jobs:
+  test:
+    if: ${{ ! (startsWith(github.ref, 'refs/heads/nu/deploy/') || startsWith(github.ref, 'refs/heads/nu/build/')) }}
+    runs-on: ubuntu-latest
+    env:
+      ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: deterministickey1234
+      ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: derivationsalt1234
+      ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: primarykey1234
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      AWS_REGION: us-east-1
+      BUNDLE_WITH: aws:development:test:postgres
+      BUNDLE_WITHOUT: production
+      DATABASE_URL: postgresql://docker:d0ck3r@localhost:5432/avr-test
+      FEDORA_BASE_PATH: /test
+      FEDORA_TIMEOUT: 300
+      FEDORA_URL: http://fedoraAdmin:fedoraAdmin@localhost:8080/fcrepo/rest
+      RACK_ENV: test
+      RAILS_ENV: test
+    services:
+      db:
+        image: postgres:10-alpine
+        env:
+          POSTGRES_USER: docker
+          POSTGRES_PASSWORD: d0ck3r
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 5
+      fcrepo:
+        image: fcrepo/fcrepo:6.5-tomcat9
+        env:
+          CATALINA_OPTS: -Dfcrepo.autoversioning.enabled=false
+        ports:
+          - 8080:8080
+      minio:
+        image: bitnami/minio
+        env:
+          MINIO_ROOT_USER: minio
+          MINIO_ROOT_PASSWORD: minio123
+        ports:
+          - 9002:9000
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+      zookeeper:
+        image: zookeeper:3.9
+        env:
+          ZOO_ADMINSERVER_ENABLED: false
+        ports:
+          - 2181:2181
+      solr:
+        image: solr:9
+        env:
+          SOLR_MODULES: analysis-extras,extraction
+          ZK_HOST: localhost:2181
+        ports:
+          - 8983:8983
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq --allow-releaseinfo-change
+          sudo apt-get install -y lsof mediainfo ffmpeg
+          sudo ln -sf /usr/bin/lsof /usr/sbin/lsof
+      - uses: ruby/setup-ruby@v1
+        with:
+          # Tracks the ruby image in the Dockerfile.
+          ruby-version: '4.0'
+          bundler-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          # Tracks the node image in the Dockerfile.
+          node-version: '24'
+          cache: 'yarn'
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
+      - name: Setup
+        run: |
+          cp -n config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
+          bundle exec rake db:setup zookeeper:upload zookeeper:create
+      - name: Run Spec Tests
+        run: bundle exec rspec -cf doc spec
+
+  publish:
+    if: ${{ (!github.event.pull_request) && (startsWith(github.ref, 'refs/heads/nu/deploy/') || startsWith(github.ref, 'refs/heads/nu/build/')) }}
+    runs-on: ubuntu-latest
+    env:
+      AWS_SDK_LOAD_CONFIG: 1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set DEPLOY_ENV from Branch Name
+        run: |
+          echo "DEPLOY_ENV=$(echo $BRANCH | awk -F/ '{print $NF}')" >> $GITHUB_ENV
+        env:
+          BRANCH: ${{ github.ref }}
+      - name: Configure AWS
+        run: .github/scripts/configure_aws.sh
+        env:
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          SECRETS: ${{ toJSON(secrets) }}
+      - run: echo "Building nulib/avr:${DEPLOY_ENV}"
+      - uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_LOGIN }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build, tag, and push image to Amazon ECR
+        run: |
+          docker build --push -t $ECR_REGISTRY/$ECR_REPOSITORY:$DEPLOY_ENV --target=prod .
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: avr
+
+  deploy:
+    needs: publish
+    if: ${{ ! startsWith(github.ref, 'refs/heads/nu/build/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Set DEPLOY_ENV from Branch Name
+        run: |
+          if [[ $BRANCH == 'refs/heads/master' ]]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_ENV=$(echo $BRANCH | awk -F/ '{print $NF}')" >> $GITHUB_ENV
+          fi
+        env:
+          BRANCH: ${{ github.ref }}
+      - name: Configure AWS
+        run: .github/scripts/configure_aws.sh
+        env:
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          SECRETS: ${{ toJSON(secrets) }}
+      - name: Update ECS Service
+        run: .github/scripts/update_ecs_service.sh
+        env:
+          ECS_CLUSTER: avr
+          ECS_CONTAINER: avr
+          ECS_SERVICE: avr-worker
+          ECS_TASK: avr-worker
+      - name: Notify Honeybadger
+        run: .github/scripts/honeybadger_deploy_notification.sh
+        env:
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_API_KEY }}
+          HONEYBADGER_REVISION: ${{ github.sha }}
