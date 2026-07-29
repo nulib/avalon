@@ -43,7 +43,45 @@ module Avalon
 
     # config.eager_load_paths << Rails.root.join("extras")
 
-    config.active_job.queue_adapter = :sidekiq
+    # AVR: upstream hardcodes `:sidekiq` here. AVR runs its jobs on SQS via
+    # Shoryuken, and queue names are namespaced per environment so that staging
+    # and production can share an AWS account. All of it is driven from
+    # Settings (i.e. from SSM in a deployed environment), so this file needs no
+    # further AVR changes:
+    #
+    #   active_job:
+    #     queue_adapter: shoryuken     # default: sidekiq
+    #     queue_name_prefix: avr-staging
+    #     queue_name_delimiter: '-'    # default: '-' when a prefix is set
+    #     default_queue_name: default
+    #
+    # lib/tasks/shoryuken.rake reads the resulting queue names back out to
+    # generate config/shoryuken.yml and to create the SQS queues.
+    if Settings&.active_job&.queue_adapter.present?
+      adapter = Settings.active_job.queue_adapter.to_s
+      begin
+        require adapter
+      rescue LoadError
+        # Adapters shipped with ActiveJob need no explicit require.
+      end
+      config.active_job.queue_adapter = adapter
+    else
+      config.active_job.queue_adapter = :sidekiq
+    end
+
+    config.active_job.queue_name_prefix = Settings&.active_job&.queue_name_prefix
+    config.active_job.queue_name_delimiter =
+      Settings&.active_job&.queue_name_delimiter ||
+      (config.active_job.queue_name_prefix.present? ? '-' : nil)
+
+    # ActiveJob::Base picks up queue_name_prefix; ActionMailer::Base does not,
+    # so its queue name has to be set without the prefix.
+    default_queue_name = Settings&.active_job&.default_queue_name || 'default'
+    ActionMailer::Base.deliver_later_queue_name = default_queue_name
+    ActiveJob::Base.queue_name = [
+      config.active_job.queue_name_prefix,
+      default_queue_name
+    ].compact_blank.join(config.active_job.queue_name_delimiter.to_s)
 
     config.action_dispatch.default_headers = { 'X-Frame-Options' => 'ALLOWALL' }
 

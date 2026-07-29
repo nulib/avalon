@@ -1,0 +1,6 @@
+---
+concurrency: 20
+queues:
+<% queue_names.each do |queue_name| %>
+  - ['<%=queue_name%>', 1]
+<% end %>
