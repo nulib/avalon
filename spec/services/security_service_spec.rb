@@ -52,12 +52,19 @@ Lw03eHTNQghS0A==
         allow(Settings.streaming).to receive(:http_base).and_return("http://localhost:3000/streams")
       end
       context 'when hls' do
+        # AVR signs the HLS URL, so it gains CloudFront query params.
         it 'changes it into an hls url' do
-          expect(subject.rewrite_url(url, context)).to eq "http://localhost:3000/streaming/id"
+          expect(subject.rewrite_url(url, context)).to start_with "http://localhost:3000/streaming/id?"
         end
 
         it 'encodes spaces in the URL' do
-          expect(subject.rewrite_url(url_with_spaces, context)).to eq "http://localhost:3000/streaming/file%20with%20spaces"
+          expect(subject.rewrite_url(url_with_spaces, context)).to start_with "http://localhost:3000/streaming/file%20with%20spaces?"
+        end
+
+        it 'signs the url' do
+          params = CGI.parse(URI(subject.rewrite_url(url, context)).query)
+          expect(params.keys).to include('Expires', 'Signature', 'Key-Pair-Id')
+          expect(params['Key-Pair-Id']).to eq ['signing_key_id']
         end
       end
       context 'when not hls' do
@@ -107,6 +114,44 @@ Lw03eHTNQghS0A==
         expect(cookies.first[1][:value]).to be_present
         expect(cookies.first[1][:domain]).to be_present
         expect(cookies.first[1][:expires]).to be_present
+      end
+
+      # AVR customization
+      describe 'the cookie domain' do
+        let(:context) {{ target: 'abcd1234', request_host: request_host }}
+        let(:request_host) { 'avr.library.northwestern.edu' }
+
+        before do
+          allow(Settings.streaming).to receive(:http_base)
+            .and_return("https://stream.avr.library.northwestern.edu/")
+        end
+
+        it 'is the longest suffix shared by the app and streaming hosts' do
+          expect(subject.create_cookies(context).values.first[:domain])
+            .to eq 'avr.library.northwestern.edu'
+        end
+
+        context 'when the hosts share only a parent domain' do
+          let(:request_host) { 'avr.library.northwestern.edu' }
+
+          before do
+            allow(Settings.streaming).to receive(:http_base)
+              .and_return("https://stream.avr-staging.library.northwestern.edu/")
+          end
+
+          it 'stops at the first differing label' do
+            expect(subject.create_cookies(context).values.first[:domain])
+              .to eq 'library.northwestern.edu'
+          end
+        end
+
+        context 'when the hosts share nothing' do
+          let(:request_host) { 'localhost' }
+
+          it 'is empty' do
+            expect(subject.create_cookies(context).values.first[:domain]).to eq ''
+          end
+        end
       end
     end
 
