@@ -14,6 +14,7 @@
 
 class ObjectsController < ApplicationController
   layout false, only: [:autocomplete]
+  before_action :maybe_redirect, only: [:show] # AVR: legacy URL redirects
 
   def show
     obj = fetch_proxy params[:id]

@@ -48,6 +48,24 @@ describe CatalogController do
         expect(response).to render_template('catalog/index')
         expect(assigns(:response).documents.count).to eql(0)
       end
+
+      # AVR customization
+      context "external redirects" do
+        let!(:collection) { FactoryBot.create(:collection) }
+        let!(:media_object) { FactoryBot.create(:published_media_object, collection: collection) }
+
+        it 'does not redirect when there is no redirect entry' do
+          get :index, params: { f: { collection_ssim: [collection.name] } }
+          expect(response).not_to have_http_status(:found)
+        end
+
+        it 'redirects when there is a redirect entry' do
+          Redirect.create!(id: collection.name, item_target: 'https://example.edu/1234')
+          get :index, params: { f: { collection_ssim: [collection.name] } }
+          expect(response).to redirect_to('https://example.edu/1234')
+        end
+      end
+
       context 'inherited hidden' do
         let!(:collection) { FactoryBot.create(:collection, default_hidden: true) }
 

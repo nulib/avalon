@@ -272,7 +272,26 @@ class ApplicationController < ActionController::Base
     fetch_object(id)
   end
 
+  # AVR: before_action filter for the show actions of anything addressed by an
+  # id. Content that has moved out of AVR keeps a Redirect row so that the old
+  # URLs in syllabi, course sites, and citations keep working. See Redirect.
+  def maybe_redirect
+    return if params[:id].blank?
+
+    redirect = Redirect.find_by(id: params[:id])
+    return if redirect.nil?
+
+    target = embed_request? ? redirect.embed_target : redirect.item_target
+    return if target.blank?
+
+    redirect_to(target, allow_other_host: true)
+  end
+
   private
+
+    def embed_request?
+      request.url =~ %r{master_files/.+/embed}
+    end
 
     def application_name
       Settings.name || 'Avalon Media System'
