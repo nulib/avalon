@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# One image serves all three ECS roles, selected by $CONTAINER_ROLE. See
+# terraform/modules/avr_task.
+#
+# `set -e` matters for the worker role: config/shoryuken.yml is generated at
+# boot and is gitignored, so it is NOT in the image. Without this, a failing
+# create_config was swallowed and the worker went on to exec shoryuken against
+# a file that didn't exist.
+set -e
+
+case "$CONTAINER_ROLE" in
+  "migrate")
+    bundle exec rake db:migrate zookeeper:upload zookeeper:create
+    ;;
+  "worker")
+    bundle exec rake shoryuken:create_config
+    exec bundle exec shoryuken --config=config/shoryuken.yml --no-daemon --rails
+    ;;
+  *)
+    exec bundle exec puma -C config/puma_container.rb
+    ;;
+esac
