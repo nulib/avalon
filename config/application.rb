@@ -127,6 +127,27 @@ module Avalon
 
     config.middleware.insert_before 0, TempfileFactory
 
+    # AVR: upstream lets Settings pick a service by name, but the services
+    # themselves still have to be declared in config/storage.yml, which is baked
+    # into the image. AVR needs the bucket and region to come from SSM at boot,
+    # so allow Settings to contribute service definitions too, e.g.
+    #
+    #   active_storage:
+    #     service: amazon
+    #     service_configurations:
+    #       amazon:
+    #         service: S3
+    #         bucket: avr-staging-uploads
+    #         region: us-east-1
+    if Settings&.active_storage&.service_configurations.present?
+      configs = Settings.active_storage.service_configurations.to_hash
+      if config.active_storage.service_configurations.is_a?(Hash)
+        config.active_storage.service_configurations.merge!(configs)
+      else
+        config.active_storage.service_configurations = configs
+      end
+    end
+
     config.active_storage.service = (Settings&.active_storage&.service.presence || "local").to_sym
   end
 end
