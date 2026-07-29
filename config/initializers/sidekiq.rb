@@ -13,6 +13,24 @@ end
 require 'sidekiq/web'
 Sidekiq::Web.disable(:sessions)
 
+# AVR: everything below registers periodic jobs with sidekiq-cron, which needs
+# a Redis-backed Sidekiq to schedule against. AVR runs its jobs on SQS via
+# Shoryuken, so there is nothing to register and the block below would only ever
+# log "Cannot create sidekiq-cron jobs". The equivalent scheduled work is driven
+# from AWS instead:
+#
+#   BatchScanJob                      -> terraform/batch_lambda.tf, triggered by
+#                                        S3 object-created in the dropbox bucket
+#   CleanupSessionJob                 -> EventBridge rule in terraform/maintenance.tf
+#
+# Known gap: CleanupStreamTokenJob and the IngestBatchStatusEmailJobs have no
+# AVR equivalent, so the stream_tokens table is never pruned and stalled-batch
+# notifications are never sent. See docs/AVR_CUSTOMIZATIONS.md.
+#
+# Guarded with an early return rather than commented out, so upstream's block
+# stays byte-identical and merges cleanly on the next release.
+return unless Rails.application.config.active_job.queue_adapter.to_s == 'sidekiq'
+
 require 'sidekiq/cron/web'
 Rails.application.config.to_prepare do
   begin
