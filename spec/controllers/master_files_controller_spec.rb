@@ -745,10 +745,19 @@ describe MasterFilesController do
       expect(response.content_type).to eq 'application/x-mpegURL; charset=utf-8'
     end
 
-    it 'returns a single quality HLS manifest' do
+    # AVR customization: a specific quality is served by redirecting to the
+    # pre-rendered playlist on CloudFront rather than by generating a manifest.
+    it 'redirects to the pre-rendered playlist for a single quality' do
       login_as :administrator
-      expect(get('hls_manifest', params: { id: master_file.id, quality: 'high' })).to have_http_status(:ok)
-      expect(response.content_type).to eq 'application/x-mpegURL; charset=utf-8'
+      get('hls_manifest', params: { id: master_file.id, quality: 'high' })
+      expect(response).to have_http_status(:redirect)
+      expect(response.location).to be_present
+    end
+
+    it 'returns not found for a quality with no derivative' do
+      login_as :administrator
+      expect { get('hls_manifest', params: { id: master_file.id, quality: 'nonesuch' }) }
+        .to raise_error(ActionController::RoutingError)
     end
 
     it 'returns a manifest if public' do

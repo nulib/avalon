@@ -250,11 +250,23 @@ class MasterFilesController < ApplicationController
       end
     else
       return head :unauthorized if cannot?(:read, @master_file)
-      @hls_streams = if quality == "auto"
-                       gather_hls_streams(@master_file)
-                     else
-                       hls_stream(@master_file, quality)
-                     end
+
+      # AVR: derivatives are transcoded by MediaConvert, which writes a real
+      # playlist file per quality to S3 alongside the segments, so for a
+      # specific quality there is nothing to generate -- redirect the player
+      # to the pre-rendered playlist on CloudFront (signed by SecurityService)
+      # rather than proxying a manifest we built ourselves. Only the 'auto'
+      # multivariant manifest still has to be assembled here, and only when
+      # MediaConvert didn't already produce one (see
+      # MasterFileBehavior#gather_hls_streams).
+      stream = hls_stream(@master_file, quality).first
+      if stream.nil?
+        raise ActionController::RoutingError, 'Not Found' unless quality == 'auto'
+
+        @hls_streams = gather_hls_streams(@master_file)
+      else
+        redirect_to(stream[:url], allow_other_host: true)
+      end
     end
   end
 
