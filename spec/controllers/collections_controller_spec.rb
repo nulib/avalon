@@ -156,6 +156,21 @@ describe CollectionsController, type: :controller do
         expect(assigns(:doc_presenter).id).to eq collection.id
         end
     end
+
+    # AVR customization
+    context "external redirects" do
+      let!(:collection) { FactoryBot.create(:collection) }
+
+      it 'does not redirect when there is no redirect entry' do
+        get :show, params: { id: collection.id, format: 'json' }
+        expect(response).not_to have_http_status(:found)
+      end
+
+      it 'redirects when there is a redirect entry' do
+        Redirect.create!(id: 'abc1234', item_target: 'https://example.edu/1234')
+        expect(get(:show, params: { id: 'abc1234' })).to redirect_to('https://example.edu/1234')
+      end
+    end
   end
 
   describe '#poster' do

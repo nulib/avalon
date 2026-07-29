@@ -357,6 +357,34 @@ describe MasterFilesController do
         expect(response.response_code).to eq(410)
       end
     end
+
+    # AVR customization
+    context "external redirects" do
+      let(:master_file) { FactoryBot.create(:master_file, :with_media_object) }
+      let(:item_target) { 'https://example.edu/1234' }
+      let(:embed_target) { 'https://example.edu/embed/1234' }
+
+      it 'does not redirect when there is no redirect entry' do
+        expect(get(:show, params: { id: master_file.id }))
+          .to redirect_to(id_section_media_object_path(master_file.media_object.id, master_file.id))
+      end
+
+      it 'redirects when there is a redirect entry' do
+        Redirect.create!(id: 'abc1234', item_target: item_target, embed_target: embed_target)
+        expect(get(:show, params: { id: 'abc1234' })).to redirect_to(item_target)
+      end
+
+      it 'sends an embed request to the embed target' do
+        Redirect.create!(id: 'abc1234', item_target: item_target, embed_target: embed_target)
+        expect(get(:embed, params: { id: 'abc1234' })).to redirect_to(embed_target)
+      end
+
+      it 'does not redirect an embed request with no embed target' do
+        Redirect.create!(id: master_file.id, item_target: item_target, embed_target: nil)
+        get(:embed, params: { id: master_file.id })
+        expect(response.location).not_to eq(item_target)
+      end
+    end
   end
 
   describe "#embed" do

@@ -67,7 +67,10 @@ class ApplicationController < ActionController::Base
     params.permit!
     query_result = ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:id]}"}, rows: 1, fl: 'id')
 
-    raise ActiveFedora::ObjectNotFoundError if query_result.empty?
+    # Fall through to the normal (non-v4) id lookup rather than 404ing here, so
+    # that other before_actions -- e.g. the AVR legacy redirect filter -- still
+    # get a chance to handle the request.
+    return if query_result.empty?
 
     new_id = query_result.first['id']
     new_content_id = params[:content] ? ActiveFedora::SolrService.query(%{identifier_ssim:"#{params[:content]}"}, rows: 1, fl: 'id').first['id'] : nil
@@ -269,7 +272,26 @@ class ApplicationController < ActionController::Base
     fetch_object(id)
   end
 
+  # AVR: before_action filter for the show actions of anything addressed by an
+  # id. Content that has moved out of AVR keeps a Redirect row so that the old
+  # URLs in syllabi, course sites, and citations keep working. See Redirect.
+  def maybe_redirect
+    return if params[:id].blank?
+
+    redirect = Redirect.find_by(id: params[:id])
+    return if redirect.nil?
+
+    target = embed_request? ? redirect.embed_target : redirect.item_target
+    return if target.blank?
+
+    redirect_to(target, allow_other_host: true)
+  end
+
   private
+
+    def embed_request?
+      request.url =~ %r{master_files/.+/embed}
+    end
 
     def application_name
       Settings.name || 'Avalon Media System'

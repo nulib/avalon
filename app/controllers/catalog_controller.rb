@@ -21,6 +21,8 @@ class CatalogController < ApplicationController
   include Hydra::MultiplePolicyAwareAccessControlsEnforcement
   include BlacklightHelperReloadFix
 
+  before_action :redirect_specific_collection_facets, only: :index # AVR: legacy URL redirects
+
   # These before_actions apply the hydra access controls
   before_action :block_invalid_sort_params, only: :index
   before_action :enforce_show_permissions, only: :show
@@ -235,6 +237,20 @@ class CatalogController < ApplicationController
   end
 
   private
+
+    # AVR: a search faceted to a single collection that has moved out of AVR is,
+    # in practice, a link to that collection -- so honour its Redirect the same
+    # way CollectionsController#show does. Keyed on collection name, which is
+    # what collection_ssim holds. See Redirect.
+    def redirect_specific_collection_facets
+      collection = params.fetch(:f, {}).fetch(:collection_ssim, []).first
+      return if collection.blank?
+
+      redirect = Redirect.find_by(id: collection)
+      return if redirect.nil? || redirect.item_target.blank?
+
+      redirect_to(redirect.item_target, allow_other_host: true)
+    end
 
     def block_invalid_sort_params
       sort_val = params[:sort]

@@ -13,6 +13,7 @@
 # ---  END LICENSE_HEADER BLOCK  ---
 
 class CollectionsController < CatalogController
+  before_action :maybe_redirect, only: [:show] # AVR: legacy URL redirects
   skip_before_action :enforce_show_permissions, only: :show
 
   def index

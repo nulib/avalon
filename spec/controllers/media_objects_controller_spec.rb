@@ -1394,6 +1394,21 @@ describe MediaObjectsController, type: :controller do
         expect(media_object.sections.first).to eq(mf2)
         expect(controller.send('set_active_file')).to eq(mf2)
       end
+
+      # AVR customization
+      context "external redirects" do
+        let!(:media_object) { FactoryBot.create(:published_media_object, visibility: 'public') }
+
+        it 'does not redirect when there is no redirect entry' do
+          get :show, params: { id: media_object.id, format: 'json' }
+          expect(response).not_to have_http_status(:found)
+        end
+
+        it 'redirects when there is a redirect entry' do
+          Redirect.create!(id: 'abc1234', item_target: 'https://example.edu/1234')
+          expect(get(:show, params: { id: 'abc1234' })).to redirect_to('https://example.edu/1234')
+        end
+      end
     end
 
     context "Test lease access control" do
