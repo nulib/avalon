@@ -152,6 +152,14 @@ class MediaObjectsController < ApplicationController
 
   # POST /media_objects
   def create
+    # AVR: update_media_object only validates collection_id when one is given,
+    # which is right for json_update but not for create -- without it the object
+    # fails a later validation with a message that doesn't name the cause.
+    if api_params[:collection_id].blank?
+      render json: { errors: ["New media object must have a valid collection_id"] }, status: 422
+      return
+    end
+
     @media_object = MediaObjectsController.initialize_media_object(user_key)
     # Preset the workflow to the last workflow step to ensure validators run
     @media_object.workflow.last_completed_step = HYDRANT_STEPS.last.step
