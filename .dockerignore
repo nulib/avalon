@@ -8,3 +8,10 @@ docker-compose.yml
 node_modules
 public/packs
 tmp
+
+# AVR additions
+encodes
+log
+public/packs-test
+terraform
+vendor/bundle
