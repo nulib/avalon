@@ -18,11 +18,24 @@ module ApplicationHelper
     "#{application_name} #{t(:release_label)} #{Avalon::VERSION}"
   end
 
+  # AVR: legacy AVR permalinks were minted with an http:// scheme, and the site
+  # is https-only, so handing one out verbatim gives people a share link that
+  # bounces through a redirect. Generated URLs already come out https via
+  # Settings.domain.protocol (see config/initializers/default_host.rb), so this
+  # only has to cover stored permalinks.
+  def https_url(url)
+    uri = URI.parse(url.to_s)
+    uri.scheme = 'https' if uri.scheme == 'http'
+    uri.to_s
+  rescue URI::Error
+    url
+  end
+
   def share_link_for(obj, only_path: false)
     if obj.nil?
       I18n.t('media_object.empty_share_link')
     elsif obj.permalink.present?
-      obj.permalink
+      https_url(obj.permalink) # AVR
     else
       case obj
       when MediaObjectBehavior
