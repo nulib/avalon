@@ -234,19 +234,46 @@ Rows are loaded in bulk out of band; there is no UI.
 
 ### Branding and content
 
-- `app/views/catalog/_nu_home.html.erb` — AVR's home page, chiefly the notice
+Northwestern colours, wordmark, and favicon. Deliberately just that -- the full
+NU web framework is not reinstated (see Known gaps).
+
+- `app/assets/stylesheets/branding.scss` -- **does most of the work.** Upstream
+  ships this file as its designated branding hook and imports it *before*
+  Bootstrap, so the values in it drive Bootstrap's whole generated palette.
+  Only the values are AVR's: every variable name is upstream's, so the ~100
+  lines of Bootstrap mappings below them, and any reference from `avalon.scss`,
+  keep working. It also carries the official NU palette as a comment block, so
+  picking a new colour doesn't mean going hunting. **On upgrade, re-point
+  values; don't restructure.**
+- `app/assets/stylesheets/nulib/_avr.scss` -- imported *last* from
+  `application.sass.scss`, for the few rules that must beat Bootstrap's and
+  Avalon's compiled output: purple header bar, purple footer, purple hero with
+  a gold button. Variables belong in `branding.scss`, not here.
+- `app/assets/images/nulib/` -- `northwestern-white.svg` (wordmark, header and
+  footer) and `northwestern-n.svg` (favicon). Both are official NU marks. The
+  wordmark is white-only, which is *why* the header bar has to be purple.
+- `app/views/modules/_header.html.erb`, `_footer.html.erb` -- one-line logo
+  swaps. The footer keeps Avalon attribution ("Powered by Avalon Media System").
+- `app/views/layouts/{avalon,embed}.html.erb` -- one line each for the favicon.
+  The only AVR lines in those two files.
+- `app/views/catalog/_nu_home.html.erb` -- AVR's home page, chiefly the notice
   that non-course media now lives in Digital Collections.
   `catalog/index.html.erb`'s AVR delta is the one line that renders it.
-- `config/nu_vocab.yml` + `config/settings/production.yml` — NU's units and
+- `config/nu_vocab.yml` + `config/settings/production.yml` -- NU's units and
   identifier types. Development points at the same file via
   `SETTINGS__CONTROLLED_VOCABULARY__PATH` in `.envrc`; **test uses upstream's**.
 - `app/views/modules/_google_analytics.html.erb` +
-  `app/helpers/google_tag_manager_helper.rb` — a GTM container
+  `app/helpers/google_tag_manager_helper.rb` -- a GTM container
   (`Settings.analytics_container_id`) in place of upstream's GA4 gtag loader.
-  Overriding the partial upstream already renders means neither layout is
-  touched.
-- `ApplicationHelper#https_url` — upgrades a stored permalink's scheme. Generated
-  URLs are already https via `Settings.domain.protocol`.
+  Overriding the partial upstream already renders means neither layout needs an
+  analytics edit.
+- `ApplicationHelper#https_url` -- upgrades a stored permalink's scheme.
+  Generated URLs are already https via `Settings.domain.protocol`.
+
+Not included, on purpose: the ~9,000 lines of NU marketing-site SCSS
+(`nulib/base`, `nulib/global`, `nulib/page-types`), the licensed Akkurat and
+Periodico `.otf` files, the slashes/world-map background images, and the social
+media icon set.
 
 ### API
 
@@ -285,14 +312,29 @@ Things a reader might expect to find here, and why they aren't:
 
 Real, known, unfixed. Listed so they don't have to be rediscovered.
 
-**No AVR branding.** The home page markup referenced `.hero-image`,
-`.contain-1120`, `.contain-970`, `.section-top`, and `.full-width-page`, none of
-which exist in this repo: they lived in
-`app/assets/stylesheets/northwestern/`, dropped during the 8.x upgrade and never
-replaced. So from that upgrade until the restructure, the home page rendered
-completely unstyled. `_nu_home.html.erb` now uses the Bootstrap 5 utilities
-Avalon 8 ships, which is presentable but is not AVR branding. The old
-stylesheets are still on the `avr-pre-upgrade` branch.
+**Branding is colours and logos only.** See the Branding section above for what
+is and isn't included. The pre-8.x AVR branch carried the full Northwestern web
+framework; that is not reinstated, so NU-specific page components (hero
+treatments, feature boxes, the NU global top bar and mega-footer) don't exist
+here. If those are wanted back, the old SCSS is on the `avr-pre-upgrade` branch
+under `app/assets/stylesheets/northwestern/`, and the original
+`nulib/` tree is in nulib/avalon commit `abd51a2e2`.
+
+**`omniauth-rails_csrf_protection` may now be redundant.** Upstream v8.2.1's
+"Add omniauth solution for csrf protection" sets
+`OmniAuth.config.request_validation_phase` directly in
+`config/initializers/devise.rb`. The gem AVR carries in `Gemfile.local` sets the
+same hook when it loads, and the initializer runs afterwards, so upstream's
+value wins and the gem is doing nothing. Dropping it is probably right, but it
+should not be done without exercising an actual SSO and LTI login.
+
+**The brand font comes from an external CDN.** `branding.scss` loads Akkurat Pro
+from `https://common.northwestern.edu/v8/css/fonts` -- the same host NU's own
+sites use -- so the licensed `.otf` files don't have to be committed. Two
+consequences: pages depend on that host being reachable (there is an Arial
+fallback, and `font-display: swap`, so an outage degrades rather than blocks),
+and if `config/initializers/content_security_policy.rb` is ever enabled it will
+need a matching `font_src`. It is entirely commented out today.
 
 **Two scheduled jobs have no replacement.** Skipping sidekiq-cron dropped five
 periodic jobs. Three are covered by AWS: `BatchScanJob` by

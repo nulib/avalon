@@ -37,3 +37,7 @@ $fa-font-path: '.';
 
 @import 'sortable';
 @import 'avalon';
+
+// AVR: must stay last -- these rules override Bootstrap's and Avalon's compiled
+// output. NU colors themselves are variables, and live in 'branding' above.
+@import 'nulib/avr';

@@ -17,8 +17,10 @@ Unless required by applicable law or agreed to in writing, software distributed
   <div class="container-md">
     <header class="header-wrapper">
       <div class="header-logo">
+        <%# AVR: Northwestern wordmark in place of the Avalon logo. The SVG is
+            white-only, which is why nulib/_avr.scss makes this bar purple. %>
         <%= link_to main_app.root_path do %>
-        <%= image_tag "Home.png", class: "img-fluid", alt: "Avalon Media System - #{t(:release_label)} #{Avalon::VERSION}" %>
+        <%= image_tag "nulib/northwestern-white.svg", class: "img-fluid", alt: "Northwestern University Libraries - Repository Audio + Video" %>
         <% end %>
       </div>
 

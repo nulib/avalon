@@ -6,15 +6,12 @@ reworks that file most releases (facet sidebar, constraints rendering, test ids)
 and when it does you can take upstream's version wholesale and re-point the one
 branch here. See docs/AVR_UPGRADE.md.
 
-NOTE: this is styled with plain Bootstrap 5 utilities, which is what Avalon 8
-ships. The AVR-branded version of this page used .hero-image / .contain-1120 /
-.full-width-page from app/assets/stylesheets/northwestern/, which were dropped
-during the 8.x upgrade and never replaced -- so from the 8.x upgrade until this
-commit the home page rendered with no styling at all. Restoring the branding is
-open work; see "Known gaps" in docs/AVR_CUSTOMIZATIONS.md.
+Layout is Bootstrap 5 utilities (what Avalon 8 ships); the Northwestern colours
+come from branding.scss, and the purple hero and gold button from
+app/assets/stylesheets/nulib/_avr.scss.
 %>
 <div class="avr-home">
-  <section class="avr-home-hero bg-body-secondary rounded-3 p-5 mb-4 text-center">
+  <section class="avr-home-hero rounded-3 p-5 mb-4 text-center">
     <div class="container">
       <h1 class="display-5">Repository Audio + Video</h1>
       <p class="lead">Audio and video material for courses</p>

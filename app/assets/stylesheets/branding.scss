@@ -23,39 +23,86 @@
 
 /**
   Custom variables (Non-bootstrap)
+
+  AVR: the values below are Northwestern's, from the university brand palette
+  (https://www.northwestern.edu/brand/visual-identity/color/). Only the values
+  change -- every variable name is upstream's, so the ~100 lines of Bootstrap
+  mappings further down this file, and anything in avalon.scss referring to
+  these names, keep working untouched. Re-point values on upgrade; don't
+  restructure.
+
+  Official NU palette, for reference when picking new values:
+    NU Purple  #4e2a84   120 #401f68   70 #765da0   60 #836eaa
+               30 #b6acd1  10 #e4e0ee
+    Rich Black 80 #342f2e (body text)  50 #716c6b  20 #bbb8b8  10 #d8d6d6
+    Brights    green #58b947  aqua #7fcecd  blue #5091cd  yellow #ede93b
+               gold #ffc520   red #ef553f
+    Darks      green #008656  turquoise #007fa4  navy #0d2d6c
+               marigold #d9c826  burnt orange #ca7c1b  blood orange #d85820
 */
 @font-face {
   font-family: 'MuseoSlab';
   src: url('fonts/Museo_Slab_500-webfont.woff') format('woff');
 }
-$sansFontFamily: Arial, Helvetica, sans-serif;
+
+// AVR: Akkurat Pro is Northwestern's brand sans. Served from the university's
+// public font CDN -- the same source NU's own sites use -- so the licensed .otf
+// files don't have to be committed here. Falls back to Arial if the CDN is
+// unreachable.
+$nu-font-cdn: 'https://common.northwestern.edu/v8/css/fonts';
+
+@font-face {
+  font-family: 'Akkurat Pro';
+  src: url('#{$nu-font-cdn}/AkkuratProRegular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Akkurat Pro';
+  src: url('#{$nu-font-cdn}/AkkuratProItalic.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Akkurat Pro';
+  src: url('#{$nu-font-cdn}/AkkuratProBold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+$sansFontFamily: 'Akkurat Pro', Arial, Helvetica, sans-serif;
 $museoSlab: 'MuseoSlab';
 
-// Primary colors
-$primary: #2a5459;
-$secondary: #80a590;
-$dark: #0a2326;
+// Primary colors -- NU Purple, NU Purple 70, Rich Black 80
+$primary: #4e2a84;
+$secondary: #765da0;
+$dark: #342f2e;
 
 // Secondary colors
-$yellow: #ffcf08;
-$orange: #fbb040;
+$yellow: #ffc520;
+$orange: #ca7c1b;
 $white: rgb(255, 255, 255);
-$blueGreen: #477076;
+$blueGreen: #007fa4;
 
 // Colors not from the Styleguide
+// NOTE: name kept from upstream; with $secondary now purple this is a pale
+// purple tint, not green.
 $greenBG: color.scale($secondary, $saturation: -40%, $lightness: 60%);
-$gray: #999;
-$lightgray: #f2f2f2;
-$red: #d9534f;
-$blue: #2a4d59;
-$lightblue: #31708f;
+$gray: #716c6b;
+$lightgray: #f0f0f0;
+$red: #b2292e;
+$blue: #5091cd;
+$lightblue: #7fcecd;
 
 // Generated palate colors from http://colormind.io/ for Avalon style guide
 // Add new HEX values below to match your organization's flavor of info/success/warning/danger
-$info: #fbb040;
-$success: #429453;
-$warning: #bf841b;
-$danger: #df3603;
+$info: #007fa4;
+$success: #008656;
+$warning: #ca7c1b;
+$danger: #b2292e;
 
 /**
   * Bootstrap variable overrides

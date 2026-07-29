@@ -19,8 +19,10 @@ Unless required by applicable law or agreed to in writing, software distributed
     <div class="separator"></div>
     <ul>
       <li class="footer-logo">
-        <%= image_tag "AvalonMediaSystem_Logo_A.png", alt: "Avalon Media System - #{t(:release_label)} #{Avalon::VERSION}" %>
-      <li><a href="http://www.avalonmediasystem.org">Avalon Media System Project Website</a> </li>
+        <%# AVR: Northwestern wordmark. Avalon attribution is kept in the link below. %>
+        <%= image_tag "nulib/northwestern-white.svg", alt: "Northwestern University" %>
+      <li><%= link_to "Northwestern University Libraries", "https://www.library.northwestern.edu/" %></li>
+      <li><a href="http://www.avalonmediasystem.org">Powered by Avalon Media System</a> </li>
       <li><%= link_to "Contact Us", main_app.comments_path %></li>
     </ul>
     <div class="release">

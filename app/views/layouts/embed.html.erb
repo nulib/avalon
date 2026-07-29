@@ -22,7 +22,8 @@ Unless required by applicable law or agreed to in writing, software distributed
 
    <%= csrf_meta_tags %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%= favicon_link_tag %>
+    <%# AVR: Northwestern "N" mark instead of Avalon's favicon. %>
+    <%= favicon_link_tag "nulib/northwestern-n.svg", type: "image/svg+xml" %>
     <%= javascript_include_tag "embed", "data-turbo-track": "reload", type: "module" %>
     <%= yield :page_styles %>
     <%= yield :additional_head_content %>

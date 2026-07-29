@@ -1,0 +1,112 @@
+/**
+ * AVR: Northwestern look on top of Avalon's own styles.
+ *
+ * Imported LAST from application.sass.scss, because these are rules that have
+ * to win against Bootstrap's and Avalon's compiled output. Anything that is
+ * only a *variable* belongs in branding.scss instead, which is imported first
+ * so it can drive Bootstrap's palette -- that is where the NU colors live, and
+ * it does most of the work. This file is only for the handful of places that
+ * need actual overrides.
+ *
+ * Deliberately small. The full Northwestern web framework (nulib/base,
+ * nulib/global, nulib/page-types -- roughly 9,000 lines, plus licensed Akkurat
+ * and Periodico .otf files) was carried on the pre-8.x AVR branch and is not
+ * reinstated here; see docs/AVR_CUSTOMIZATIONS.md.
+ */
+
+// NU brand palette (see branding.scss for the full reference list)
+$nu-purple: #4e2a84;
+$nu-purple-120: #401f68;
+$nu-purple-30: #b6acd1;
+$nu-rich-black-80: #342f2e;
+
+// --- Header ------------------------------------------------------------------
+// Northwestern's wordmark is white-only, so the header bar has to be purple.
+.custom-header {
+  background-color: $nu-purple;
+
+  .header-wrapper {
+    align-items: center;
+  }
+
+  // The wordmark is a white SVG; cap its height so it sits on one line with
+  // the search box and the login link.
+  .header-logo img {
+    height: 2rem;
+    width: auto;
+  }
+
+  // Everything sitting on the purple bar needs to invert.
+  .header-user,
+  .log-in-out,
+  .text-muted {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  a {
+    color: #fff;
+
+    &:hover,
+    &:focus {
+      color: $nu-purple-30;
+    }
+  }
+}
+
+// --- Footer ------------------------------------------------------------------
+#footer {
+  background-color: $nu-purple-120;
+  color: rgba(255, 255, 255, 0.85);
+
+  .separator {
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  // Same white wordmark as the header.
+  .footer-logo img {
+    height: 1.75rem;
+    width: auto;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: underline;
+
+    &:hover,
+    &:focus {
+      color: $nu-purple-30;
+    }
+  }
+
+  .release {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+// --- Home page ---------------------------------------------------------------
+// Matches app/views/catalog/_nu_home.html.erb.
+.avr-home {
+  .avr-home-hero {
+    background-color: $nu-purple;
+    color: #fff;
+
+    h1,
+    p {
+      color: #fff;
+    }
+
+    // On purple, the solid primary button disappears. Use the gold accent.
+    .btn-primary {
+      background-color: #ffc520;
+      border-color: #ffc520;
+      color: $nu-rich-black-80;
+
+      &:hover,
+      &:focus {
+        background-color: #d9c826;
+        border-color: #d9c826;
+        color: $nu-rich-black-80;
+      }
+    }
+  }
+}
