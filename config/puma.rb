@@ -42,3 +42,18 @@ pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 
 state_path ENV["PUMA_STATE_PATH"] if ENV["PUMA_STATE_PATH"]
 activate_control_app
+
+# AVR: the Northwestern remote development environment serves the app over TLS
+# on 3001 (Settings.domain is https, and the SSO and LTI handshakes both need a
+# real https origin), so bind an SSL listener when a cert is available. Set
+# SSL_CERT and SSL_KEY to enable; without them this is a no-op and Puma behaves
+# exactly as it does upstream.
+#
+# Deployed AVR containers don't use this file -- they run
+# config/puma_container.rb behind an ALB that terminates TLS.
+# (plain Ruby, not String#present? -- Puma evaluates this before Rails boots)
+if !ENV["SSL_CERT"].to_s.empty? && !ENV["SSL_KEY"].to_s.empty?
+  ssl_bind '0.0.0.0', ENV.fetch("SSL_PORT", 3001),
+           cert: ENV["SSL_CERT"],
+           key: ENV["SSL_KEY"]
+end
