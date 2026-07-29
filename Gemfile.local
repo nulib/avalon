@@ -1,0 +1,26 @@
+# AVR-only gem dependencies.
+#
+# Upstream's Gemfile already evals this file if it exists, so AVR needs no
+# changes to Gemfile itself for these. Keep AVR additions here rather than in
+# Gemfile -- it's the one dependency file that never conflicts on upgrade.
+
+# Read Settings from SSM Parameter Store (config/initializers/_aws_config.rb).
+gem 'aws-sdk-ssm'
+
+# Northwestern SSO (Agentless SSO / NetID). See config/initializers/authn_providers.rb
+# and the auth.configuration.nu settings.
+gem 'omniauth-nusso', git: 'https://github.com/nulib/omniauth-nusso', tag: 'v0.2.0'
+
+# OmniAuth 2 requires the request phase to be a non-GET, CSRF-protected request.
+gem 'omniauth-rails_csrf_protection'
+
+group :aws do
+  # ActiveJob adapter for SQS. See config/application.rb and lib/tasks/shoryuken.rake.
+  gem 'shoryuken'
+end
+
+group :development do
+  # Drives `bundle exec guard -i`; see Guardfile.
+  gem 'guard-process'
+  gem 'guard-puma'
+end
