@@ -31,7 +31,7 @@ describe Admin::Unit do
 
     context 'when unit administrator' do
       let(:ability) { Ability.new(user) }
-      let(:user) { User.where(Devise.authentication_keys.first => unit.unit_administrators.first).first }
+      let(:user) { User.find_by_devise_authentication_keys(unit.unit_administrators.first).first }
 
       it "can perform all actions on the unit" do
         expect(ability).not_to be_able_to(:create, Admin::Unit)
@@ -49,7 +49,7 @@ describe Admin::Unit do
 
     context 'when manager' do
       let(:ability) { Ability.new(user) }
-      let(:user) { User.where(Devise.authentication_keys.first => unit.managers.first).first }
+      let(:user) { User.find_by_devise_authentication_keys(unit.managers.first).first }
 
       it "can perform limited actions on the unit" do
         expect(ability).not_to be_able_to(:create, Admin::Unit)
@@ -67,7 +67,7 @@ describe Admin::Unit do
 
     context 'when editor' do
       let(:ability) { Ability.new(user) }
-      let(:user) { User.where(Devise.authentication_keys.first => unit.editors.first).first }
+      let(:user) { User.find_by_devise_authentication_keys(unit.editors.first).first }
 
       it "can perform limited actions on the unit" do
         expect(ability).not_to be_able_to(:create, Admin::Unit)
@@ -85,7 +85,7 @@ describe Admin::Unit do
 
     context 'when depositor' do
       let(:ability) { Ability.new(user) }
-      let(:user) { User.where(Devise.authentication_keys.first => unit.depositors.first).first }
+      let(:user) { User.find_by_devise_authentication_keys(unit.depositors.first).first }
 
       it "can perform limited actions on the unit" do
         expect(ability).not_to be_able_to(:create, Admin::Unit)

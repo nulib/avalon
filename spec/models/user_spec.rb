@@ -109,6 +109,38 @@ describe User do
     end
   end
 
+  # AVR customization
+  describe ".find_by_devise_authentication_keys" do
+    let!(:user) { FactoryBot.create(:user) }
+    let!(:deleted_user) { FactoryBot.create(:user, deleted_at: Time.zone.now) }
+
+    it "finds by any configured authentication key" do
+      expect(User.find_by_devise_authentication_keys(user.email)).to contain_exactly(user)
+      expect(User.find_by_devise_authentication_keys(user.username)).to contain_exactly(user)
+    end
+
+    it "ignores case and surrounding whitespace" do
+      expect(User.find_by_devise_authentication_keys("  #{user.email.upcase}  ")).to contain_exactly(user)
+    end
+
+    it "accepts multiple values" do
+      other = FactoryBot.create(:user)
+      expect(User.find_by_devise_authentication_keys([user.email, other.username])).to contain_exactly(user, other)
+    end
+
+    it "excludes soft-deleted users" do
+      expect(User.find_by_devise_authentication_keys(deleted_user.email)).to be_empty
+    end
+
+    it "returns a chainable relation for no or blank input" do
+      expect(User.find_by_devise_authentication_keys(nil)).to be_empty
+      expect(User.find_by_devise_authentication_keys([])).to be_empty
+      # Regression: this used to return an Enumerator, so callers doing
+      # .destroy_all on the result raised NoMethodError.
+      expect { User.find_by_devise_authentication_keys(nil).destroy_all }.not_to raise_error
+    end
+  end
+
   describe "#groups" do
     let(:groups) { ["foorole"] }
     let(:role_map) { { "foorole" => [user.user_key] } }

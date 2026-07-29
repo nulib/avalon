@@ -124,7 +124,7 @@ class Admin::CollectionsController < ApplicationController
     @collection.errors.add(:unit, "Owning unit for collection not found") unless unit.present?
     @collection.errors.add(:unit, "You do not have sufficient rights to create a collection in unit #{unit.id}") unless can? :update, unit
     if @collection.errors.blank? && @collection.save
-      User.where(Devise.authentication_keys.first => [Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
+      User.find_by_devise_authentication_keys([Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
         NotificationsMailer.new_collection(
           creator_id: current_user.id,
           collection_id: @collection.id,
@@ -217,7 +217,7 @@ class Admin::CollectionsController < ApplicationController
 
     if saved
       if name_changed
-        User.where(Devise.authentication_keys.first => [Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
+        User.find_by_devise_authentication_keys([Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
           NotificationsMailer.update_collection(
             updater_id: current_user.id,
             collection_id: @collection.id,

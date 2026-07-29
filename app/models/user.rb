@@ -86,6 +86,20 @@ class User < ActiveRecord::Base
     user
   end
 
+  # AVR: upstream looks users up with
+  # `User.where(Devise.authentication_keys.first => value)`, which only ever
+  # consults the first configured key. AVR authenticates on both :email and
+  # :username (see config/initializers/devise.rb), so a lookup has to accept
+  # either -- case-insensitively, and skipping soft-deleted users. Takes one
+  # value or many, and returns a relation so callers can chain.
+  def self.find_by_devise_authentication_keys(values)
+    values = Array(values).compact.map { |value| value.to_s.strip.downcase }
+    return none if values.empty?
+
+    conditions = Devise.authentication_keys.map { |key| "lower(#{key}) IN (:values)" }.join(' OR ')
+    where("deleted_at IS NULL AND (#{conditions})", values: values)
+  end
+
   def self.find_by_username_or_email(login)
     find_and_verify_by_username(login) || find_and_verify_by_email(login)
   end

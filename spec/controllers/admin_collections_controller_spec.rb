@@ -80,7 +80,7 @@ describe Admin::CollectionsController, type: :controller do
     it "should remove users from manager role" do
       collection.managers += [FactoryBot.create(:user).user_key, FactoryBot.create(:user).user_key]
       collection.save!
-      manager = User.where(Devise.authentication_keys.first => collection.managers.first).first
+      manager = User.find_by_devise_authentication_keys(collection.managers.first).first
       put 'update', params: { id: collection.id, remove_manager: manager.user_key }
       collection.reload
       expect(manager).not_to be_in(collection.managers)
@@ -114,7 +114,7 @@ describe Admin::CollectionsController, type: :controller do
 
     it "should remove users from editor role" do
       login_as(:administrator)
-      editor = User.where(Devise.authentication_keys.first => collection.editors.first).first
+      editor = User.find_by_devise_authentication_keys(collection.editors.first).first
       put 'update', params: { id: collection.id, remove_editor: editor.user_key }
       collection.reload
       expect(editor).not_to be_in(collection.editors)
@@ -137,7 +137,7 @@ describe Admin::CollectionsController, type: :controller do
 
     it "should remove users from depositor role" do
       login_as(:administrator)
-      depositor = User.where(Devise.authentication_keys.first => collection.depositors.first).first
+      depositor = User.find_by_devise_authentication_keys(collection.depositors.first).first
       put 'update', params: { id: collection.id, remove_depositor: depositor.user_key }
       collection.reload
       expect(depositor).not_to be_in(collection.depositors)

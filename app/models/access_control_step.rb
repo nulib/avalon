@@ -23,7 +23,7 @@ class AccessControlStep < BasicStep
   def execute context
     media_object = context[:media_object]
 
-    user = User.where({ Devise.authentication_keys.first => context[:user]}).first
+    user = User.find_by_devise_authentication_keys(context[:user]).first
     ability = context[:ability]
     ability ||= Ability.new(user)
     unless ability.can? :update_access_control, media_object

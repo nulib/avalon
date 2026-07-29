@@ -34,7 +34,7 @@ describe Admin::Collection do
       let(:ability) { Ability.new(user) }
 
       context 'inherited from unit' do
-        let(:user) { User.where(Devise.authentication_keys.first => collection.inherited_managers.first).first }
+        let(:user) { User.find_by_devise_authentication_keys(collection.inherited_managers.first).first }
 
         it "can perform all actions on collections" do
           expect(ability).to be_able_to(:create, Admin::Collection)
@@ -53,7 +53,7 @@ describe Admin::Collection do
 
     context 'when manager' do
       let(:ability) { Ability.new(user) }
-      let(:user) { User.where(Devise.authentication_keys.first => collection.managers.first).first }
+      let(:user) { User.find_by_devise_authentication_keys(collection.managers.first).first }
 
       it "can perform all actions on existing collections" do
         expect(ability).not_to be_able_to(:create, Admin::Collection)
@@ -69,7 +69,7 @@ describe Admin::Collection do
       end
 
       context 'inherited from unit' do
-        let(:user) { User.where(Devise.authentication_keys.first => collection.unit.collection_managers.first).first }
+        let(:user) { User.find_by_devise_authentication_keys(collection.unit.collection_managers.first).first }
 
         it "can perform all actions on existing collections" do
           expect(ability).not_to be_able_to(:create, Admin::Collection)
@@ -88,7 +88,7 @@ describe Admin::Collection do
 
     context 'when editor' do
       let(:ability) { Ability.new(user) }
-      let(:user) { User.where(Devise.authentication_keys.first => collection.editors.first).first }
+      let(:user) { User.find_by_devise_authentication_keys(collection.editors.first).first }
 
       it "can perform limited actions on collection" do
         expect(ability).not_to be_able_to(:create, Admin::Collection)
@@ -104,7 +104,7 @@ describe Admin::Collection do
       end
 
       context 'inherited from unit' do
-        let(:user) { User.where(Devise.authentication_keys.first => collection.inherited_editors.first).first }
+        let(:user) { User.find_by_devise_authentication_keys(collection.inherited_editors.first).first }
 
         it "can perform limited actions on collection" do
           expect(ability).not_to be_able_to(:create, Admin::Collection)
@@ -123,7 +123,7 @@ describe Admin::Collection do
 
     context 'when depositor' do
       let(:ability) { Ability.new(user) }
-      let(:user) { User.where(Devise.authentication_keys.first => collection.depositors.first).first }
+      let(:user) { User.find_by_devise_authentication_keys(collection.depositors.first).first }
 
       it "can perform read actions on collection" do
         expect(ability).not_to be_able_to(:create, Admin::Collection)
@@ -139,7 +139,7 @@ describe Admin::Collection do
       end
 
       context 'inherited from unit' do
-        let(:user) { User.where(Devise.authentication_keys.first => collection.inherited_depositors.first).first }
+        let(:user) { User.find_by_devise_authentication_keys(collection.inherited_depositors.first).first }
 
         it "can perform read actions on collection" do
           expect(ability).not_to be_able_to(:create, Admin::Collection)

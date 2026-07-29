@@ -155,7 +155,7 @@ describe MediaObject do
     let (:collection) { media_object.collection.reload }
 
     context 'when manager' do
-      let(:ability) { Ability.new(User.where(Devise.authentication_keys.first => collection.managers.first).first) }
+      let(:ability) { Ability.new(User.find_by_devise_authentication_keys(collection.managers.first).first) }
 
       it "should be able to perform all actions" do
         expect(ability).to be_able_to(:create, MediaObject)
@@ -172,7 +172,7 @@ describe MediaObject do
       end
 
       context 'and logged in through LTI' do
-        let(:ability){ Ability.new(User.where(Devise.authentication_keys.first => collection.managers.first).first, {full_login: false, virtual_groups: [Faker::Lorem.word]}) }
+        let(:ability){ Ability.new(User.find_by_devise_authentication_keys(collection.managers.first).first, {full_login: false, virtual_groups: [Faker::Lorem.word]}) }
 
         it "can read but cannot modify the item" do
           expect(ability).to be_able_to(:read, media_object)
@@ -183,7 +183,7 @@ describe MediaObject do
       end
 
       context 'inherited from unit' do
-        let(:ability){ Ability.new(User.where(Devise.authentication_keys.first => collection.inherited_managers.first).first) }
+        let(:ability){ Ability.new(User.find_by_devise_authentication_keys(collection.inherited_managers.first).first) }
 
         it "should be able to perform all actions" do
           expect(ability).to be_able_to(:create, MediaObject)
@@ -202,7 +202,7 @@ describe MediaObject do
     end
 
     context 'when editor' do
-      let(:ability) { Ability.new(User.where(Devise.authentication_keys.first => collection.editors.first).first) }
+      let(:ability) { Ability.new(User.find_by_devise_authentication_keys(collection.editors.first).first) }
 
       it "should be able to perform actions on unpublished item" do
         expect(ability).to be_able_to(:create, MediaObject)
@@ -221,7 +221,7 @@ describe MediaObject do
       end
 
       context 'inherited from unit' do
-        let(:ability) { Ability.new(User.where(Devise.authentication_keys.first => collection.inherited_editors.first).first) }
+        let(:ability) { Ability.new(User.find_by_devise_authentication_keys(collection.inherited_editors.first).first) }
 
         it "should be able to perform actions on unpublished item" do
           expect(ability).to be_able_to(:create, MediaObject)
@@ -242,7 +242,7 @@ describe MediaObject do
     end
 
     context 'when depositor' do
-      let(:ability) { Ability.new(User.where(Devise.authentication_keys.first => collection.depositors.first).first) }
+      let(:ability) { Ability.new(User.find_by_devise_authentication_keys(collection.depositors.first).first) }
 
       it "should be able to perform limited actions on unpublished item" do
         expect(ability).to be_able_to(:create, MediaObject)
@@ -259,7 +259,7 @@ describe MediaObject do
       end
 
       context 'inherited from unit' do
-        let(:ability) { Ability.new(User.where(Devise.authentication_keys.first => collection.inherited_depositors.first).first) }
+        let(:ability) { Ability.new(User.find_by_devise_authentication_keys(collection.inherited_depositors.first).first) }
 
         it "should be able to perform limited actions on unpublished item" do
           expect(ability).to be_able_to(:create, MediaObject)
