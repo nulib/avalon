@@ -34,7 +34,12 @@ Devise.setup do |config|
   # session. If you need permissions, you should implement that in a before filter.
   # You can also supply a hash where the value is a boolean determining whether
   # or not authentication should be aborted when the value is not present.
-  config.authentication_keys = [:username]
+  # AVR: authenticate on either key. Northwestern SSO identifies people by
+  # email, and Devise.authentication_keys.first is what
+  # Blacklight::AccessControls::User#user_key and Hydra.config.user_key_field
+  # both resolve to -- so putting :email first is what makes email the
+  # access-control identity for the whole app. Order matters here.
+  config.authentication_keys = [:email, :username]
 
   # Configure parameters from the request object used for authentication. Each entry
   # given should be a request method and it will automatically be passed to the

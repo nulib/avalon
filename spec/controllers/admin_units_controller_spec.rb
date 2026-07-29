@@ -80,7 +80,7 @@ describe Admin::UnitsController, type: :controller do
     it "should remove users from manager role" do
       unit.managers += [FactoryBot.create(:user).user_key, FactoryBot.create(:user).user_key]
       unit.save!
-      manager = User.where(Devise.authentication_keys.first => unit.managers.first).first
+      manager = User.find_by_devise_authentication_keys(unit.managers.first).first
       put 'update', params: { id: unit.id, remove_manager: manager.user_key }
       unit.reload
       expect(manager).not_to be_in(unit.managers)
@@ -114,7 +114,7 @@ describe Admin::UnitsController, type: :controller do
 
     it "should remove users from editor role" do
       login_as(:administrator)
-      editor = User.where(Devise.authentication_keys.first => unit.editors.first).first
+      editor = User.find_by_devise_authentication_keys(unit.editors.first).first
       put 'update', params: { id: unit.id, remove_editor: editor.user_key }
       unit.reload
       expect(editor).not_to be_in(unit.editors)
@@ -137,7 +137,7 @@ describe Admin::UnitsController, type: :controller do
 
     it "should remove users from depositor role" do
       login_as(:administrator)
-      depositor = User.where(Devise.authentication_keys.first => unit.depositors.first).first
+      depositor = User.find_by_devise_authentication_keys(unit.depositors.first).first
       put 'update', params: { id: unit.id, remove_depositor: depositor.user_key }
       unit.reload
       expect(depositor).not_to be_in(unit.depositors)

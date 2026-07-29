@@ -59,7 +59,7 @@ describe Admin::CollectionPresenter do
   end
 
   describe 'abilities' do
-    subject(:ability) { Ability.new(User.where(Devise.authentication_keys.first => user.to_s).first) }
+    subject(:ability) { Ability.new(User.find_by_devise_authentication_keys(user.to_s).first) }
 
     context 'when manager' do
       let(:user) { manager }

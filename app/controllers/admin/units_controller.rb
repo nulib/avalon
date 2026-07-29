@@ -96,7 +96,7 @@ class Admin::UnitsController < ApplicationController
   def create
     @unit = Admin::Unit.create(unit_params.merge(unit_admins: [current_user.user_key]))
     if @unit.persisted?
-      User.where(Devise.authentication_keys.first => [Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
+      User.find_by_devise_authentication_keys([Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
         NotificationsMailer.new_unit(
           creator_id: current_user.id,
           unit_id: @unit.id,
@@ -167,7 +167,7 @@ class Admin::UnitsController < ApplicationController
     saved = @unit.save
     if saved
       if name_changed
-        User.where(Devise.authentication_keys.first => [Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
+        User.find_by_devise_authentication_keys([Avalon::RoleControls.users('administrator')].flatten).each do |admin_user|
           NotificationsMailer.update_unit(
             updater_id: current_user.id,
             unit_id: @unit.id,
