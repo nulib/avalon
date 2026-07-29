@@ -1,0 +1,19 @@
+# AVR label overrides.
+#
+# Preferred over editing upstream views, controllers, or locale files: Rails
+# merges every config/locales/*.yml, and Blacklight resolves a facet or index
+# field's label from `blacklight.search.fields.<context>.<key>` before falling
+# back to the `label:` given in CatalogController. So a rename lands here and
+# leaves the upstream file untouched.
+#
+# The filename sorts after blacklight.en.yml and en.yml, which is what makes
+# these win when the same key is defined in both. Keep the "nu_" prefix.
+en:
+  blacklight:
+    search:
+      fields:
+        # AVR's virtual groups are Canvas course codes, not arbitrary external
+        # groups (see app/services/canvas_service.rb).
+        read_access_virtual_group_ssim: Course
+        facet:
+          read_access_virtual_group_ssim: Course

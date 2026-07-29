@@ -1,0 +1,37 @@
+---
+# AVR LTI tool-consumer parameter mappings.
+#
+# Upstream ships config/lti.yml.example and .gitignores the real file, on the
+# assumption it holds per-deployment secrets. AVR's doesn't: it only maps each
+# consumer's LTI launch parameters onto the four fields Avalon needs, so it can
+# ship in the repo and be baked into the image. The shared secrets themselves
+# live in Settings.auth.configuration (SSM), not here.
+#
+# Keys are tool_consumer_instance_guid values, or the consumer key for older
+# consumers that don't send one. Values map an Avalon field to the LTI launch
+# parameter that carries it. :context_id becomes the virtual group a launch
+# grants, so it has to match the course codes CanvasService returns -- which is
+# why the Canvas entry uses :context_label rather than :context_id.
+#
+# Read by config/initializers/avalon_lti.rb into Avalon::Lti::Configuration.
+
+# Legacy Canvas consumer key
+e3285bfcd6cb4332a84aa14da6a3eaad:
+  :uid: :user_id
+  :email: :lis_person_contact_email_primary
+  :context_id: :context_id
+  :context_name: :context_title
+
+# Canvas
+7db438071375c02373713c12c73869ff2f470b68.new-northwestern.instructure.com:
+  :uid: :lis_person_sourcedid
+  :email: :lis_person_contact_email_primary
+  :context_id: :context_label
+  :context_name: :context_title
+
+# Atlas Systems Ares course reserves
+avalon.ares.atlas-sys.com:
+  :uid: :lis_person_sourcedid
+  :email: :lis_person_contact_email_primary
+  :context_id: :context_id
+  :context_name: :context_title

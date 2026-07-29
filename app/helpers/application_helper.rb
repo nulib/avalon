@@ -151,8 +151,12 @@ module ApplicationHelper
   end
 
   def vgroup_display value
-    c = Course.find_by_context_id(value)
-    c.nil? ? value : (c.title || c.label || value)
+    # AVR: cached. The Course facet can render dozens of values per page, and at
+    # AVR's scale the uncached lookup was one query per facet value per request.
+    Rails.cache.fetch("VGROUP_#{value}") do
+      c = Course.find_by_context_id(value)
+      c.nil? ? value : (c.title || c.label || value)
+    end
   end
 
   def truncate_center label, output_label_length, end_length = 0

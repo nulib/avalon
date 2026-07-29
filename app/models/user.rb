@@ -161,6 +161,20 @@ class User < ActiveRecord::Base
     User.walk_ldap_groups(User.ldap_member_of(user_key), []).sort
   end
 
+  # AVR: { <course_code> => <course name> } for this user's current Canvas
+  # enrollments. Always a Hash; empty if Canvas isn't configured or the user
+  # isn't known to it.
+  def canvas_courses
+    @canvas_courses ||= CanvasService.courses_for_user(username)
+  end
+
+  # AVR: the virtual groups a session should be granted. Upstream only has LDAP
+  # groups; AVR adds a group per current Canvas course so that course reserves
+  # are visible to enrolled students after any login, not just an LTI launch.
+  def virtual_groups
+    ldap_groups + canvas_courses.keys
+  end
+
   def self.ldap_member_of(cn)
     return [] unless defined? Avalon::GROUP_LDAP
     entry = Avalon::GROUP_LDAP.search(:base => Avalon::GROUP_LDAP_TREE, :filter => Net::LDAP::Filter.eq("cn", cn), :attributes => ["memberof"])&.first
