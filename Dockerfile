@@ -93,6 +93,7 @@ RUN         apt-get update && \
             dumb-init \
             libsqlite3-dev \
             libjemalloc2 \
+            sudo \
          && apt-get -y install mediainfo \
          && ln -s /usr/bin/lsof /usr/sbin/
 

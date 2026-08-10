@@ -1,0 +1,78 @@
+// Northwestern brand palette.
+//
+// These assignments are local to this package -- see README.md. Upstream's
+// Bootstrap/Avalon rules were already compiled with their own values by the
+// time this file is imported, so nothing here retroactively re-themes them;
+// the --bs-* custom properties at the bottom are what reach Bootstrap 5's
+// runtime-themed utilities.
+
+// purples
+$purple: #4e2a84;
+$purple120: #401f68;
+$purple60: #836eaa;
+$purple30: #b6acd1;
+$purple10: #e4e0ee;
+
+// secondary colors
+$brightGreenA: #58b947;
+$brightBlueA: #5091cd;
+$brightBlueB: #7fcecd;
+$brightYellowA: #ffc520;
+$brightYellowB: #ede93b;
+$brightRedA: #ef553f;
+
+// variations
+$green20: #e6f4e3;
+
+// based on ef553f
+$red10: #f7e5e4;
+
+// grays
+$white: #fff;
+$gray6: #f2f2f2;
+$black10: #d8d6d6;
+$black20: #bbb8b8;
+$black50: #716c6b;
+$black80: #342f2e;
+$black: #000;
+
+// primary color overrides
+$primary: $purple;
+$secondary: $purple60;
+$dark: $purple120;
+
+// secondary color overrides
+$yellow: $brightYellowA;
+$orange: $brightBlueA;
+$blueGreen: $purple;
+
+// other color overrides
+$greenBG: $brightGreenA;
+$gray: $black10;
+$lightgray: $gray6;
+$red: $brightRedA;
+$blue: $brightBlueA;
+$lightblue: $brightBlueB;
+
+// status overrides
+$info: $brightYellowB;
+$success: $brightGreenA;
+$warning: $brightYellowA;
+$danger: $brightRedA;
+
+// brand overrides
+$brand-primary: $purple;
+
+// Bootstrap 5 reads these at runtime rather than baking the value into every
+// rule, so setting them here does re-theme the utilities that use them
+// (.bg-primary, .text-primary, .border-primary, .link-primary, ...).
+// Bootstrap 4 had no equivalent; the old `--primary` this replaces was read by
+// nothing.
+:root {
+  --bs-primary: #{$purple};
+  --bs-primary-rgb: 78, 42, 132;
+  --bs-link-color: #{$purple};
+  --bs-link-hover-color: #{$purple120};
+  --bs-link-color-rgb: 78, 42, 132;
+  --bs-link-hover-color-rgb: 64, 31, 104;
+}

@@ -1,0 +1,53 @@
+<%#
+Northwestern header. Replaces upstream's modules/_header.html.erb, which is left
+in place untouched so it keeps merging cleanly; layouts/avalon.html.erb points
+here instead.
+
+Structure is Northwestern's: a dark purple utility bar with the wordmark and
+global links, then a purple bar with the site name and search. Styled by
+app/assets/stylesheets/northwestern/components/_header.scss.
+
+Two things differ from the 7.x version of this partial:
+
+  * The search box and the sign-in / sign-out links render upstream's
+    modules/avalon_search_form and modules/user_management partials rather than
+    the hardcoded <form> and link_to the 7.x version carried. Those had drifted:
+    the form posted to a literal "/catalog" with no search_field, and neither
+    picked up the labels, test ids, or the value round-trip that upstream's
+    partials have since grown.
+
+  * No skip link. The 7.x version opened with its own
+    `.screen-reader-shortcut` anchor to #main-content; layouts/avalon.html.erb
+    already emits one just above this partial, using skip_to_content_href so it
+    lands on the player on media object pages.
+
+Everything in here is hidden below the md breakpoint by upstream's
+`header div { @extend .mobile-hidden }` (avalon/_header.scss). That is
+intentional and long-standing -- on narrow viewports the purple navbar brand row
+is the header. See components/_navbar.scss.
+%>
+<header>
+  <div id="top-bar">
+    <div class="contain-1120">
+      <div id="northwestern">
+        <a href="https://www.northwestern.edu/" title="Northwestern University Home"><span class="hide-label">Northwestern University</span></a>
+      </div>
+
+      <nav id="global-links" aria-label="global links">
+        <ul>
+          <li><%= render 'modules/user_management' %></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <div id="bottom-bar" class="contain-1120">
+    <div id="site-name">
+      <%= link_to "Libraries - Repository Audio + Video", main_app.root_path %>
+    </div>
+
+    <div id="search">
+      <%= render partial: 'modules/avalon_search_form' %>
+    </div>
+  </div>
+</header>

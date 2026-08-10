@@ -234,6 +234,26 @@ Rows are loaded in bulk out of band; there is no UI.
 
 ### Branding and content
 
+- `app/assets/stylesheets/northwestern/**` — Northwestern's palette, typography,
+  and component overrides, plus the header, footer, and home page layouts. Read
+  that directory's `README.md` before touching it; the short version is that it
+  is imported **last** from `application.sass.scss`, and that one `@import` is
+  the whole AVR delta in upstream's stylesheets. Because it loads after
+  Bootstrap and Avalon have compiled, its variable assignments cannot re-theme
+  them retroactively — it wins on source order and, for Bootstrap 5's
+  runtime-themed utilities, through the `--bs-*` custom properties in
+  `branding/_colors.scss`.
+- `app/views/modules/_header__northwestern.html.erb` and
+  `_footer__northwestern.html.erb` — the NU header and footer. Upstream's
+  `modules/_header.html.erb` and `_footer.html.erb` are left untouched so they
+  keep merging; `layouts/avalon.html.erb`'s AVR delta is the two lines that
+  render these instead. The header renders upstream's `avalon_search_form` and
+  `user_management` partials rather than carrying its own copies.
+- `app/assets/images/images/**` and `app/assets/images/northwestern/**` — the
+  branding assets. Only those actually referenced are in the repo; the rest of
+  Northwestern's 2019 drop is still on `nu/deploy/production`. Note the doubled
+  `images/images`: CSS is built by dart-sass, not Sprockets, so `image-url()` is
+  unavailable and `url()` paths resolve relative to `/assets/`.
 - `app/views/catalog/_nu_home.html.erb` — AVR's home page, chiefly the notice
   that non-course media now lives in Digital Collections.
   `catalog/index.html.erb`'s AVR delta is the one line that renders it.
@@ -285,14 +305,32 @@ Things a reader might expect to find here, and why they aren't:
 
 Real, known, unfixed. Listed so they don't have to be rediscovered.
 
-**No AVR branding.** The home page markup referenced `.hero-image`,
-`.contain-1120`, `.contain-970`, `.section-top`, and `.full-width-page`, none of
-which exist in this repo: they lived in
-`app/assets/stylesheets/northwestern/`, dropped during the 8.x upgrade and never
-replaced. So from that upgrade until the restructure, the home page rendered
-completely unstyled. `_nu_home.html.erb` now uses the Bootstrap 5 utilities
-Avalon 8 ships, which is presentable but is not AVR branding. The old
-stylesheets are still on the `avr-pre-upgrade` branch.
+**AVR branding has not been looked at in a browser.** The branding package
+dropped during the 8.x upgrade has been restored and ported forward — see
+"Branding and content" above — but the port was done against the markup, not
+against a running page: no Solr or Fedora was available to render one. The CSS
+compiles clean and every `url()` it emits resolves to a file in the repo, which
+is as far as static checking goes. Expect to iterate on spacing and on the
+places where the port had to change selectors:
+
+- `div.mb-3:has(> #link-object-manifest)` — hides the IIIF manifest field in the
+  share dialog. Bootstrap 4's `.form-group` wrapper became `.mb-3` in Avalon 8.
+  **Check this one first:** if it stops matching, AVR silently starts publishing
+  manifest links.
+- `.facets-header` / `h2.facets-heading` — Blacklight 8's facet sidebar heading,
+  formerly `.top-panel-heading`.
+- The header search field, which is now upstream's `avalon_search_form`
+  partial restyled, where 7.x hardcoded its own `<form>`.
+- The sticky footer, now flexbox on `.page-container`
+  (`northwestern/components/_layout.scss`), because the NU footer is far taller
+  than the 5rem upstream's absolutely-positioned `#footer` assumes.
+
+**The footer's content dates from 2019 and nobody has reviewed it.** It was
+carried over as-is, deliberately: it is a communications decision, not an
+upgrade one. Known oddities, all inherited — "Support Us" and "Library Jobs"
+point at the same URL, "WordPress" and "Blog" point at the same blog, and the
+Twitter entries still say Twitter. The social sprite
+(`images/footer/social-media-icons.svg`) has no X glyph.
 
 **Two scheduled jobs have no replacement.** Skipping sidekiq-cron dropped five
 periodic jobs. Three are covered by AWS: `BatchScanJob` by

@@ -1,0 +1,133 @@
+<%#
+Northwestern footer. Replaces upstream's modules/_footer.html.erb, which is left
+in place untouched so it keeps merging cleanly; layouts/avalon.html.erb points
+here instead.
+
+Styled by app/assets/stylesheets/northwestern/components/_footer.scss. Note it
+is deliberately NOT wrapped in upstream's `<div id="footer">`: that div is
+absolutely positioned against a 100vh page container, which only works for
+upstream's single-line 5rem footer. The sticky-footer flexbox this one relies on
+instead is in northwestern/components/_layout.scss.
+
+Content is carried over verbatim from the 7.x partial apart from the markup
+fixes noted inline. It dates from 2019 and has not been reviewed since -- see
+docs/AVR_CUSTOMIZATIONS.md.
+%>
+<footer>
+  <div class="contain-1120">
+    <a href="https://www.northwestern.edu">
+      <div class="footer-logo"><span class="hide-text">Northwestern University</span></div>
+    </a>
+    <div class="footer-wrap">
+      <div class="footer-content contact">
+        <h2>University Libraries</h2>
+        <div class="address">
+          <div class="icon">
+            <span>Address</span>
+          </div>
+          <div class="text">
+            <p>1970 Campus Drive<br>
+            Evanston, IL 60208</p>
+          </div>
+        </div>
+        <div class="phone">
+          <div class="icon">
+            <span>Phone number</span>
+          </div>
+          <%# 7.x had a stray closing </p> here with no opening tag. %>
+          <div class="text">
+            <p>(847) 491-7658</p>
+          </div>
+        </div>
+        <div class="email">
+          <div class="icon">
+            <span>Email address</span>
+          </div>
+          <div class="text">
+            <p><a href="mailto:library@northwestern.edu">library@northwestern.edu</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-content connect">
+        <h2>Connect</h2>
+        <a href="https://www.facebook.com/NorthwesternLibrary" class="social facebook">Facebook</a>
+        <a href="https://twitter.com/nu_library" class="social twitter">Twitter</a>
+        <%# 7.x had class="social social instagram" -- duplicated class. %>
+        <a href="https://www.instagram.com/nu_library/" class="social instagram">Instagram</a>
+        <a href="https://www.youtube.com/user/NorthwesternLib" class="social youtube">YouTube</a>
+        <a href="https://sites.northwestern.edu/northwesternlibrary/" class="social wordpress">WordPress</a>
+        <a href="https://sites.northwestern.edu/northwesternlibrary/" class="social blog">Blog</a>
+        <a href="https://github.com/nulib" class="social github">Github</a>
+        <div id="cta">
+          <h3>FAQs</h3>
+          <p>Frequently Asked Questions about the Library.</p>
+          <p class="button"><a href="https://northwestern.libanswers.com/">Get Answers</a></p>
+        </div>
+      </div>
+      <div class="footer-content links">
+        <h2>Quick Links</h2>
+        <ul>
+          <li><a href="https://www.library.northwestern.edu/about/support/">Support Us</a></li>
+          <li><a href="https://www.library.northwestern.edu/about/support/">Library Jobs</a></li>
+          <li><a href="https://www.library.northwestern.edu/about/administration/policies/">Library Policies</a></li>
+          <li><a href="https://www.library.northwestern.edu/about/contact/general-feedback.html">Provide Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-content resources">
+        <h2>Northwestern Resources</h2>
+        <ul>
+          <li><a href="https://www.northwestern.edu/accessibility">Accessibility</a></li>
+          <li><a href="https://www.northwestern.edu/emergency/index.html">Campus Emergency Information</a></li>
+          <li><a href="https://www.northwestern.edu/hr/careers/">Careers</a></li>
+          <li><a href="https://www.northwestern.edu/contact.html">Contact Northwestern University</a></li>
+          <li><a href="https://policies.northwestern.edu/">University Policies</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div id="footer-bottom">
+    <div class="contain-1120">
+      <%# 7.x wrote the year with document.write(). %>
+      <span class="copyright">&copy; <%= Date.current.year %> Northwestern University</span>
+      <ul>
+        <li>
+          <a href="https://www.facebook.com/NorthwesternU">
+            <span class="social facebook">Facebook</span>
+            <span class="text">@NorthwesternU</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.twitter.com/northwesternu">
+            <span class="social twitter">Twitter</span>
+            <span class="text">@northwesternU</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.instagram.com/northwesternu">
+            <span class="social instagram">Instagram</span>
+            <span class="text">@northwesternu</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.youtube.com/user/NorthwesternU">
+            <span class="social youtube">YouTube</span>
+            <span class="text">@NorthwesternU</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.futurity.org/university/northwestern-university/">
+            <span class="social futurity">Futurity</span>
+            <span class="text">Futurity</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://news.northwestern.edu/feeds/allStories">
+            <span class="social rss">RSS</span>
+            <span class="text">RSS Feed</span>
+          </a>
+        </li>
+      </ul>
+      <span class="right"><a href="https://www.northwestern.edu/disclaimer.html">Disclaimer</a></span>
+    </div>
+  </div>
+</footer>

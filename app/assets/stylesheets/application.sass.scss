@@ -37,3 +37,9 @@ $fa-font-path: '.';
 
 @import 'sortable';
 @import 'avalon';
+
+/*
+ * Northwestern branding. Must stay last: it is an override layer that wins on
+ * source order. See app/assets/stylesheets/northwestern/README.md.
+ */
+@import 'northwestern';

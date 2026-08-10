@@ -1,0 +1,18 @@
+/*
+ * Northwestern branding for AVR. See README.md in this directory.
+ *
+ * Imported last from application.sass.scss so it overrides Bootstrap,
+ * Blacklight, and Avalon on source order.
+ */
+
+@import 'branding/colors';
+@import 'branding/typography';
+
+@import 'components/base';
+@import 'components/buttons';
+@import 'components/documents';
+@import 'components/footer';
+@import 'components/header';
+@import 'components/layout';
+@import 'components/navbar';
+@import 'components/sidenav';

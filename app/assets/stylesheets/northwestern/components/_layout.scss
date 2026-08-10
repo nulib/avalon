@@ -1,0 +1,414 @@
+main {
+  padding: 1.618em 0;
+  font-family: $sansRegular;
+}
+
+// Sticky footer. Upstream pins its own footer with `#footer { position:
+// absolute; bottom: 0 }` against `body .page-container { min-height: 100vh }`,
+// which only works for a footer of upstream's fixed 5rem height. The
+// Northwestern footer is much taller and is not inside `#footer`, so it flows
+// normally -- without this it would sit directly under short pages with the rest
+// of the 100vh empty beneath it.
+body .page-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1 0 auto;
+}
+
+.hide-label,
+.hide-text {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}
+
+.bg-primary {
+  background-color: $brand-primary !important;
+}
+
+.contain-1120 {
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+
+  .button {
+    background: $purple;
+    color: $white !important;
+    font: 16px $sansRegular;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+}
+
+// Referenced by the home page markup since 7.x but never defined, so the
+// narrower measure it was asking for never happened.
+.contain-970 {
+  max-width: 970px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+// hero images
+
+.hero-image.homepage {
+  .contain-1120 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+}
+
+.hero {
+  width: 100%;
+  display: table;
+
+  &.mobile-hero {
+    // add class for mobile hero text treatment
+
+    .mobile-hero-text {
+      display: none;
+    }
+  }
+
+  .hero-image {
+    text-align: center;
+    display: table-cell;
+    width: 100%;
+    vertical-align: middle;
+    position: relative;
+    padding: 0 1rem;
+    // Was url('assets/northwestern/...'), which resolved against the compiled
+    // stylesheet's own /assets/ directory and asked for /assets/assets/... --
+    // so the splash image 404'd. See README.md on asset paths.
+    background: url('northwestern/avr-splash-image-reels-cropped-muted.jpg')
+      no-repeat center/cover;
+    overflow: hidden;
+    z-index: inherit;
+
+    &::before {
+      content: '';
+      display: block;
+      background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.618));
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      top: 0;
+      z-index: 0;
+    }
+
+    .contain-1120 {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  h1 {
+    font: 24px $displayBold;
+    color: $white;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 1);
+    margin-bottom: 1.5em;
+    position: relative;
+
+    &:before,
+    &:after {
+      background: url('images/icons/ltpurple-slash.svg') no-repeat 50% / 17px
+        21px;
+      padding: 0 20px;
+      content: ' ';
+    }
+  }
+
+  p {
+    font: 60px/1.2em $displayBold;
+    color: $white;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 1);
+    margin: 0 0 1rem 0;
+    position: relative;
+
+    &.description {
+      font: 24px/1.2em $sansRegular;
+    }
+  }
+}
+
+// landing page in-page hero
+.full-width-page {
+  .hero {
+    .hero-image {
+      // for top of page
+      height: 600px;
+
+      &.in-page {
+        // slighter shorter for separator within the page
+        height: 540px;
+
+        h2 {
+          font: 24px $displayBold;
+          color: $white;
+          text-shadow: 2px 2px 0px rgba(0, 0, 0, 1);
+          margin-bottom: 1.5em;
+          position: relative;
+
+          &:before,
+          &:after {
+            background: url('images/icons/ltpurple-slash.svg') no-repeat 50% /
+              17px 21px;
+            padding: 0 20px;
+            content: ' ';
+          }
+        }
+      }
+
+      h1 {
+        color: $white;
+
+        &:before,
+        &:after {
+          background: url('images/icons/ltpurple-slash.svg') no-repeat 50% /
+            17px 21px;
+        }
+      }
+    }
+
+    // for static news hero image replacement
+    &.news-hero {
+      .hero-image {
+        vertical-align: bottom !important;
+        padding-bottom: 2.5rem;
+      }
+    }
+  }
+
+  // for pages that use shorter heroes
+  .small-hero {
+    .hero-image {
+      height: 420px;
+    }
+  }
+}
+
+// standard page
+.standard-page {
+  .hero {
+    margin-bottom: 0;
+
+    .hero-image {
+      height: 420px;
+
+      &.tiny-hero-image {
+        // for really short "banner-style" hero images
+        height: 190px;
+
+        h1 {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  .content {
+    .hero {
+      max-width: 836px;
+
+      .hero-image {
+        &.in-page {
+          // for in-page hero separator
+          padding: 2rem;
+
+          h2 {
+            font: 42px/1.3em $displayLight;
+            color: $white;
+            text-shadow: 2px 2px 0px $black;
+            position: relative;
+            margin-bottom: 1rem;
+          }
+
+          p {
+            font: 18px/1.5em $sansRegular;
+            margin-bottom: 2rem;
+
+            &.subhead {
+              font: 18px/1.3rem $displayBold;
+              text-transform: uppercase;
+              margin-bottom: 1.5rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 62.5em) {
+  .hero {
+    p {
+      font-size: 48px;
+    }
+  }
+}
+
+@media screen and (max-width: 48em) {
+  .standard-page,
+  .full-width-page {
+    .hero {
+      &.mobile-hero {
+        // append this class to .hero to move the overlapping hero text below the image
+
+        .hero-image {
+          display: block;
+          height: 300px;
+
+          div {
+            display: none;
+          }
+        }
+
+        .mobile-hero-text {
+          display: block;
+          text-align: center;
+          background: $black80;
+          padding: 2rem 1em;
+
+          h1 {
+            font-size: 24px;
+            text-shadow: none;
+            margin-bottom: 0;
+
+            & + p,
+            & + .button {
+              margin-top: 1rem;
+            }
+          }
+
+          p {
+            text-shadow: none;
+            font-size: 48px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 30em) {
+  .full-width-page,
+  .standard-page {
+    .hero {
+      .hero-image {
+        height: 400px;
+
+        &.big-hero-image {
+          // removes people hero from content page
+          display: none;
+        }
+
+        &.in-page {
+          // slighter shorter for within the page
+          height: 400px;
+
+          h2 {
+            font-size: 20px;
+            margin-bottom: 1rem;
+
+            &:before {
+              background: none;
+              padding: 0;
+            }
+
+            &:after {
+              background: none;
+              padding: 0;
+            }
+          }
+        }
+      }
+
+      h1 {
+        font-size: 20px;
+        margin-bottom: 1rem;
+
+        &:before {
+          background: none;
+          padding: 0;
+        }
+
+        &:after {
+          background: none;
+          padding: 0;
+        }
+      }
+
+      p {
+        font-size: 28px;
+
+        &.description {
+          font-size: 20px;
+        }
+      }
+
+      &.mobile-hero {
+        // append this class to .hero to move the overlapping hero text below the image
+
+        .hero-image {
+          height: 200px;
+        }
+
+        .mobile-hero-text {
+          padding: 1em 0;
+
+          h1 {
+            font-size: 20px;
+          }
+
+          p {
+            font-size: 28px;
+          }
+        }
+      }
+    }
+  }
+
+  // standard page
+  .standard-page {
+    .content {
+      // in-page hero separator
+
+      .hero {
+        .hero-image {
+          &.in-page {
+            h2 {
+              font-size: 28px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.homepage-main .content {
+  section {
+    .section-top {
+      padding: 3rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      h2 {
+        font: 24px $displayBold;
+        color: $purple120;
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}

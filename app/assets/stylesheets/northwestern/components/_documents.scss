@@ -1,0 +1,17 @@
+// Blacklight 8 search results. `article.document` comes from
+// Blacklight::DocumentComponent; `.documentHeader` and `h3.index_title` from
+// app/components/index_header_media_object_component.html.erb and
+// Blacklight::DocumentTitleComponent respectively.
+article.document {
+  padding: 1em 0 !important;
+
+  .documentHeader {
+    margin-bottom: 1em;
+  }
+
+  h3.index_title {
+    font-family: $displayBold;
+    font-weight: 700 !important;
+    font-size: 1.125em;
+  }
+}

@@ -1,0 +1,155 @@
+// Northwestern header, rendered by app/views/modules/_header__northwestern.html.erb.
+//
+// Upstream's avalon/_header.scss carries `header div { @extend .mobile-hidden; }`,
+// which hides everything in here below the md breakpoint. That is deliberate and
+// predates the 8.x upgrade: on narrow viewports the purple `.navbar-header` with
+// the Northwestern wordmark (components/_navbar.scss) is the header. Don't fight
+// it -- the 7.x package's `#mobile-search` block, a ~70-line dropdown with an
+// inline base64 background, was never reachable because of this rule and is not
+// carried forward.
+
+header {
+  background: $purple;
+  color: $white;
+
+  a,
+  a:visited,
+  a:hover,
+  a:focus {
+    color: $white !important;
+    text-decoration: none;
+  }
+}
+
+header #top-bar {
+  background: $purple120;
+
+  .contain-1120 {
+    align-items: center;
+    padding: 1rem;
+  }
+
+  #northwestern a {
+    width: 170px;
+    height: 21px;
+    display: inline-block;
+    background: url('images/logos/northwestern.svg') no-repeat center;
+  }
+}
+
+header #bottom-bar {
+  align-items: center;
+  padding: 2rem 1rem;
+
+  #site-name {
+    font-family: $sansRegular;
+    font-size: 2rem;
+    text-transform: uppercase;
+  }
+}
+
+header #global-links {
+  ul {
+    margin: 0;
+    padding: 0;
+
+    li {
+      list-style: none;
+    }
+  }
+
+  // modules/_user_management.html.erb styles the signed-out link as
+  // .btn.btn-info, which is opaque against the purple bar.
+  .btn-info {
+    background: transparent;
+    border: 1px solid $purple30;
+    color: $white !important;
+    padding: 0.25rem 0.75rem;
+
+    &:hover,
+    &:focus {
+      background: $purple60;
+      border-color: $purple10;
+    }
+  }
+}
+
+// The search box. This is upstream's modules/_avalon_search_form.html.erb
+// partial -- a Bootstrap 5 .input-group -- restyled as Northwestern's
+// underlined field. The 7.x package hardcoded its own <form> in the header
+// partial and styled a bare input + a button with an SVG background; using
+// upstream's partial keeps the search field, its label, and its test ids in one
+// place, and picks up the Font Awesome icon it already renders.
+header #search {
+  // 265px of a 1120px container, precomputed: dart-sass has deprecated `/` as
+  // division, and `math.div(265px, 1120px) * 100%` is a lot of ceremony for a
+  // constant.
+  width: 23.6607%;
+  min-width: 265px;
+  display: flex;
+  justify-content: flex-end;
+
+  .global-search-wrapper {
+    width: 265px;
+    font-family: $sansBold;
+    flex-wrap: nowrap;
+  }
+
+  .global-search-input,
+  input.form-control {
+    height: 35px;
+    padding: 0 0.3em 0 0;
+    font: 1rem $sansBold;
+    background: none;
+    color: $white;
+    border: none;
+    border-bottom: 1px solid $purple30;
+    border-radius: 0;
+    box-shadow: none;
+    -webkit-appearance: none;
+
+    &::placeholder {
+      color: $purple30;
+      opacity: 1;
+    }
+
+    &:focus {
+      background: none;
+      color: $white;
+      border-color: $purple10;
+      outline: 1px dashed $white;
+    }
+  }
+
+  .global-search-submit {
+    height: 35px;
+    width: 35px;
+    cursor: pointer;
+    background: transparent !important;
+    border: none;
+    border-bottom: 1px solid $purple10;
+    border-radius: 0;
+    -webkit-appearance: none;
+
+    i,
+    svg {
+      color: $white !important;
+    }
+
+    &:hover,
+    &:focus {
+      background: transparent !important;
+      border-color: $white;
+    }
+
+    &:focus {
+      outline: 1px dashed $white;
+    }
+  }
+}
+
+@media screen and (max-width: 71.5625em) {
+  header #search {
+    padding-right: 1rem;
+  }
+}

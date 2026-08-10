@@ -181,7 +181,22 @@ installs exactly that bundler version.
 git diff --stat v8.3 HEAD -- . ':(exclude)terraform' ':(exclude)Gemfile.lock'
 
 # Nothing should have crept into these.
-git diff v8.3 HEAD -- Gemfile package.json yarn.lock app/views/layouts
+git diff v8.3 HEAD -- Gemfile package.json yarn.lock
+
+# These three have a known, fixed AVR delta. Anything more has crept in:
+#   app/views/layouts/avalon.html.erb            2 lines (the __northwestern partials)
+#   app/assets/stylesheets/application.sass.scss 1 @import (northwestern, and it must stay last)
+#   app/views/catalog/index.html.erb             1 line  (renders nu_home)
+git diff v8.3 HEAD -- app/views/layouts app/assets/stylesheets/application.sass.scss \
+  app/views/catalog/index.html.erb
+
+# Nothing else under app/assets or app/components should differ from upstream at
+# all -- AVR's stylesheets live in their own directory. Expect only additions:
+git diff --stat v8.3 HEAD --diff-filter=M -- app/assets app/components
+
+# The branding stylesheets are built by dart-sass, not Sprockets, so a bad
+# selector or a missing @import fails here and nowhere else.
+yarn build:css
 
 # Boot, migrate, test.
 bundle exec rails runner 'puts Rails.application.class.module_parent_name'
@@ -223,6 +238,13 @@ past upgrades and that the test suite covers least well:
 6. **Run a batch ingest** and confirm a worker picks the job off SQS.
 7. **Load the home page** and a faceted search.
 8. **View source** and confirm the GTM container snippet is present.
+9. **Check the branding**, which is CSS coupled to upstream's markup and so is
+   the thing an upgrade breaks most quietly. The purple Northwestern header and
+   the four-column footer on a wide window; the purple navbar with the wordmark
+   under 1140px, where the desktop header is hidden by design; the home page
+   hero over the splash image; and the share dialog on a media object, which
+   must **not** offer an IIIF manifest link. See "Known gaps" in
+   `AVR_CUSTOMIZATIONS.md` for the selectors most likely to have rotted.
 
 ### 5. Ship
 

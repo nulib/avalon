@@ -44,7 +44,7 @@ Unless required by applicable law or agreed to in writing, software distributed
       <% if defined?(Samvera::Persona) %>
       <%= render partial: 'modules/become_message' %>
       <% end %>
-      <%= render 'modules/header' %>
+      <%= render 'modules/header__northwestern' %>
       <%= render :partial => 'modules/global_navigation' %>
       <main id="main-content" role="main" class="<%= "homepage-main" if current_page?(main_app.root_path) %>">
 
@@ -64,7 +64,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 
       </main>
     </div>
-    <%= render 'modules/footer' %>
+    <%= render 'modules/footer__northwestern' %>
   </div>
 
   <% if request.fullpath.include?('login_popup') %>

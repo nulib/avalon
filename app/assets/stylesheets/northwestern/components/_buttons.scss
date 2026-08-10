@@ -1,0 +1,80 @@
+.btn {
+  border-radius: 0;
+}
+
+.btn-primary {
+  background-color: $purple;
+  border-color: $purple;
+  color: $purple10 !important;
+
+  &:hover,
+  &:focus {
+    background-color: $purple120 !important;
+    border-color: $purple120 !important;
+    color: $white !important;
+  }
+}
+
+.btn-link {
+  color: $purple;
+  text-decoration: none;
+
+  &:hover {
+    color: $purple;
+    text-decoration: underline;
+    text-decoration-thickness: min(2px, max(1px, 2px));
+    text-underline-offset: 3px;
+    text-decoration-color: $purple10;
+  }
+}
+
+.btn-outline,
+.btn-outline-primary,
+.btn-outline-secondary {
+  background-color: $gray6;
+  border-color: $black10;
+  color: $black80;
+
+  &:hover,
+  &:focus {
+    color: $black80;
+    border-color: $black20;
+  }
+
+  i,
+  svg {
+    color: $purple !important;
+  }
+}
+
+// The collection list's A-Z / by-unit toggle. Bootstrap 5 dropped
+// .btn-group-toggle, but CollectionListStickyUtils.js still emits it.
+.btn-group {
+  &.btn-group-toggle {
+    .btn {
+      &.sort-btn.active {
+        background: $purple !important;
+        border-color: $purple !important;
+        color: $purple10 !important;
+      }
+
+      background: transparent !important;
+      border-color: $black10 !important;
+      color: $black80 !important;
+
+      border-radius: 0;
+    }
+  }
+}
+
+// The 7.x package raised specificity here with `#content { .btn-outline-secondary
+// { @extend .btn-outline-secondary; } }` -- a self-extend, which duplicates every
+// Bootstrap .btn-outline-secondary ruleset under an #content prefix. The rule
+// above already lands the same colors, and Avalon 8's own
+// `.facet-pagination .btn-outline-secondary.active` is what needed beating; do
+// that directly instead.
+#content .btn-outline-secondary {
+  background-color: $gray6;
+  border-color: $black10;
+  color: $black80;
+}

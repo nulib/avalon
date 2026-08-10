@@ -6,30 +6,37 @@ reworks that file most releases (facet sidebar, constraints rendering, test ids)
 and when it does you can take upstream's version wholesale and re-point the one
 branch here. See docs/AVR_UPGRADE.md.
 
-NOTE: this is styled with plain Bootstrap 5 utilities, which is what Avalon 8
-ships. The AVR-branded version of this page used .hero-image / .contain-1120 /
-.full-width-page from app/assets/stylesheets/northwestern/, which were dropped
-during the 8.x upgrade and never replaced -- so from the 8.x upgrade until this
-commit the home page rendered with no styling at all. Restoring the branding is
-open work; see "Known gaps" in docs/AVR_CUSTOMIZATIONS.md.
+Styled by app/assets/stylesheets/northwestern/components/_layout.scss --
+.hero / .hero-image / .contain-1120 / .contain-970 / .section-top, and
+.section-top needs the `homepage-main` class layouts/avalon.html.erb puts on
+<main> for the root path. The hero's splash image is
+app/assets/images/northwestern/avr-splash-image-reels-cropped-muted.jpg.
 %>
-<div class="avr-home">
-  <section class="avr-home-hero bg-body-secondary rounded-3 p-5 mb-4 text-center">
-    <div class="container">
-      <h1 class="display-5">Repository Audio + Video</h1>
-      <p class="lead">Audio and video material for courses</p>
-      <%= link_to 'Browse Collection',
-                  main_app.search_catalog_path(search_field: 'all_fields', q: ''),
-                  class: "btn btn-primary btn-lg mt-2" %>
+<div class="full-width-page">
+  <section class="hero">
+    <%# The hero image can align left/center/right on mobile by changing
+        background-position on .hero-image. %>
+    <div class="hero-image homepage">
+      <div class="contain-1120">
+        <h1>Repository Audio + Video</h1>
+        <p>Audio and video material for courses</p>
+        <%= link_to 'Browse Collection',
+                    main_app.search_catalog_path(search_field: 'all_fields', q: ''),
+                    class: "button" %>
+      </div>
     </div>
   </section>
 
-  <section class="container pb-5">
-    <h2 class="h4">Looking for Audio and Video material for Research?</h2>
-    <p class="mb-0">
-      All non-course media has moved to
-      <%= link_to 'Northwestern University Libraries Digital Collections',
-                  'https://dc.library.northwestern.edu/search?WorkType=%5B%22Audio%22%2C%22Video%22%5D' %>
-    </p>
-  </section>
+  <div class="content">
+    <section>
+      <div class="section-top contain-970">
+        <h2>Looking for Audio and Video material for Research?</h2>
+        <p>
+          All non-course media has moved to
+          <%= link_to 'Northwestern University Libraries Digital Collections',
+                      'https://dc.library.northwestern.edu/search?WorkType=%5B%22Audio%22%2C%22Video%22%5D' %>
+        </p>
+      </div>
+    </section>
+  </div>
 </div>

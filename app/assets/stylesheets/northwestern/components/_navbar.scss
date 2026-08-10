@@ -1,0 +1,89 @@
+// Global navigation, rendered by app/views/modules/_global_navigation.html.erb.
+//
+// That partial puts `bg-primary` on #header-navbar; `.navbar` below has the same
+// specificity, so this package winning depends on being imported last.
+.navbar {
+  background-color: $gray6 !important;
+  font-family: $sans;
+
+  // Avalon 8 sets a yellow hover/active background on nav links
+  // (avalon/_nav.scss). Northwestern's nav is flat.
+  .navbar-nav .nav-item {
+    &.active {
+      .nav-link {
+        color: $purple120;
+        background-color: transparent !important;
+      }
+    }
+
+    .nav-link {
+      color: $purple;
+      background-color: transparent !important;
+
+      &:hover,
+      &:focus {
+        color: $purple120;
+        background-color: transparent !important;
+      }
+    }
+  }
+
+  .navbar-logo {
+    width: 170px;
+    height: 21px;
+    display: inline-block;
+    background: url('images/logos/northwestern.svg') no-repeat center;
+  }
+}
+
+// Below this breakpoint the desktop header is hidden (see components/_header.scss)
+// and the navbar's brand row becomes the header.
+@media screen and (max-width: 71.25em) {
+  .navbar .navbar-header {
+    background: $purple !important;
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 1rem;
+    }
+
+    .navbar-brand {
+      width: 170px;
+      height: 21px;
+      display: inline-block;
+      background-color: transparent !important;
+      background: url('images/logos/northwestern.svg') no-repeat center;
+    }
+  }
+}
+
+// Manage dropdown. Overrides the yellow hover in avalon/_nav.scss.
+.manage-btn {
+  color: $purple !important;
+  background: transparent;
+
+  &:hover,
+  &:focus {
+    background: transparent !important;
+    color: $purple120 !important;
+  }
+}
+
+ul.manage-dropdown-menu {
+  background-color: $gray6 !important;
+
+  li {
+    a {
+      color: $purple !important;
+      font-family: $sansRegular;
+      font-size: 16px;
+      padding: 0.5rem 1rem;
+    }
+  }
+}
+
+#header-navbar {
+  margin: 0 !important;
+}

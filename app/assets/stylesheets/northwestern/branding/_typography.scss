@@ -1,0 +1,87 @@
+// Northwestern brand typography.
+
+// define Northwestern web font path
+$path-fonts: 'https://common.northwestern.edu/v8/css/fonts';
+
+// define Northwestern brand fonts
+@font-face {
+  font-family: 'Akkurat Pro Regular';
+  src: url('#{$path-fonts}/AkkuratProRegular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Akkurat Pro Italic';
+  src: url('#{$path-fonts}/AkkuratProItalic.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Akkurat Pro Bold';
+  src: url('#{$path-fonts}/AkkuratProBold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Akkurat Pro Bold Italic';
+  src: url('#{$path-fonts}/AkkuratProBoldItalic.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins Light';
+  src: url('#{$path-fonts}/Poppins-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins Bold';
+  src: url('#{$path-fonts}/Poppins-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins Extra Bold';
+  src: url('#{$path-fonts}/Poppins-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins Extra Light';
+  src: url('#{$path-fonts}/Poppins-ExtraLight.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+}
+
+// Set Northwestern generics
+$sansRegular: 'Akkurat Pro Regular', Arial, sans-serif;
+$sansRegularItalic: 'Akkurat Pro Italic', Arial, sans-serif;
+$sansBold: 'Akkurat Pro Bold', 'Arial Black', sans-serif;
+$sansBoldItalic: 'Akkurat Pro Bold Italic', 'Arial Black', sans-serif;
+$displayLight: 'Poppins Light', $sansRegular;
+$displayBold: 'Poppins Bold', $sansBold;
+$displayExtraBold: 'Poppins Extra Bold', $sansBold;
+$displayExtraLight: 'Poppins Extra Light', $sansRegular;
+
+// Set Avalon generics as Northwestern generics
+$sans: $sansRegular;
+$display: $displayBold;
+
+// Avalon's $sansFontFamily / $museoSlab were reassigned here in the 7.x
+// branding package. That was inert -- every rule that reads them is compiled
+// before this package is imported. The rules that mattered are overridden
+// directly instead: `body` and the headings in components/_base.scss, `.navbar`
+// in components/_navbar.scss, `.global-search-wrapper` in components/_header.scss.
+//
+// Bootstrap 5 does read the body font family at runtime, so this reaches
+// everything that inherits it.
+:root {
+  --bs-body-font-family: #{$sansRegular};
+}
