@@ -79,7 +79,8 @@ class Derivative < ActiveFedora::Base
       path = Addressable::URI.parse(absolute_location).path
       self.location_url = Avalon::StreamMapper.stream_path(path)
       is_mp3 = format == "audio" && audio_codec == "mp3"
-      self.hls_url = Avalon::StreamMapper.map(path, 'http', (is_mp3 ? "audio_mp3" : format))
+      # self.hls_url = Avalon::StreamMapper.map(path, 'http', (is_mp3 ? "audio_mp3" : format))
+      self.hls_url = self.absolute_location
     end
     self
   end
@@ -109,7 +110,7 @@ class Derivative < ActiveFedora::Base
     derivative.duration = output[:duration].to_i
     # FIXME: Implement this in ActiveEncode or determine mimetype here
     derivative.mime_type = output[:mime_type].presence
-    derivative.quality = output[:label].sub(/quality-/, '')
+    derivative.quality = output[:label].sub(/quality-/, '').delete_prefix('-')
 
     derivative.audio_bitrate = output[:audio_bitrate]
     derivative.audio_codec = output[:audio_codec]

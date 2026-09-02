@@ -386,7 +386,8 @@ data "aws_iam_policy_document" "pass_transcode_role" {
       "mediaconvert:CreateJob",
       "mediaconvert:DescribeEndpoints",
       "mediaconvert:GetJob",
-      "mediaconvert:GetQueue"
+      "mediaconvert:GetQueue",
+      "mediaconvert:Probe"
     ]
     resources = ["*"]
   }
@@ -395,17 +396,17 @@ data "aws_iam_policy_document" "pass_transcode_role" {
 resource "aws_iam_policy" "allow_transcode" {
   name   = "${var.app_name}-mediaconvert-access"
   policy = data.aws_iam_policy_document.pass_transcode_role.json
-  }
+}
 
 resource "aws_media_convert_queue" "transcode_queue" {
   name   = var.app_name
   status = "ACTIVE"
-  }
+}
 
 resource "aws_cloudwatch_log_group" "mediaconvert_state_change_log" {
   name              = "/aws/events/active-encode/mediaconvert/${aws_media_convert_queue.transcode_queue.name}"
   retention_in_days = 7
-  }
+}
 
 resource "aws_cloudwatch_event_rule" "mediaconvert_state_change" {
   name        = "${var.app_name}-mediaconvert-state-change"

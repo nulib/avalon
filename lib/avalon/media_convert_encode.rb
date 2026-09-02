@@ -17,13 +17,13 @@ class MediaConvertEncode < WatchedEncode
   self.engine_adapter.role = Settings.encoding.media_convert_role
   self.engine_adapter.output_bucket = Settings.encoding.derivative_bucket
   self.engine_adapter.direct_output_lookup = true
-  self.engine_adapter.use_probe = true
+  self.engine_adapter.use_probe = false
   self.engine_adapter.output_id_format = "%{job_id}-%{suffix}"
   self.engine_adapter.output_label_format = "%{suffix}"
 
   before_create prepend: true do |encode|
     encode.options.merge!(use_original_url: true,
-                          output_type: :file,
+                          output_type: :hls,
                           output_prefix: "#{SecureRandom.uuid}/",
                           outputs: mediaconvert_outputs(encode.options))
   end

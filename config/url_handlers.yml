@@ -1,4 +1,8 @@
 ---
+aws:
+  http:
+    video: <%=http_base%>/<%=path%>/<%=filename%>.<%=extension%>
+    audio: <%=http_base%>/<%=path%>/<%=filename%>.<%=extension%>
 generic:
   http:
     video: <%=http_base%>/<%=path%>/<%=filename%>.<%=extension%>.m3u8

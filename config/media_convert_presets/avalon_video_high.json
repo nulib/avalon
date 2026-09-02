@@ -28,7 +28,7 @@
       }
     ],
     "ContainerSettings": {
-      "Container": "MP4"
+      "Container": "M3U8"
     }
   }
 }

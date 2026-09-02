@@ -168,7 +168,7 @@ resource "aws_ssm_parameter" "encoding-mediaconvert-queue" {
 
 resource "aws_ssm_parameter" "encoding-mediaconvert-role" {
   type    = "String"
-  name    = "${local.settings_prefix}/encoding/media_convert/role"
+  name    = "${local.settings_prefix}/encoding/media_convert_role"
   value   = aws_iam_role.transcode_role.arn
   }
 
