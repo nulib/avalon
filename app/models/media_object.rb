@@ -308,20 +308,20 @@ class MediaObject < ActiveFedora::Base
   # this is probably okay since this is just aggregating the values already in the master file solr docs
 
   def fill_in_solr_fields_that_need_sections(solr_doc)
-    solr_doc["other_identifier_sim"] +=  sections.collect {|section| section.identifier.to_a }.flatten
-    solr_doc["date_digitized_ssim"] = sections.collect {|section| section.date_digitized }.compact.map {|t| Time.parse(t).strftime "%F" }
-    solr_doc["has_captions_bsi"] = has_captions
-    solr_doc["has_transcripts_bsi"] = has_transcripts
-    solr_doc["section_label_tesim"] = section_labels
-    solr_doc['section_physical_description_ssim'] = section_physical_descriptions
-    solr_doc['all_comments_ssim'] = all_comments
+    safe_add_to_solr_doc(solr_doc, "other_identifier_sim") { solr_doc["other_identifier_sim"] + sections.collect {|section| section.identifier.to_a }.flatten }
+    safe_add_to_solr_doc(solr_doc, "date_digitized_ssim") { sections.collect {|section| section.date_digitized }.compact.map {|t| Time.parse(t).strftime "%F" } }
+    safe_add_to_solr_doc(solr_doc, "has_captions_bsi") { has_captions }
+    safe_add_to_solr_doc(solr_doc, "has_transcripts_bsi") { has_transcripts }
+    safe_add_to_solr_doc(solr_doc, "section_label_tesim") { section_labels }
+    safe_add_to_solr_doc(solr_doc, 'section_physical_description_ssim') { section_physical_descriptions }
+    safe_add_to_solr_doc(solr_doc, 'all_comments_ssim') { all_comments }
   end
 
   def fill_in_solr_fields_needing_leases(solr_doc)
-    solr_doc['read_access_virtual_group_ssim'] = virtual_read_groups + leases('external').map(&:inherited_read_groups).flatten
-    solr_doc['read_access_ip_group_ssim'] = collect_ips_for_index(ip_read_groups + leases('ip').map(&:inherited_read_groups).flatten)
-    solr_doc[Hydra.config.permissions.read.group] ||= []
-    solr_doc[Hydra.config.permissions.read.group] += solr_doc['read_access_ip_group_ssim']
+    safe_add_to_solr_doc(solr_doc, 'read_access_virtual_group_ssim') { virtual_read_groups + leases('external').map(&:inherited_read_groups).flatten }
+    safe_add_to_solr_doc(solr_doc, 'read_access_ip_group_ssim') { collect_ips_for_index(ip_read_groups + leases('ip').map(&:inherited_read_groups).flatten) }
+    safe_add_to_solr_doc(solr_doc, Hydra.config.permissions.read.group) { solr_doc[Hydra.config.permissions.read.group] ||= [] }
+    safe_add_to_solr_doc(solr_doc, Hydra.config.permissions.read.group) { solr_doc[Hydra.config.permissions.read.group] + solr_doc['read_access_ip_group_ssim'] }
   end
 
   # Enqueue background job to do a full indexing including more costly fields that read from children
@@ -331,28 +331,28 @@ class MediaObject < ActiveFedora::Base
 
   def to_solr(include_child_fields: false)
     descMetadata.to_solr(super).tap do |solr_doc|
-      solr_doc[ActiveFedora.index_field_mapper.solr_name("workflow_published", :facetable, type: :string)] = published? ? 'Published' : 'Unpublished'
-      solr_doc[ActiveFedora.index_field_mapper.solr_name("collection", :symbol, type: :string)] = collection.name if collection.present?
-      solr_doc[ActiveFedora.index_field_mapper.solr_name("unit", :symbol, type: :string)] = collection.unit.name if collection.present?
-      solr_doc["title_ssort"] = self.title
-      solr_doc["creator_ssort"] = Array(self.creator).join(', ')
-      solr_doc["date_ingested_ssim"] = self.create_date.strftime "%F" if self.create_date.present?
-      solr_doc['avalon_resource_type_ssim'] = self.avalon_resource_type
+      safe_add_to_solr_doc(solr_doc, ActiveFedora.index_field_mapper.solr_name("workflow_published", :facetable, type: :string)) { published? ? 'Published' : 'Unpublished' }
+      safe_add_to_solr_doc(solr_doc, ActiveFedora.index_field_mapper.solr_name("collection", :symbol, type: :string)) { collection.name if collection.present? }
+      safe_add_to_solr_doc(solr_doc, ActiveFedora.index_field_mapper.solr_name("unit", :symbol, type: :string)) { collection.unit.name if collection.present? }
+      safe_add_to_solr_doc(solr_doc, "title_ssort") { self.title }
+      safe_add_to_solr_doc(solr_doc, "creator_ssort") { Array(self.creator).join(', ') }
+      safe_add_to_solr_doc(solr_doc, "date_ingested_ssim") { self.create_date.strftime "%F" if self.create_date.present? }
+      safe_add_to_solr_doc(solr_doc, 'avalon_resource_type_ssim') { self.avalon_resource_type }
       # Downcasing identifier allows for case-insensitive searching but has the side effect of causing all identiiers to be lower case in JSON responses
-      solr_doc['identifier_ssim'] = self.identifier.map(&:downcase)
-      solr_doc['note_ssm'] = self.note.collect { |n| n.to_json }
-      solr_doc['donor_ssim'] = self.note.collect { |n| n[:note] if n[:type] == 'acquisition' }
-      solr_doc['other_identifier_ssm'] = self.other_identifier.collect { |oi| oi.to_json }
-      solr_doc['related_item_url_ssm'] = self.related_item_url.collect { |r| r.to_json }
-      solr_doc['is_accessible_bsi'] = self.is_accessible?
-      solr_doc['section_id_ssim'] = section_ids
+      safe_add_to_solr_doc(solr_doc, 'identifier_ssim') { self.identifier.map(&:downcase) }
+      safe_add_to_solr_doc(solr_doc, 'note_ssm') { self.note.collect { |n| n.to_json } }
+      safe_add_to_solr_doc(solr_doc, 'donor_ssim') { self.note.collect { |n| n[:note] if n[:type] == 'acquisition' } }
+      safe_add_to_solr_doc(solr_doc, 'other_identifier_ssm') { self.other_identifier.collect { |oi| oi.to_json } }
+      safe_add_to_solr_doc(solr_doc, 'related_item_url_ssm') { self.related_item_url.collect { |r| r.to_json } }
+      safe_add_to_solr_doc(solr_doc, 'is_accessible_bsi') { self.is_accessible? }
+      safe_add_to_solr_doc(solr_doc, 'section_id_ssim') { section_ids }
       if include_child_fields
         fill_in_solr_fields_that_need_sections(solr_doc)
         fill_in_solr_fields_needing_leases(solr_doc)
       elsif id.present? # avoid error in test suite
         # Fill in other identifier so these values aren't stripped from the solr doc while waiting for the background job
         mf_docs = ActiveFedora::SolrService.query("isPartOf_ssim:#{id}", rows: 100_000)
-        solr_doc["other_identifier_sim"] +=  mf_docs.collect { |h| h['identifier_ssim'] }.flatten
+        safe_add_to_solr_doc(solr_doc, "other_identifier_sim") { solr_doc["other_identifier_sim"] + mf_docs.collect { |h| h['identifier_ssim'] }.flatten }
       end
 
       #Add all searchable fields to the all_text_timv field
@@ -512,4 +512,11 @@ class MediaObject < ActiveFedora::Base
       tags.any? { |t| sections_with_files(tag: t).present? }
     end
 
+    def safe_add_to_solr_doc(doc, field)
+      begin
+        doc[field] = yield
+      rescue StandardError => e
+        # Don't let a single field failure prevent the entire solr doc from being indexed
+      end
+    end
 end
