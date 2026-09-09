@@ -15,6 +15,7 @@ Unless required by applicable law or agreed to in writing, software distributed
 %>
 <% is_leasable = !(object.class==Admin::Collection) && !(object.class == Admin::Unit) %>
 <% inherited_roles ||= [] %>
+<% display_helper ||= nil %>
 <div class="access-block col-lg-10" id="<%= access_object %>_management">
   <%= bootstrap_form_for object do |form| %>
   <input id="step" name="step" type="hidden" value="access-control" />
@@ -75,7 +76,7 @@ Unless required by applicable law or agreed to in writing, software distributed
           <% inherited_roles.each do |member_object| %>
             <%= render 'modules/access_object_member', object: object, 
                   member_object: member_object, access_object: access_object,
-                  input_disabled: input_disabled, inherited: true %>
+                  input_disabled: input_disabled, inherited: true, display_helper: display_helper %>
          <% end %>
        <% end %>
 
@@ -86,14 +87,14 @@ Unless required by applicable law or agreed to in writing, software distributed
               <% value.each do |member_object| %>
                 <%= render 'modules/access_object_member', object: object, 
                       member_object: member_object, access_object: access_object,
-                      input_disabled: input_disabled, inherited: inherited %>
+                      input_disabled: input_disabled, inherited: inherited, display_helper: display_helper %>
               <% end %>
             <% end %>
           <% else %>
             <% members.each do |member_object| %>
               <%= render 'modules/access_object_member', object: object, 
                     member_object: member_object, access_object: access_object,
-                    input_disabled: input_disabled, inherited: false %>
+                    input_disabled: input_disabled, inherited: false, display_helper: display_helper %>
             <% end %>
           <% end %>
         <% end %>
