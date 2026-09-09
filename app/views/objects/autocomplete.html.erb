@@ -15,5 +15,5 @@ Unless required by applicable law or agreed to in writing, software distributed
 %>
 
 <% @results.each do |result| %>
-  <li role="option"><span><%= result[:display] %></span></li>
+  <li role="option" data-autocomplete-value="<%= result[:id] %>"><span><%= result[:display] %></span></li>
 <% end %>
